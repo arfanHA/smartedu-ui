@@ -1,135 +1,104 @@
 <template>
-  <v-app id="fpmslogin">
+  <v-app id="login" class="secondary">
     <v-content>
-      <v-container class="fill-height justify-center" fluid>
-        <v-row align="center" justify="center">
-          <v-col cols="12" sm="10" md="6" lg="5" xl="4">
-            <v-card class="elevation-2">
-              <v-toolbar color="primary" dark flat>
-                <v-toolbar-title>Masuk</v-toolbar-title>
-              </v-toolbar>
+      <v-container fluid fill-height>
+        <v-layout align-center justify-center>
+          <v-flex xs12 sm8 md4 lg4>
+            <v-card class="elevation-1 pa-3">
               <v-card-text>
-                <v-form class="px-6">
+                <div class="layout column align-center">
+                  <img src="../assets/appLogo2.png" alt="Vue Material Admin" width="180" height="180">
+                  <h1 class="flex my-4 primary--text">Login SmartEdu</h1>
+                </div>
+                <v-form>
                   <v-text-field
-                    label="Username / NIK"
+                    append-icon="mdi-account"
                     name="login"
-                    prepend-icon="mdi-account"
+                    label="Login"
                     type="text"
-                    v-model="username"
-                    :error="err1"
-                    :error-messages="err1msg"
-                  />
-
+                    v-model="userEmail"
+                    :error="error"
+                    :rules="[rules.required]"/>
                   <v-text-field
-                    :append-icon="showPasswd ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="showPasswd ? 'text' : 'password'"
-                    id="password"
-                    label="Kata Sandi"
+                    :type="hidePassword ? 'password' : 'text'"
+                    :append-icon="hidePassword ? 'mdi-eye-off' : 'mdi-eye'"
                     name="password"
-                    prepend-icon="mdi-textbox-password"
+                    label="Password"
+                    id="password"
+                    :rules="[rules.required]"
                     v-model="password"
-                    @click:append="showPasswd = !showPasswd"
-                    :error="err2"
-                    :error-messages="err2msg"
-                  />
+                    :error="error"
+                    @click:append="hidePassword = !hidePassword"/>
                 </v-form>
               </v-card-text>
-              <v-card-actions class="mt-0 pt-0">
-                <v-row class="px-8">
-                  <v-col cols="12">
-                    <v-btn color="primary" block @click="login()">Login</v-btn>
-                  </v-col>
-                  <!-- <v-col cols="12">
-                    <v-btn color="secondary" block :text="isText" @click="login()">Forgot Password?</v-btn>
-                  </v-col>-->
-                </v-row>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn block color="primary" @click="login" :loading="loading">Login</v-btn>
               </v-card-actions>
             </v-card>
-          </v-col>
-        </v-row>
+          </v-flex>
+        </v-layout>
       </v-container>
+      <v-snackbar
+        v-model="showResult"
+        :timeout="2000"
+        top>
+        {{ result }}
+      </v-snackbar>
     </v-content>
   </v-app>
 </template>
+
 <script>
 export default {
-  data: () => ({
-    isText: true,
-    showPasswd: false,
-    username: "",
-    password: "",
-    err1: false,
-    err2: false,
-    err1msg: "",
-    err2msg: "",
-    credential: null,
-    origin: "",
-  }),
-  methods: {
-    login: function () {
-      let vm = this;
-      //      let data = {
-      //   username: this.username,
-      //   password: this.password
-      // };
-
-      if (this.email == "root") {
-        this.origin = "root";
-      } else {
-        this.origin = "internal";
+  data() {
+    return {
+      loading: false,
+      userEmail: 'admin@yopmail.com',
+      password: '123456',
+      hidePassword: true,
+      error: false,
+      showResult: false,
+      result: '',
+      rules: {
+        required: value => !!value || 'Required.'
       }
-
-      // this.$http
-
-      //   .post("/api/v1/user/login", data, {
-      //     headers: {
-      //       "User-Origin": this.origin
-      //     }
-      //   })
-      //   .then(function(r) {
-      //     vm.credential = r.data;
-
-      //   vm.$http.defaults.headers.common[
-      //     "Authorization"
-      //   ] = `Bearer ${vm.credential.user.token}`;
-
-      //   localStorage.setItem("token", vm.credential.user.token);
-      vm.$router.push("home");
-      // })
-      // .catch(function(error) {
-      //   console.log(error);
-      //   if (error.response.status == 403) {
-      //     vm.err1 = true;
-      //     vm.err2 = true;
-      //     vm.err1msg = "Forbidden access to this resource";
-      //     vm.err2msg = "Forbidden access to this resource";
-      //   } else {
-      //     vm.err1 = true;
-      //     vm.err2 = true;
-      //     vm.err1msg = "Invalid credential";
-      //     vm.err2msg = "Invalid credential";
-      //   }
-      // });
-      // this.$store.commit({
-      //     type: 'token',
-      //     token: 'asdfasdfjwtku'
-      // })
-      // let state = this.$store.getters.token;
-      // console.log(state.token)
-      // localStorage.setItem("token", state.token)
-      // this.$http.defaults.headers.common['Authorization'] = `Bearer ${state.token}`;
-      // this.$router.push("home");
-    },
+    }
   },
-  watch: {
-    email: function () {
-      this.err1msg = "";
-      this.err1 = false;
-    },
-    password: function () {
-      this.err2msg = "";
-      this.err2 = false;
-    },
-  },
-};
+
+  methods: {
+    login() {
+      const vm = this;
+
+    //   if (!vm.userEmail || !vm.password) {
+
+    //     vm.result = "Email and Password can't be null.";
+    //     vm.showResult = true;
+
+    //     return;
+    //   }
+
+    //   if (vm.userEmail === vm.$root.userEmail && vm.password === vm.$root.userPassword) {
+        vm.$router.push('home');
+    //   }
+    //   else {
+    //     vm.error = true;
+    //     vm.result = "Email or Password is incorrect.";
+    //     vm.showResult = true;
+    //   }
+    }
+  }
+}
 </script>
+
+<style scoped lang="css">
+  #login {
+    height: 50%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: "";
+    z-index: 0;
+  }
+</style>

@@ -283,8 +283,8 @@ export default {
   background: none;
 }
 
- .v-card.dialogField {
-        margin: auto;
-        max-width: 1080px;
-    }
+.v-card.dialogField {
+  margin: auto;
+  max-width: 1080px;
+}
 </style>
