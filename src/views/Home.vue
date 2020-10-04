@@ -16,7 +16,9 @@
           <template>
             <v-list-item-content>
               <v-list-item-title class="title">Kurikulum</v-list-item-title>
-              <v-list-item-subtitle class="subtitle-2">Arfan Haikal</v-list-item-subtitle>
+              <v-list-item-subtitle class="subtitle-2"
+                >Arfan Haikal</v-list-item-subtitle
+              >
             </v-list-item-content>
           </template>
 
@@ -30,31 +32,49 @@
         <v-list-item
           color="primary"
           @click="routerPush(menu.dashboard)"
-          :class="menu.dashboard.routerName === menuSelected?'v-list-item--active':''"
+          :class="
+            menu.dashboard.routerName === menuSelected
+              ? 'v-list-item--active'
+              : ''
+          "
         >
           <v-list-item-icon>
             <v-icon v-text="menu.dashboard.action"></v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title v-text="menu.dashboard.menuTitle"></v-list-item-title>
+            <v-list-item-title
+              v-text="menu.dashboard.menuTitle"
+            ></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item
           color="primary"
           @click="routerPush(menu.dataUser)"
-          :class="menu.dataUser.routerName === menuSelected?'v-list-item--active':''"
+          :class="
+            menu.dataUser.routerName === menuSelected
+              ? 'v-list-item--active'
+              : ''
+          "
         >
           <v-list-item-icon>
             <v-icon v-text="menu.dataUser.action"></v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title v-text="menu.dataUser.menuTitle"></v-list-item-title>
+            <v-list-item-title
+              v-text="menu.dataUser.menuTitle"
+            ></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-group color="#616161" :prepend-icon="menu.dataReferensi.action" no-action>
+        <v-list-group
+          color="#616161"
+          :prepend-icon="menu.dataReferensi.action"
+          no-action
+        >
           <template v-slot:activator>
             <v-list-item-content>
-              <v-list-item-title v-text="menu.dataReferensi.menuTitle"></v-list-item-title>
+              <v-list-item-title
+                v-text="menu.dataReferensi.menuTitle"
+              ></v-list-item-title>
             </v-list-item-content>
             <!-- <v-chip>25</v-chip> -->
           </template>
@@ -64,7 +84,9 @@
             v-for="subItem in menu.dataReferensi.items"
             :key="subItem.menuTitle"
             @click="routerPush(subItem)"
-            :class="subItem.routerName === menuSelected?'v-list-item--active':''"
+            :class="
+              subItem.routerName === menuSelected ? 'v-list-item--active' : ''
+            "
           >
             <v-list-item-icon>
               <v-icon v-text="subItem.icon"></v-icon>
@@ -76,10 +98,16 @@
             <v-chip v-if="subItem.menuTitle=='Credit Limit'">2</v-chip>-->
           </v-list-item>
         </v-list-group>
-        <v-list-group color="#616161" :prepend-icon="menu.pengaturanKelas.action" no-action>
+        <v-list-group
+          color="#616161"
+          :prepend-icon="menu.pengaturanKelas.action"
+          no-action
+        >
           <template v-slot:activator>
             <v-list-item-content>
-              <v-list-item-title v-text="menu.pengaturanKelas.menuTitle"></v-list-item-title>
+              <v-list-item-title
+                v-text="menu.pengaturanKelas.menuTitle"
+              ></v-list-item-title>
             </v-list-item-content>
           </template>
 
@@ -88,13 +116,18 @@
             v-for="subItem in menu.pengaturanKelas.items"
             :key="subItem.menuTitle"
             @click="routerPush(subItem)"
-            :class="subItem.routerName === menuSelected?'v-list-item--active':''"
+            :class="
+              subItem.routerName === menuSelected ? 'v-list-item--active' : ''
+            "
           >
             <v-list-item-icon>
               <v-icon v-text="subItem.icon"></v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title class="caption" v-text="subItem.menuTitle"></v-list-item-title>
+              <v-list-item-title
+                class="caption"
+                v-text="subItem.menuTitle"
+              ></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
@@ -102,54 +135,61 @@
 
       <template v-slot:append>
         <v-divider></v-divider>
-        <v-row class="px-5">
-          <v-col cols="6" align="start">
-            <v-btn @click="logout()">
-              <v-icon>mdi-logout</v-icon>Logout
-            </v-btn>
-          </v-col>
-          <v-col cols="6" align="end">
-            <v-menu top offset-y>
-              <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on">
-                  <v-icon>mdi-cog-outline</v-icon>
-                </v-btn>
-              </template>
-              <v-list subheader>
-                <v-subheader>User Setting</v-subheader>
-                <v-list-item
-                  v-for="(item, index) in menu.userSetting.items"
-                  :key="index"
-                  @click="routerPush(item)"
-                >
-                  <v-list-item-icon>
-                    <v-icon>{{item.icon}}</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>{{ item.menuTitle }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-              <v-list subheader>
-                <v-subheader>Courier Setting</v-subheader>
-                <v-list-item
-                  v-for="(item, index) in menu.courierSetting.items"
-                  :key="index"
-                  @click="routerPush(item)"
-                >
-                  <v-list-item-icon>
-                    <v-icon>{{item.icon}}</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>{{ item.menuTitle }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+        <v-row>
+          <v-col cols="9" align="start">
+            <v-list-item
+              color="primary"
+              @click="warningDialog = true"
+              :class="
+                menu.logout.routerName === navbarMenuSelected
+                  ? 'v-list-item--active'
+                  : ''
+              "
+            >
+              <v-list-item-icon>
+                <v-icon v-text="menu.logout.icon"></v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title
+                  v-text="menu.logout.menuTitle"
+                ></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </v-col>
         </v-row>
+
+        <v-dialog v-model="warningDialog" max-width="290" persistent>
+          <v-card>
+            <v-card-title class="headline"
+              >Yakin ingin keluar dari aplikasi?</v-card-title
+            >
+
+            <v-card-text></v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+
+              <v-btn color="green darken-1" text @click="warningDialog = false"
+                >Batal</v-btn
+              >
+
+              <v-btn
+                color="green darken-1"
+                text
+                @click="warning(navbarMenu.logout)"
+                >Yakin</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </template>
     </v-navigation-drawer>
 
     <v-app-bar app color="primary" dark :clipped-left="clipped">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title v-on:myvent="onChangeTitle">{{ toolbarTitle }}</v-toolbar-title>
+      <v-toolbar-title v-on:myvent="onChangeTitle">{{
+        toolbarTitle
+      }}</v-toolbar-title>
       <div class="flex-grow-1"></div>
 
       <v-tooltip bottom>
@@ -161,14 +201,27 @@
         <span>Tentang SmartEDU</span>
       </v-tooltip>
 
-      <v-menu :close-on-content-click="closeOnContentClick" transition="slide-y-transition" bottom>
+      <v-menu
+        :close-on-content-click="closeOnContentClick"
+        transition="slide-y-transition"
+        bottom
+      >
         <template v-slot:activator="{ on }">
-          <v-btn small icon v-on="on" style="margin-right: 5px; margin-left: 10px">
+          <v-btn
+            small
+            icon
+            v-on="on"
+            style="margin-right: 5px; margin-left: 10px"
+          >
             <v-icon>mdi-account-circle</v-icon>
           </v-btn>
         </template>
         <v-list>
-          <v-list-item v-for="subItem in shiftMenu" :key="subItem.title" @click="logout(subItem)">
+          <v-list-item
+            v-for="subItem in shiftMenu"
+            :key="subItem.title"
+            @click="logout(subItem)"
+          >
             <v-list-item-icon style="margin-right: 15px">
               <v-icon v-text="subItem.icon"></v-icon>
             </v-list-item-icon>
@@ -181,7 +234,13 @@
     </v-app-bar>
 
     <v-content style="background: #f5f5f5">
-      <v-alert :value="alert" color="primary" dark icon="mdi-info" transition="fab-transition">
+      <v-alert
+        :value="alert"
+        color="primary"
+        dark
+        icon="mdi-info"
+        transition="fab-transition"
+      >
         <v-card class="mx-auto transparent" outlined>
           <v-card-title class="topCard mb-3">
             <v-icon class="mr-3">mdi-information-outline</v-icon>Smart EDUcation
@@ -189,8 +248,13 @@
 
           <v-card-subtitle class="pb-0 mb-5">
             <div>
-              Smart EDUcation adalah Sistem Digitalisasi / Teknologi Pendidikan Berbasis Aplikasi Pembelajaran yang didalamnya terdiri 6 Aplikasi yaitu E-Absensi, E-Learning Process Assesment, E-Learning Outcomes Assesment, Midterm Exam, E-Final Exams, dan E-Raport. Aplikasi Smart Education dikemas dalam satu kesatuan sistem yang dapat diinstal
-              dilaptop setiap guru. Smart Education dibangun berdasarkan kebutuhan pendidikan diera Revolusi 4.0.
+              Smart EDUcation adalah Sistem Digitalisasi / Teknologi Pendidikan
+              Berbasis Aplikasi Pembelajaran yang didalamnya terdiri 6 Aplikasi
+              yaitu E-Absensi, E-Learning Process Assesment, E-Learning Outcomes
+              Assesment, Midterm Exam, E-Final Exams, dan E-Raport. Aplikasi
+              Smart Education dikemas dalam satu kesatuan sistem yang dapat
+              diinstal dilaptop setiap guru. Smart Education dibangun
+              berdasarkan kebutuhan pendidikan diera Revolusi 4.0.
             </div>
           </v-card-subtitle>
         </v-card>
@@ -208,6 +272,8 @@
 export default {
   data: () => ({
     alert: false,
+    navbarMenuSelected: "", //selected item
+    warningDialog: false,
     avatar: "https://avatars.dicebear.com/api/male/john.svg?mood[]=happy",
     personalData: {
       id: "",
@@ -312,6 +378,12 @@ export default {
           },
         ],
       },
+      logout: {
+        icon: "mdi-logout",
+        // toolbarTitle: "Loading",
+        menuTitle: "Logout",
+        name: "Login",
+      },
       warehouse: {
         action: "mdi-warehouse",
         title: "Warehouse ",
@@ -386,7 +458,7 @@ export default {
     shiftMenu: [
       { title: "Setting", icon: "mdi-settings" },
       // { title: 'Action #2', icon: 'mdi-package-variant-closed' },
-      { title: "Logout", icon: "mdi-logout", routerName: "login" }
+      { title: "Logout", icon: "mdi-logout", routerName: "login" },
     ],
     notifications: [
       {
