@@ -62,11 +62,13 @@
 </template>
 
 <script>
+// import axios from 'axios'
 export default {
   data() {
     return {
       search: "",
       dialog: false,
+      kelasData: [],
       headers: [
         {
           text: "Dessert (100g serving)",
@@ -164,6 +166,28 @@ export default {
       ],
     };
   },
+  methods : {
+    fetchKelas() {
+      // const params = {
+      //   page:1,
+      //   per_page: 5,
+      // };
+
+      this.$http
+        .get("/kelas-tingkatan")
+        .then((r) => {
+          this.kelasData = r.data || [];
+          this.page = r.data.pages;
+          console.log(this.kelasData);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  },
+  created() {
+    this.fetchKelas();
+  }
 };
 </script>
 

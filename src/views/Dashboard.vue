@@ -4,9 +4,9 @@
       <v-col cols="12" sm="3" v-for="(item, i) in dashboardItems" :key="i">
         <v-card :color="item.color" dark class="hoverCard">
           <div class="d-flex flex-no-wrap left-space-between">
-            <v-avatar class="ma-3" size="125" tile>
+            <v-avatar class="ma-3" size="90" tile>
               <!-- <v-img :src="item.src"></v-img> -->
-              <v-icon size="125">{{item.src}}</v-icon>
+              <v-icon size="90">{{item.src}}</v-icon>
             </v-avatar>
 
             <div>
@@ -174,25 +174,25 @@ export default {
     alert: false,
     dashboardItems: [
       {
-        color: "#393e46",
+        color: "#2ec1ac",
         src: "mdi-account-tie",
         title: "Siswa",
         total: "7",
       },
       {
-        color: "#393e46",
+        color: "#3e978b",
         src: "mdi-notebook",
         title: "Mapel",
         total: "15",
       },
       {
-        color: "#393e46",
+        color: "#d2e603",
         src: "mdi-teach",
         title: "Guru",
         total: "15",
       },
       {
-        color: "#393e46",
+        color: "#fbdcc4",
         src: "mdi-home-floor-a",
         title: "Kelas",
         total: "15",

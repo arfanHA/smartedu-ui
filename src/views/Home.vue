@@ -383,11 +383,11 @@ export default {
         ],
       },
     },
-    // shiftMenu: [
-    //   { title: "Setting", icon: "mdi-settings" },
-    //   // { title: 'Action #2', icon: 'mdi-package-variant-closed' },
-    //   { title: "Logout", icon: "mdi-logout", routerName: "login" }
-    // ],
+    shiftMenu: [
+      { title: "Setting", icon: "mdi-settings" },
+      // { title: 'Action #2', icon: 'mdi-package-variant-closed' },
+      { title: "Logout", icon: "mdi-logout", routerName: "login" }
+    ],
     notifications: [
       {
         title: "Promotion",
@@ -463,7 +463,7 @@ export default {
     },
   },
   created() {
-    this.claimSavedToken();
+    // this.claimSavedToken();
   },
 };
 </script>
