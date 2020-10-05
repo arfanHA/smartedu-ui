@@ -2,7 +2,7 @@ import axios from 'axios'
 
 let _http = axios.create({
     baseURL: 'http://127.0.0.1:8000/api/',
-    timeout: 15000,
+    // timeout: 15000,
     // headers: { 'X-Custom-Header': 'foobar' }
 });
 

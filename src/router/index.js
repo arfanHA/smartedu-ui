@@ -52,6 +52,21 @@ const routes = [
         path: '/data/kelas',
         name: 'dataKelas',
         component: DataKelas,
+        meta: {
+          title: 'Data Kelas',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              name: 'dashboard',
+            },
+            {
+              text: 'Data Kelas',
+              disabled: true,
+              name: 'dataKelas',
+            }
+          ]
+        }
       },
       {
         path: '/pengaturan/mapel/kelas',

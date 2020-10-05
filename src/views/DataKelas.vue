@@ -13,40 +13,60 @@
         </v-btn>
       </v-col>
     </v-row>
-
     <v-dialog
       v-model="dialog"
+      persistent
       fullscreen
-      hide-overlay
       transition="dialog-bottom-transition"
     >
       <v-card>
         <v-toolbar dark color="primary">
-          <v-btn icon dark @click="dialog = false">
+          <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>Tambah Kelas</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="dialog = false">Simpan</v-btn>
+            <v-btn dark text v-if="!updateProcess" @click="save" :disabled="!valid">Simpan</v-btn>
+            <v-btn dark text v-if="updateProcess" @click="processEdit">UPDATE</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-card class="dialogField mt-5 pb-5">
           <v-container>
-            <v-row>
-              <v-col cols="12" sm="12">
-                <v-text-field
-                  label="Pilih Tingkatan Kelas"
-                  filled
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12">
-                <v-text-field label="Nama Kelas" filled></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12">
-                <v-text-field label="Wali Kelas" filled></v-text-field>
-              </v-col>
-            </v-row>
+            <v-form ref="form" v-model="valid" lazy-validation>
+              <v-row>
+                <v-col cols="12" sm="12">
+                  <v-select
+                    :items="tingkatKelasData"
+                    item-value="id"
+                    item-text="tingkatan"
+                    filled
+                    :rules="formRules"
+                    label="Tingkatan Kelas"
+                    required
+                    v-model="editedItem.tingkatanKelas"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" sm="12">
+                  <v-text-field
+                    label="Nama Kelas"
+                    filled
+                    :rules="formRules"
+                    v-model="editedItem.nama"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="12">
+                  <v-text-field
+                    label="Keterangan"
+                    filled
+                    :rules="formRules"
+                    v-model="editedItem.keterangan"
+                    required
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-form>
           </v-container>
         </v-card>
       </v-card>
@@ -77,6 +97,32 @@
             <tr v-for="(item, index) in items" :key="item.id">
               <td>{{ index + skip.offset }}</td>
               <td class="text-xs-right">{{ item.nama }}</td>
+              <td class="text-xs-right">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      medium
+                      class="ml-1 mr-1"
+                      v-on="on"
+                      @click="editItem(item)"
+                      >mdi-pencil</v-icon
+                    >
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      medium
+                      class="ml-1"
+                      v-on="on"
+                      @click="deleteItem(item)"
+                      >mdi-delete</v-icon
+                    >
+                  </template>
+                  <span>Delete</span>
+                </v-tooltip>
+              </td>
             </tr>
           </tbody>
         </template>
@@ -89,23 +135,77 @@
         :total-visible="7"
         @input="selectPage($event)"
       ></v-pagination>
+       <v-dialog v-model="warnDialog" max-width="290">
+      <v-card>
+        <!-- <v-alert
+              :value="alertErrorDelete"
+              type="error"
+              rounded="false"
+              transition="scroll-y-transition"
+            >Error delete promotion. Courier has been used in transactions</v-alert> -->
+        <v-card-title class="headline">Hapus Data?</v-card-title>
+
+        <v-card-text>
+          Aksi ini akan menghapus data secara permanen.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="onCancelDelete">
+            Cancel
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="processingDelete(editedItem)"
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     </v-card>
+    <MySnackbar
+      :show="snackbar.show"
+      :text="snackbar.text"
+      :color="snackbar.color"
+    ></MySnackbar>
   </v-container>
 </template>
 
 <script>
+import MySnackbar from "../components/MySnackbar";
 export default {
+  components: {
+    MySnackbar,
+  },
   data() {
     return {
+      valid: true,
       search: "",
+      updateProcess: false,
       dialog: false,
+      warnDialog: false,
+      formRules: [(v) => !!v || "Tidak boleh kosong"],
       loading: true,
       pageSelected: 1,
       kelasData: [],
+      tingkatKelasData: [],
+      snackbar: {
+        show: false,
+        status: null,
+        text: "",
+        color: "",
+      },
       totalPage: null,
       skip: {
         limit: 10,
         offset: 1,
+      },
+      editedItem: {
+        tingkatanKelas: null,
+        nama: "",
+        keterangan: "",
       },
       headers: [
         {
@@ -116,6 +216,7 @@ export default {
           value: "name",
         },
         { text: "Kelas", value: "nama" },
+        { text: "", width: "10%", value: "nama" },
       ],
     };
   },
@@ -139,12 +240,136 @@ export default {
           this.loading = false;
         });
     },
+    fetchTingkatanKelas() {
+      this.$http
+        .get("/option/kelas-tingkatan")
+        .then((r) => {
+          this.tingkatKelasData = r.data.data || [];
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     selectPage($event) {
       this.fetchKelas($event);
+    },
+    save() {
+      this.$refs.form.validate();
+      if (this.$refs.form.validate() === true) {
+        let fd = new FormData();
+        fd.append("master_kelas_tingkatan_id", this.editedItem.tingkatanKelas);
+        fd.append("nama", this.editedItem.nama);
+        fd.append("keterangan", this.editedItem.keterangan);
+
+        this.$http
+          .post("/kelas", fd)
+          .then((r) => {
+            this.snackbar = {
+              show: true,
+              status: r.data.status,
+              text: r.data.msg,
+              color: "success",
+            };
+            this.dialog = false;
+            this.fetchKelas(1);
+            this.reset();
+          })
+          .catch((err) => {
+            this.snackbar = {
+              show: true,
+              status: err.data.status,
+              text: err.data.msg,
+              color: "danger",
+            };
+            this.dialog = false;
+            this.fetchKelas(1);
+            this.reset();
+          });
+      }
+    },
+    editItem(item) {
+      console.log(item);
+       this.editedItem = Object.assign({}, item);
+       console.log(this.editedItem);
+       this.dialog = true;
+       this.updateProcess = true;
+    },
+    processEdit() {
+      this.$http
+        .put(`/kelas/${this.editedItem.id}`, {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+          })
+        .then((r) => {
+          this.snackbar = {
+            show: true,
+            status: r.data.status,
+            text: r.data.msg,
+            color: "success",
+          };
+          this.dialog = false;
+          this.fetchKelas(1);
+          this.reset();
+        })
+        .catch((err) => {
+          this.snackbar = {
+            show: true,
+            status: err.data.status,
+            text: err.data.msg,
+            color: "danger",
+          };
+          this.dialog = false;
+          this.fetchKelas(1);
+          this.reset();
+        });
+      this.updateProcess = false;
+    },
+    onCancelDelete() {
+      this.warnDialog = false;
+    },
+    deleteItem(item) {
+      this.editedItem = Object.assign({}, item);
+      console.log(this.editedItem);
+      this.warnDialog = true;
+    },
+    processingDelete(item) {
+      this.$http
+        .delete(`/kelas/${item.id}`)
+        .then((r) => {
+          this.snackbar = {
+            show: true,
+            status: r.data.status,
+            text: r.data.msg,
+            color: "success",
+          };
+          this.dialog = false;
+          this.fetchKelas(1);
+          this.reset();
+        })
+        .catch((err) => {
+          this.snackbar = {
+            show: true,
+            status: err.data.status,
+            text: err.data.msg,
+            color: "danger",
+          };
+          this.dialog = false;
+          this.fetchKelas(1);
+          this.reset();
+        });
+    },
+    close() {
+      this.reset();
+      this.dialog = false;
+    },
+    reset() {
+      this.$refs.form.reset();
     },
   },
   created() {
     this.fetchKelas(1);
+    this.fetchTingkatanKelas();
   },
 };
 </script>

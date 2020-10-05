@@ -259,7 +259,7 @@
           </v-card-subtitle>
         </v-card>
       </v-alert>
-
+      <MyBreadcrumbs @bread-click="breadRouter($event)" :items="breadcrumb" />
       <router-view refs="router-home"></router-view>
     </v-content>
     <!-- <v-footer color="primary" app>
@@ -269,7 +269,9 @@
 </template>
 
 <script>
+import MyBreadcrumbs from "../components/MyBreadCrumbs";
 export default {
+  components: { MyBreadcrumbs },
   data: () => ({
     alert: false,
     navbarMenuSelected: "", //selected item
@@ -490,6 +492,9 @@ export default {
       this.menuSelected = v.routerName;
       this.toolbarTitle = v.title;
     },
+    breadRouter(i) {
+      this.$router.replace({ name: i.name});
+    },
     logout() {
       this.$http
         .put("/api/v1/user/logout")
@@ -536,6 +541,11 @@ export default {
   },
   created() {
     // this.claimSavedToken();
+  },
+  computed: {
+    breadcrumb: function () {
+      return this.$route.meta.breadcrumbs;
+    },
   },
 };
 </script>

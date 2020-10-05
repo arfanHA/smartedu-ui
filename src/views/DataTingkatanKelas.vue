@@ -118,26 +118,28 @@ export default {
     };
   },
   methods: {
-    fetchTingkatanKelas() {
-      // const params = {
-      //   page:1,
-      //   per_page: 5,
-      // };
-      this.skip.offset = 1;
+    fetchTingkatanKelas(myOffset) {
+       this.loading = true;
+      const params = {
+        per_page: this.skip.limit,
+        page: myOffset,
+      };
+      this.skip.offset = params.page;
       this.$http
-        .get("/kelas-tingkatan")
+        .get("/kelas-tingkatan", { params: params })
         .then((r) => {
-          this.tingkatKelasData = r.data || [];
-          // this.page = r.data.pages;
-          console.log(this.tingkatKelasData);
+          this.tingkatKelasData = r.data.data.data || [];
+          this.totalPage = r.data.data.last_page;
+          this.loading = false;
         })
         .catch((err) => {
           console.log(err);
+          this.loading = false;
         });
     },
   },
   created() {
-    this.fetchTingkatanKelas();
+    this.fetchTingkatanKelas(1);
   },
 };
 </script>
