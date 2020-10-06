@@ -359,6 +359,12 @@ export default {
             icon: "mdi-widgets",
             routerName: "dataKelas",
           },
+          {
+            title: "Data Jabatan",
+            menuTitle: "Data Jabatan",
+            icon: "mdi-widgets",
+            routerName: "dataJabatan",
+          },
         ],
       },
       pengaturanKelas: {
@@ -493,7 +499,7 @@ export default {
       this.toolbarTitle = v.title;
     },
     breadRouter(i) {
-      this.$router.replace({ name: i.name});
+      this.$router.replace({ name: i.name });
     },
     logout() {
       this.$http

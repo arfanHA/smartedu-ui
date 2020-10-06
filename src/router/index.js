@@ -7,6 +7,7 @@ import DataUser from '../views/DataUser.vue'
 import DataGuru from '../views/DataGuru.vue'
 import DataTingkatanKelas from '../views/DataTingkatanKelas.vue'
 import DataKelas from '../views/DataKelas.vue'
+import DataJabatan from '../views/DataJabatan.vue'
 import DataMapel from '../views/DataMapel.vue'
 import PengaturanMapelKelas from '../views/PengaturanMapelKelas.vue'
 import PengaturanTugasMengajarKelas from '../views/PengaturanTugasMengajarKelas.vue'
@@ -47,6 +48,21 @@ const routes = [
         path: '/data/tingkatan-kelas',
         name: 'dataTingkatanKelas',
         component: DataTingkatanKelas,
+        meta: {
+          title: 'Data Tingkatan Kelas',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              name: 'dashboard',
+            },
+            {
+              text: 'Data Tingkatan Kelas',
+              disabled: true,
+              name: 'dataTingkatanKelas',
+            }
+          ]
+        }
       },
       {
         path: '/data/kelas',
@@ -64,6 +80,26 @@ const routes = [
               text: 'Data Kelas',
               disabled: true,
               name: 'dataKelas',
+            }
+          ]
+        }
+      },
+      {
+        path: '/data/jabatan',
+        name: 'dataJabatan',
+        component: DataJabatan,
+        meta: {
+          title: 'Data Kelas',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              name: 'dashboard',
+            },
+            {
+              text: 'Data Jabatan',
+              disabled: true,
+              name: 'datajabatan',
             }
           ]
         }

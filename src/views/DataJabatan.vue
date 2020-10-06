@@ -24,14 +24,16 @@
           class="mb-5 mt-2"
           @click="dialog = !dialog"
         >
-          <v-icon left>mdi-plus-circle</v-icon>Tambah Kelas
+          <v-icon left>mdi-plus-circle</v-icon>Tambah Data Jabatan
         </v-btn>
       </v-col>
     </v-row>
+
     <v-dialog
       v-model="dialog"
-      persistent
       fullscreen
+      persistent
+      hide-overlay
       transition="dialog-bottom-transition"
     >
       <v-card>
@@ -39,14 +41,14 @@
           <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Tambah Kelas</v-toolbar-title>
+          <v-toolbar-title>Tambah Data Jabatan</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
               dark
               text
-              v-if="!updateProcess"
               @click="save"
+              v-if="!updateProcess"
               :disabled="!valid"
               >Simpan</v-btn
             >
@@ -65,20 +67,8 @@
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-row>
                 <v-col cols="12" sm="12">
-                  <v-select
-                    v-model="editedItem.master_kelas_tingkatan_id"
-                    :items="tingkatKelasData"
-                    item-text="tingkatan"
-                    return-object
-                    filled
-                    :rules="formRules"
-                    label="Tingkatan Kelas"
-                    required
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" sm="12">
                   <v-text-field
-                    label="Nama Kelas"
+                    label="Nama Jabatan"
                     filled
                     :rules="formRules"
                     v-model="editedItem.nama"
@@ -86,13 +76,13 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="12">
-                  <v-text-field
+                  <v-textarea
                     label="Keterangan"
                     filled
                     :rules="formRules"
                     v-model="editedItem.keterangan"
                     required
-                  ></v-text-field>
+                  ></v-textarea>
                 </v-col>
               </v-row>
             </v-form>
@@ -103,7 +93,7 @@
 
     <v-card>
       <v-card-title>
-        Data Kelas
+        Data Jabatan
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -115,7 +105,7 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="kelasData"
+        :items="jabtanData"
         :search="search"
         :loading="loading"
         class="elevation-1"
@@ -126,6 +116,7 @@
             <tr v-for="(item, index) in items" :key="item.id">
               <td>{{ index + skip.offset }}</td>
               <td class="text-xs-right">{{ item.nama }}</td>
+              <td class="text-xs-right">{{ item.keterangan }}</td>
               <td class="text-xs-right">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
@@ -166,12 +157,6 @@
       ></v-pagination>
       <v-dialog v-model="warnDialog" max-width="290">
         <v-card>
-          <!-- <v-alert
-              :value="alertErrorDelete"
-              type="error"
-              rounded="false"
-              transition="scroll-y-transition"
-            >Error delete promotion. Courier has been used in transactions</v-alert> -->
           <v-card-title class="headline">Hapus Data?</v-card-title>
 
           <v-card-text>
@@ -194,49 +179,37 @@
         </v-card>
       </v-dialog>
     </v-card>
-    <!-- <MySnackbar
-      :show="snackbar.show"
-      :text="snackbar.text"
-      :color="snackbar.color"
-    ></MySnackbar> -->
   </v-container>
 </template>
 
 <script>
-// import MySnackbar from "../components/MySnackbar";
 export default {
-  // components: {
-  //   MySnackbar,
-  // },
   data() {
     return {
-      valid: true,
       search: "",
-      updateProcess: false,
+      formRules: [(v) => !!v || "Tidak boleh kosong"],
+      valid: true,
       dialog: false,
       warnDialog: false,
-      formRules: [(v) => !!v || "Tidak boleh kosong"],
+      updateProcess: false,
       loading: true,
-      pageSelected: 1,
-      kelasData: [],
-      tingkatKelasData: [],
+      totalPage: null,
+      jabtanData: [],
+      editedItem: {
+        nama: "",
+        keterangan: "",
+      },
       snackbar: {
         show: false,
         status: null,
         text: "",
         color: "",
       },
-      totalPage: null,
       skip: {
         limit: 10,
         offset: 1,
       },
-      editedItem: {
-        master_kelas_tingkatan_id: null,
-        nama: null,
-        keterangan: null,
-      },
-      updateItem: {},
+      pageSelected: 1,
       headers: [
         {
           text: "No",
@@ -245,13 +218,13 @@ export default {
           sortable: false,
           value: "name",
         },
-        { text: "Kelas", value: "nama" },
-        { text: "", width: "10%", value: "nama" },
+        { text: "Nama Mata Pelajaran", value: "nama" },
+        { text: "Keterangan", value: "keterangan" },
       ],
     };
   },
   methods: {
-    fetchKelas(myOffset) {
+    fetchJabatan(myOffset) {
       this.loading = true;
       const params = {
         per_page: this.skip.limit,
@@ -259,9 +232,9 @@ export default {
       };
       this.skip.offset = params.page;
       this.$http
-        .get("/kelas", { params: params })
+        .get("/jabatan", { params: params })
         .then((r) => {
-          this.kelasData = r.data.data.data || [];
+          this.jabtanData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
           this.loading = false;
         })
@@ -270,31 +243,14 @@ export default {
           this.loading = false;
         });
     },
-    fetchTingkatanKelas() {
-      this.$http
-        .get("/option/kelas-tingkatan")
-        .then((r) => {
-          this.tingkatKelasData = r.data.data || [];
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
     selectPage($event) {
-      this.fetchKelas($event);
+      this.fetchJabatan($event);
     },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
-        let params = {
-          master_kelas_tingkatan_id: this.editedItem.master_kelas_tingkatan_id
-            .id,
-          nama: this.editedItem.nama,
-          keterangan: this.editedItem.keterangan,
-        };
-
         this.$http
-          .post("/kelas", params)
+          .post("/jabatan", this.editedItem)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -303,7 +259,7 @@ export default {
               color: "success",
             };
             this.dialog = false;
-            this.fetchKelas(1);
+            this.fetchJabatan(1);
             this.reset();
           })
           .catch((err) => {
@@ -314,7 +270,7 @@ export default {
               color: "red",
             };
             this.dialog = false;
-            this.fetchKelas(1);
+            this.fetchJabatan(1);
             this.reset();
           });
       }
@@ -328,13 +284,12 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         let params = {
-          master_kelas_tingkatan_id: this.editedItem.master_kelas_tingkatan_id
-            .id,
+          kode: this.editedItem.kode,
           nama: this.editedItem.nama,
           keterangan: this.editedItem.keterangan,
         };
         this.$http
-          .put(`/kelas/${this.editedItem.id}`, params)
+          .put(`/jabatan/${this.editedItem.id}`, params)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -342,19 +297,19 @@ export default {
               text: r.data.msg,
               color: "success",
             };
-            this.dialog = false;
-            this.fetchKelas(1);
+            this.fetchJabatan(1);
             this.reset();
+            this.dialog = false;
           })
           .catch((err) => {
             this.snackbar = {
               show: true,
               status: err.data.status,
               text: err.data.msg,
-              color: "danger",
+              color: "red",
             };
             this.dialog = false;
-            this.fetchKelas(1);
+            this.fetchJabatan(1);
             this.reset();
           });
         this.updateProcess = false;
@@ -369,7 +324,7 @@ export default {
     },
     processingDelete(item) {
       this.$http
-        .delete(`/kelas/${item.id}`)
+        .delete(`/jabatan/${item.id}`)
         .then((r) => {
           this.snackbar = {
             show: true,
@@ -379,7 +334,7 @@ export default {
           };
           this.dialog = false;
           this.warnDialog = false;
-          this.fetchKelas(1);
+          this.fetchJabatan(1);
           this.reset();
         })
         .catch((err) => {
@@ -387,10 +342,10 @@ export default {
             show: true,
             status: err.data.status,
             text: err.data.msg,
-            color: "danger",
+            color: "red",
           };
           this.dialog = false;
-          this.fetchKelas(1);
+          this.fetchJabatan(1);
           this.reset();
         });
     },
@@ -403,8 +358,7 @@ export default {
     },
   },
   created() {
-    this.fetchKelas(1);
-    this.fetchTingkatanKelas();
+    this.fetchJabatan(1);
   },
 };
 </script>

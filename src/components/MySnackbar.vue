@@ -1,14 +1,19 @@
 <template>
   <div>
     <v-snackbar
-      class="pb-5"
+      v-model="show"
       :timeout="2000"
-      :value="show"
+      centered
       absolute
-      center
-      :color="color"
       top
-    >{{text}}
+      :color="color"
+    >
+      {{ text }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" icon v-bind="attrs" @click="show = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
     </v-snackbar>
   </div>
 </template>

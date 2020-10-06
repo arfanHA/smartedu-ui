@@ -1,5 +1,20 @@
 <template>
   <v-container fluid>
+    <v-snackbar
+      v-model="snackbar.show"
+      :timeout="2000"
+      centered
+      absolute
+      top
+      :color="snackbar.color"
+    >
+      {{ snackbar.text }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" icon v-bind="attrs" @click="snackbar.show = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-row>
       <v-col class="text-right">
         <v-btn
@@ -29,7 +44,22 @@
           <v-toolbar-title>Tambah Mata Pelajaran</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="save" :disabled="!valid">Simpan</v-btn>
+            <v-btn
+              dark
+              text
+              @click="save"
+              v-if="!updateProcess"
+              :disabled="!valid"
+              >Simpan</v-btn
+            >
+            <v-btn
+              dark
+              text
+              v-if="updateProcess"
+              @click="processEdit"
+              :disabled="!valid"
+              >UPDATE</v-btn
+            >
           </v-toolbar-items>
         </v-toolbar>
         <v-card class="dialogField mt-5 pb-5">
@@ -103,7 +133,32 @@
               <td class="text-xs-right">{{ item.kode }}</td>
               <td class="text-xs-right">{{ item.nama }}</td>
               <td class="text-xs-right">{{ item.keterangan }}</td>
-              <td class="text-xs-right"></td>
+              <td class="text-xs-right">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      medium
+                      class="ml-1 mr-1"
+                      v-on="on"
+                      @click="editItem(item)"
+                      >mdi-pencil</v-icon
+                    >
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      medium
+                      class="ml-1"
+                      v-on="on"
+                      @click="deleteItem(item)"
+                      >mdi-delete</v-icon
+                    >
+                  </template>
+                  <span>Delete</span>
+                </v-tooltip>
+              </td>
             </tr>
           </tbody>
         </template>
@@ -116,32 +171,54 @@
         :total-visible="7"
         @input="selectPage($event)"
       ></v-pagination>
+      <v-dialog v-model="warnDialog" max-width="290">
+        <v-card>
+          <!-- <v-alert
+              :value="alertErrorDelete"
+              type="error"
+              rounded="false"
+              transition="scroll-y-transition"
+            >Error delete promotion. Courier has been used in transactions</v-alert> -->
+          <v-card-title class="headline">Hapus Data?</v-card-title>
+
+          <v-card-text>
+            Aksi ini akan menghapus data secara permanen.
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="onCancelDelete">
+              Cancel
+            </v-btn>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="processingDelete(editedItem)"
+            >
+              Delete
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
-    <MySnackbar
-      :show="snackbar.show"
-      :text="snackbar.text"
-      :color="snackbar.color"
-    ></MySnackbar>
   </v-container>
 </template>
 
 <script>
-import MySnackbar from "../components/MySnackbar";
 export default {
-  components: {
-    MySnackbar,
-  },
   data() {
     return {
       search: "",
       formRules: [(v) => !!v || "Tidak boleh kosong"],
       valid: true,
       dialog: false,
+      warnDialog: false,
+      updateProcess: false,
       loading: true,
       totalPage: null,
       mapelData: [],
       editedItem: {
-        kode: "",
+        Kode: "",
         nama: "",
         keterangan: "",
       },
@@ -197,11 +274,8 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         this.$http
-          .post("http://127.0.0.1:8000/api/mata-pelajaran", this.editedItem, {
-            headers: {
-              // remove headers
-            },
-          }).then((r) => {
+          .post("/mata-pelajaran", this.editedItem)
+          .then((r) => {
             this.snackbar = {
               show: true,
               status: r.data.status,
@@ -217,13 +291,87 @@ export default {
               show: true,
               status: err.data.status,
               text: err.data.msg,
-              color: "danger",
+              color: "red",
             };
             this.dialog = false;
             this.fetchMapel(1);
             this.reset();
           });
       }
+    },
+    editItem(item) {
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+      this.updateProcess = true;
+    },
+    processEdit() {
+      this.$refs.form.validate();
+      if (this.$refs.form.validate() === true) {
+        let params = {
+          kode: this.editedItem.kode,
+          nama: this.editedItem.nama,
+          keterangan: this.editedItem.keterangan,
+        };
+        this.$http
+          .put(`/mata-pelajaran/${this.editedItem.id}`, params)
+          .then((r) => {
+            this.snackbar = {
+              show: true,
+              status: r.data.status,
+              text: r.data.msg,
+              color: "success",
+            };
+            this.fetchMapel(1);
+            this.reset();
+            this.dialog = false;
+          })
+          .catch((err) => {
+            this.snackbar = {
+              show: true,
+              status: err.data.status,
+              text: err.data.msg,
+              color: "red",
+            };
+            this.dialog = false;
+            this.fetchMapel(1);
+            this.reset();
+          });
+        this.updateProcess = false;
+      }
+    },
+    onCancelDelete() {
+      this.warnDialog = false;
+    },
+    deleteItem(item) {
+      this.editedItem = Object.assign({}, item);
+      this.warnDialog = true;
+    },
+    processingDelete(item) {
+      this.$http
+        .delete(`/mata-pelajaran/${item.id}`)
+        .then((r) => {
+          this.snackbar = {
+            show: true,
+            status: r.data.status,
+            text: r.data.msg,
+            color: "success",
+          };
+          this.dialog = false;
+          this.warnDialog = false;
+          this.fetchMapel(1);
+          this.reset();
+        })
+        .catch((err) => {
+          this.snackbar = {
+            show: true,
+            status: err.data.status,
+            text: err.data.msg,
+            color: "red",
+          };
+          this.dialog = false;
+          this.fetchMapel(1);
+          this.reset();
+        });
     },
     close() {
       this.reset();
