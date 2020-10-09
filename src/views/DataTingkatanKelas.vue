@@ -219,7 +219,7 @@ export default {
       };
       this.skip.offset = params.page;
       this.$http
-        .get("/kelas-tingkatan", { params: params })
+        .get("/api/kelas-tingkatan", { params: params })
         .then((r) => {
           this.tingkatKelasData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
@@ -234,7 +234,7 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         this.$http
-          .post("/kelas-tingkatan", this.editedItem)
+          .post("/api/kelas-tingkatan", this.editedItem)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -271,7 +271,7 @@ export default {
           tingkatan: this.editedItem.tingkatan,
         };
         this.$http
-          .put(`/kelas-tingkatan/${this.editedItem.id}`, params)
+          .put(`/api/kelas-tingkatan/${this.editedItem.id}`, params)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -306,7 +306,7 @@ export default {
     },
     processingDelete(item) {
       this.$http
-        .delete(`/kelas-tingkatan/${item.id}`)
+        .delete(`/api/kelas-tingkatan/${item.id}`)
         .then((r) => {
           this.snackbar = {
             show: true,

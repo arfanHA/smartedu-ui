@@ -232,7 +232,7 @@ export default {
       };
       this.skip.offset = params.page;
       this.$http
-        .get("/jabatan", { params: params })
+        .get("/api/jabatan", { params: params })
         .then((r) => {
           this.jabtanData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
@@ -250,7 +250,7 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         this.$http
-          .post("/jabatan", this.editedItem)
+          .post("/api/jabatan", this.editedItem)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -289,7 +289,7 @@ export default {
           keterangan: this.editedItem.keterangan,
         };
         this.$http
-          .put(`/jabatan/${this.editedItem.id}`, params)
+          .put(`/api/jabatan/${this.editedItem.id}`, params)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -324,7 +324,7 @@ export default {
     },
     processingDelete(item) {
       this.$http
-        .delete(`/jabatan/${item.id}`)
+        .delete(`/api/jabatan/${item.id}`)
         .then((r) => {
           this.snackbar = {
             show: true,

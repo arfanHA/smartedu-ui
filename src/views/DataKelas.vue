@@ -259,7 +259,7 @@ export default {
       };
       this.skip.offset = params.page;
       this.$http
-        .get("/kelas", { params: params })
+        .get("/api/kelas", { params: params })
         .then((r) => {
           this.kelasData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
@@ -272,7 +272,7 @@ export default {
     },
     fetchTingkatanKelas() {
       this.$http
-        .get("/option/kelas-tingkatan")
+        .get("/api/option/kelas-tingkatan")
         .then((r) => {
           this.tingkatKelasData = r.data.data || [];
         })
@@ -294,7 +294,7 @@ export default {
         };
 
         this.$http
-          .post("/kelas", params)
+          .post("/api/kelas", params)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -369,7 +369,7 @@ export default {
     },
     processingDelete(item) {
       this.$http
-        .delete(`/kelas/${item.id}`)
+        .delete(`/api/kelas/${item.id}`)
         .then((r) => {
           this.snackbar = {
             show: true,

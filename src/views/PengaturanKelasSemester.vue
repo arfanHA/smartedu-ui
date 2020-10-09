@@ -24,7 +24,7 @@
           class="mb-5 mt-2"
           @click="dialog = !dialog"
         >
-          <v-icon left>mdi-plus-circle</v-icon>Tambah Mapel
+          <v-icon left>mdi-plus-circle</v-icon>Tambah Kelas Semester
         </v-btn>
       </v-col>
     </v-row>
@@ -41,7 +41,7 @@
           <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Tambah Mata Pelajaran</v-toolbar-title>
+          <v-toolbar-title>Tambah Kelas Semester</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
@@ -67,29 +67,41 @@
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-row>
                 <v-col cols="12" sm="12">
-                  <v-text-field
-                    label="Kode Mata Pelajaran"
+                   <v-select
+                    v-model="editedItem.master_tahun_ajar_id"
+                    item-value="id"
+                    :items="tahunAjarData"
+                    item-text="sebutan"
                     filled
                     :rules="formRules"
-                    v-model="editedItem.kode"
+                    label="Tahun Ajar"
                     required
-                  ></v-text-field>
+                  ></v-select>
                 </v-col>
                 <v-col cols="12" sm="12">
-                  <v-text-field
-                    label="Nama Mata Pelajaran"
+                   <v-select
+                    v-model="editedItem.master_kelas_id"
+                    item-value="id"
+                    :items="kelasData"
+                    item-text="nama"
                     filled
                     :rules="formRules"
-                    v-model="editedItem.nama"
+                    label="Kelas"
                     required
-                  ></v-text-field>
+                  ></v-select>
                 </v-col>
-                <!-- <v-col cols="12" sm="12">
-                <v-text-field label="KKM" filled></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12">
-                <v-text-field label="Kategori" filled></v-text-field>
-              </v-col> -->
+                <v-col cols="12" sm="12">
+                   <v-select
+                    v-model="editedItem.master_pegawai_id"
+                    item-value="id"
+                    :items="pegawaiData"
+                    item-text="nama"
+                    filled
+                    :rules="formRules"
+                    label="Pegawai"
+                    required
+                  ></v-select>
+                </v-col>
                 <v-col cols="12" sm="12">
                   <v-textarea
                     label="Keterangan"
@@ -108,7 +120,7 @@
 
     <v-card>
       <v-card-title>
-        Data Mata Pelajaran
+        Data Kelas Semester
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -120,7 +132,7 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="mapelData"
+        :items="kelasSemesterData"
         :search="search"
         :loading="loading"
         class="elevation-1"
@@ -130,8 +142,9 @@
           <tbody>
             <tr v-for="(item, index) in items" :key="item.id">
               <td>{{ index + skip.offset }}</td>
-              <td class="text-xs-right">{{ item.kode }}</td>
-              <td class="text-xs-right">{{ item.nama }}</td>
+              <td class="text-xs-right">{{ item.master_tahun_ajar_id.sebutan }}</td>
+              <td class="text-xs-right">{{ item.master_kelas_id.nama }}</td>
+              <td class="text-xs-right">{{ item.master_pegawai_id.nama }}</td>
               <td class="text-xs-right">{{ item.keterangan }}</td>
               <td class="text-xs-right">
                 <v-tooltip bottom>
@@ -210,11 +223,15 @@ export default {
       updateProcess: false,
       loading: true,
       totalPage: null,
-      mapelData: [],
+      kelasSemesterData: [],
+      pegawaiData: [],
+      kelasData: [],
+      tahunAjarData: [],
       editedItem: {
-        Kode: "",
-        nama: "",
-        keterangan: "",
+        master_tahun_ajar_id: null,
+        master_kelas_id: null,
+        master_pegawai_id: null,
+        keterangan: null,
       },
       snackbar: {
         show: false,
@@ -235,14 +252,16 @@ export default {
           sortable: false,
           value: "name",
         },
-        { text: "Kode", value: "kode" },
-        { text: "Nama Mata Pelajaran", value: "nama" },
+        { text: "Tahun Ajar", value: "kode" },
+        { text: "Kelas", value: "nama" },
+        { text: "Nama Pegawai", value: "keterangan" },
         { text: "Keterangan", value: "keterangan" },
+        { text: "Action", value: "keterangan" },
       ],
     };
   },
   methods: {
-    fetchMapel(myOffset) {
+    fetchKelasSemester(myOffset) {
       this.loading = true;
       const params = {
         per_page: this.skip.limit,
@@ -250,9 +269,63 @@ export default {
       };
       this.skip.offset = params.page;
       this.$http
-        .get("/api/mata-pelajaran", { params: params })
+        .get("/api/pengaturan-kelas-semester", { params: params })
         .then((r) => {
-          this.mapelData = r.data.data.data || [];
+          this.kelasSemesterData = r.data.data.data || [];
+          this.totalPage = r.data.data.last_page;
+          this.loading = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loading = false;
+        });
+    },
+    fetchTahunAjar() {
+      this.loading = true;
+      const params = {
+        per_page: 999,
+        page: 0,
+      };
+      this.$http
+        .get("/api/tahun-ajar", { params: params })
+        .then((r) => {
+          this.tahunAjarData = r.data.data.data || [];
+          this.totalPage = r.data.data.last_page;
+          this.loading = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loading = false;
+        });
+    },
+    fetchKelas() {
+      this.loading = true;
+      const params = {
+        per_page: 999,
+        page: 0,
+      };
+      this.$http
+        .get("/api/kelas", { params: params })
+        .then((r) => {
+          this.kelasData = r.data.data.data || [];
+          this.totalPage = r.data.data.last_page;
+          this.loading = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loading = false;
+        });
+    },
+    fetchPegawai() {
+      this.loading = true;
+      const params = {
+        per_page: 999,
+        page: 0,
+      };
+      this.$http
+        .get("/api/pegawai", { params: params })
+        .then((r) => {
+          this.pegawaiData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
           this.loading = false;
         })
@@ -262,13 +335,13 @@ export default {
         });
     },
     selectPage($event) {
-      this.fetchMapel($event);
+      this.fetchKelasSemester($event);
     },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         this.$http
-          .post("/api/mata-pelajaran", this.editedItem)
+          .post("/api/pengaturan-kelas-semester", this.editedItem)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -277,7 +350,7 @@ export default {
               color: "success",
             };
             this.dialog = false;
-            this.fetchMapel(1);
+            this.fetchKelasSemester(1);
             this.reset();
           })
           .catch((err) => {
@@ -288,13 +361,14 @@ export default {
               color: "red",
             };
             this.dialog = false;
-            this.fetchMapel(1);
+            this.fetchKelasSemester(1);
             this.reset();
           });
       }
     },
     editItem(item) {
       this.editedItem = Object.assign({}, item);
+      console.log(this.editedItem);
       this.dialog = true;
       this.updateProcess = true;
     },
@@ -302,12 +376,15 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         let params = {
-          kode: this.editedItem.kode,
-          nama: this.editedItem.nama,
+          master_tahun_ajar_id: this.editedItem.master_tahun_ajar_id.id,
+          master_kelas_id: this.editedItem.master_kelas_id.id,
+          master_pegawai_id: this.editedItem.master_pegawai_id,
           keterangan: this.editedItem.keterangan,
         };
+        console.log(params);
+        
         this.$http
-          .put(`/api/mata-pelajaran/${this.editedItem.id}`, params)
+          .put(`/api/pengaturan-kelas-semester/${this.editedItem.id}`, params)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -315,7 +392,7 @@ export default {
               text: r.data.msg,
               color: "success",
             };
-            this.fetchMapel(1);
+            this.fetchKelasSemester(1);
             this.reset();
             this.dialog = false;
           })
@@ -327,7 +404,7 @@ export default {
               color: "red",
             };
             this.dialog = false;
-            this.fetchMapel(1);
+            this.fetchKelasSemester(1);
             this.reset();
           });
         this.updateProcess = false;
@@ -342,7 +419,7 @@ export default {
     },
     processingDelete(item) {
       this.$http
-        .delete(`/api/mata-pelajaran/${item.id}`)
+        .delete(`/api/pengaturan-kelas-semester/${item.id}`)
         .then((r) => {
           this.snackbar = {
             show: true,
@@ -352,7 +429,7 @@ export default {
           };
           this.dialog = false;
           this.warnDialog = false;
-          this.fetchMapel(1);
+          this.fetchKelasSemester(1);
           this.reset();
         })
         .catch((err) => {
@@ -363,7 +440,7 @@ export default {
             color: "red",
           };
           this.dialog = false;
-          this.fetchMapel(1);
+          this.fetchKelasSemester(1);
           this.reset();
         });
     },
@@ -376,7 +453,10 @@ export default {
     },
   },
   created() {
-    this.fetchMapel(1);
+    this.fetchKelasSemester(1);
+    this.fetchKelas();
+    this.fetchPegawai();
+    this.fetchTahunAjar();
   },
 };
 </script>

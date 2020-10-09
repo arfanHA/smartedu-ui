@@ -365,6 +365,18 @@ export default {
             icon: "mdi-account-tie",
             routerName: "dataJabatan",
           },
+          {
+            title: "Data Pegawai",
+            menuTitle: "Data Pegawai",
+            icon: "mdi-clipboard-account",
+            routerName: "dataPegawai",
+          },
+           {
+            title: "Data Tahun Ajar",
+            menuTitle: "Data Tahun Ajar",
+            icon: "mdi-calendar-clock",
+            routerName: "dataTahunAjar",
+          },
         ],
       },
       pengaturanKelas: {
@@ -372,6 +384,12 @@ export default {
         title: "Pengaturan Kelas",
         menuTitle: "Pengaturan",
         items: [
+           {
+            title: "Pengaturan Kelas Semester",
+            menuTitle: "Kelas Semester",
+            icon: "mdi-timeline-help",
+            routerName: "pengaturanKelasSemester",
+          },
           {
             title: "Pengaturan Mata Pelajaran Kelas",
             menuTitle: "Mata Pelajaran Kelas",

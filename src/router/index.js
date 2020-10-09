@@ -8,9 +8,12 @@ import DataGuru from '../views/DataGuru.vue'
 import DataTingkatanKelas from '../views/DataTingkatanKelas.vue'
 import DataKelas from '../views/DataKelas.vue'
 import DataJabatan from '../views/DataJabatan.vue'
+import DataPegawai from '../views/DataPegawai.vue'
+import DataTahunAjar from '../views/DataTahunAjar.vue'
 import DataMapel from '../views/DataMapel.vue'
 import PengaturanMapelKelas from '../views/PengaturanMapelKelas.vue'
 import PengaturanTugasMengajarKelas from '../views/PengaturanTugasMengajarKelas.vue'
+import PengaturanKelasSemester from '../views/PengaturanKelasSemester.vue'
 
 Vue.use(VueRouter)
 
@@ -89,7 +92,7 @@ const routes = [
         name: 'dataJabatan',
         component: DataJabatan,
         meta: {
-          title: 'Data Kelas',
+          title: 'Data Jabatan',
           breadcrumbs: [
             {
               text: 'Home',
@@ -99,7 +102,47 @@ const routes = [
             {
               text: 'Data Jabatan',
               disabled: true,
-              name: 'datajabatan',
+              name: 'dataJabatan',
+            }
+          ]
+        }
+      },
+      {
+        path: '/data/pegawai',
+        name: 'dataPegawai',
+        component: DataPegawai,
+        meta: {
+          title: 'Data Pegawai',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              name: 'dashboard',
+            },
+            {
+              text: 'Data Pegawai',
+              disabled: true,
+              name: 'dataPegawai',
+            }
+          ]
+        }
+      },
+      {
+        path: '/data/tahunAjar',
+        name: 'dataTahunAjar',
+        component: DataTahunAjar,
+        meta: {
+          title: 'Data Tahun Ajar',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              name: 'dashboard',
+            },
+            {
+              text: 'Data Tahun Ajar',
+              disabled: true,
+              name: 'dataTahunAjar',
             }
           ]
         }
@@ -113,6 +156,11 @@ const routes = [
         path: '/pengaturan/tugas-mengajar/kelas',
         name: 'pengaturanTugasMengajarKelas',
         component: PengaturanTugasMengajarKelas,
+      },
+      {
+        path: '/pengaturan/kelasSemester',
+        name: 'pengaturanKelasSemester',
+        component: PengaturanKelasSemester,
       },
     ]
   },

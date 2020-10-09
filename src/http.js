@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 let _http = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api/',
-    // timeout: 15000,
+    baseURL: process.env.VUE_APP_HOST,
+    timeout: process.env.VUE_APP_TIMEOUT,
     // headers: { 'X-Custom-Header': 'foobar' }
 });
 
