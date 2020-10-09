@@ -173,12 +173,6 @@
       ></v-pagination>
       <v-dialog v-model="warnDialog" max-width="290">
         <v-card>
-          <!-- <v-alert
-              :value="alertErrorDelete"
-              type="error"
-              rounded="false"
-              transition="scroll-y-transition"
-            >Error delete promotion. Courier has been used in transactions</v-alert> -->
           <v-card-title class="headline">Hapus Data?</v-card-title>
 
           <v-card-text>

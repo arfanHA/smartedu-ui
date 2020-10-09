@@ -43,7 +43,22 @@
           <v-toolbar-title>Tambah Tingkatan Kelas</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="save" :disabled="!valid">Simpan</v-btn>
+            <v-btn
+              dark
+              text
+              @click="save"
+              v-if="!updateProcess"
+              :disabled="!valid"
+              >Simpan</v-btn
+            >
+            <v-btn
+              dark
+              text
+              v-if="updateProcess"
+              @click="processEdit"
+              :disabled="!valid"
+              >UPDATE</v-btn
+            >
           </v-toolbar-items>
         </v-toolbar>
         <v-card class="dialogField mt-5 pb-5">
@@ -91,6 +106,32 @@
             <tr v-for="(item, index) in items" :key="item.name">
               <td>{{ index + skip.offset }}</td>
               <td class="text-xs-right">{{ item.tingkatan }}</td>
+              <td class="text-xs-right">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      medium
+                      class="ml-1 mr-1"
+                      v-on="on"
+                      @click="editItem(item)"
+                      >mdi-pencil</v-icon
+                    >
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      medium
+                      class="ml-1"
+                      v-on="on"
+                      @click="deleteItem(item)"
+                      >mdi-delete</v-icon
+                    >
+                  </template>
+                  <span>Delete</span>
+                </v-tooltip>
+              </td>
             </tr>
           </tbody>
         </template>
@@ -103,6 +144,29 @@
         :total-visible="7"
         @input="selectPage($event)"
       ></v-pagination>
+      <v-dialog v-model="warnDialog" max-width="290">
+        <v-card>
+          <v-card-title class="headline">Hapus Data?</v-card-title>
+
+          <v-card-text>
+            Aksi ini akan menghapus data secara permanen.
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="onCancelDelete">
+              Cancel
+            </v-btn>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="processingDelete(editedItem)"
+            >
+              Delete
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </v-container>
 </template>
@@ -113,7 +177,9 @@ export default {
     return {
       search: "",
       dialog: false,
+      updateProcess: false,
       valid: true,
+      warnDialog: false,
       formRules: [(v) => !!v || "Tidak boleh kosong"],
       pageSelected: 1,
       editedItem: {
@@ -140,6 +206,7 @@ export default {
           value: "seq",
         },
         { text: "Tingkatan", value: "tingkatan" },
+        { text: "", width: "10%", value: "action" },
       ],
     };
   },
@@ -176,7 +243,7 @@ export default {
               color: "success",
             };
             this.dialog = false;
-            this.fetchKelas(1);
+            this.fetchTingkatanKelas(1);
             this.reset();
           })
           .catch((err) => {
@@ -187,10 +254,89 @@ export default {
               color: "red",
             };
             this.dialog = false;
-            this.fetchKelas(1);
+            this.fetchTingkatanKelas(1);
             this.reset();
           });
       }
+    },
+    editItem(item) {
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+      this.updateProcess = true;
+    },
+    processEdit() {
+      this.$refs.form.validate();
+      if (this.$refs.form.validate() === true) {
+        let params = {
+          tingkatan: this.editedItem.tingkatan,
+        };
+        this.$http
+          .put(`/kelas-tingkatan/${this.editedItem.id}`, params)
+          .then((r) => {
+            this.snackbar = {
+              show: true,
+              status: r.data.status,
+              text: r.data.msg,
+              color: "success",
+            };
+            this.fetchTingkatanKelas(1);
+            this.reset();
+            this.dialog = false;
+          })
+          .catch((err) => {
+            this.snackbar = {
+              show: true,
+              status: err.data.status,
+              text: err.data.msg,
+              color: "red",
+            };
+            this.dialog = false;
+            this.fetchTingkatanKelas(1);
+            this.reset();
+          });
+        this.updateProcess = false;
+      }
+    },
+    onCancelDelete() {
+      this.warnDialog = false;
+    },
+    deleteItem(item) {
+      this.editedItem = Object.assign({}, item);
+      this.warnDialog = true;
+    },
+    processingDelete(item) {
+      this.$http
+        .delete(`/kelas-tingkatan/${item.id}`)
+        .then((r) => {
+          this.snackbar = {
+            show: true,
+            status: r.data.status,
+            text: r.data.msg,
+            color: "success",
+          };
+          this.dialog = false;
+          this.warnDialog = false;
+          this.fetchTingkatanKelas(1);
+          this.reset();
+        })
+        .catch((err) => {
+          this.snackbar = {
+            show: true,
+            status: err.data.status,
+            text: err.data.msg,
+            color: "red",
+          };
+          this.dialog = false;
+          this.fetchTingkatanKelas(1);
+          this.reset();
+        });
+    },
+    close() {
+      this.reset();
+      this.dialog = false;
+    },
+    reset() {
+      this.$refs.form.reset();
     },
   },
   created() {
