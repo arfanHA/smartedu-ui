@@ -20,11 +20,10 @@
         <v-btn
           depressed
           color="primary"
-          dark
-          class="mb-5 mt-2"
+          class="mb-5 mt-2 submitBtn black--text"
           @click="dialog = !dialog"
         >
-          <v-icon left>mdi-plus-circle</v-icon>Tambah Mapel
+          <v-icon left>mdi-plus</v-icon>Tambah Mata Pelajaran
         </v-btn>
       </v-col>
     </v-row>
@@ -108,19 +107,34 @@
 
     <v-card>
       <v-card-title>
-        Data Mata Pelajaran
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          outlined
-          hide-details
-        ></v-text-field>
+        <v-row class="ma-1">
+          <div class="body-2 mt-2 mr-2">Tampilkan</div>
+          <v-select
+            v-model="skip.limit"
+            :items="itemsPerPage"
+            :value="10"
+            type="number"
+            style="max-width: min-content"
+            dense
+            outlined
+            @input="setRowPerPage($event)"
+          ></v-select>
+          <div class="body-2 mt-2 ml-2">Data Per Halaman</div>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Pencarian"
+            outlined
+            dense
+            hide-details
+          ></v-text-field>
+        </v-row>
       </v-card-title>
       <v-data-table
         :headers="headers"
         :items="mapelData"
+        :items-per-page="skip.limit"
         :search="search"
         :loading="loading"
         class="elevation-1"
@@ -166,6 +180,7 @@
       <v-pagination
         class="pt-3 pb-3"
         circle
+        color="tableHeader"
         v-model="pageSelected"
         :length="totalPage"
         :total-visible="7"
@@ -203,6 +218,7 @@ export default {
   data() {
     return {
       search: "",
+      itemsPerPage: [5, 10, 20, 30],
       formRules: [(v) => !!v || "Tidak boleh kosong"],
       valid: true,
       dialog: false,
@@ -232,12 +248,26 @@ export default {
           text: "No",
           align: "start",
           width: "10%",
+          class: "tableHeader white--text",
           sortable: false,
           value: "name",
         },
-        { text: "Kode", value: "kode" },
-        { text: "Nama Mata Pelajaran", value: "nama" },
-        { text: "Keterangan", value: "keterangan" },
+        { text: "Kode", value: "kode", class: "tableHeader white--text" },
+        {
+          text: "Nama Mata Pelajaran",
+          value: "nama",
+          class: "tableHeader white--text",
+        },
+        {
+          text: "Keterangan",
+          value: "keterangan",
+          class: "tableHeader white--text",
+        },
+        {
+          text: "Aksi",
+          value: "keterangan",
+          class: "tableHeader white--text",
+        },
       ],
     };
   },
@@ -373,6 +403,10 @@ export default {
     },
     reset() {
       this.$refs.form.reset();
+    },
+    setRowPerPage(event) {
+      this.skip.limit = event;
+      this.fetchMapel(0);
     },
   },
   created() {

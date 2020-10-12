@@ -42,8 +42,25 @@
 .v-list--nav .v-list-item:not(:last-child):not(:only-child), .v-list--rounded .v-list-item:not(:last-child):not(:only-child) {
     margin-bottom: 0px !important;
 }
-.v-list-item {
+.v-list-item{
     margin: 0px 0;
+    height: 32px !important;
 }
+
+.v-list-item__title {
+    font-size: 0.9rem !important;
+}
+
+.v-application--is-ltr .v-list-item__action:first-child, .v-application--is-ltr .v-list-item__icon:first-child {
+    margin-right: 15px !important;
+}
+
+.v-data-table {
+    margin: 15px;
+}
+
+tbody tr:nth-of-type(even) {
+   background-color: rgba(0, 0, 0, .05);
+ }
 
 </style>

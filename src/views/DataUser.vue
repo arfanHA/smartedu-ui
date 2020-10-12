@@ -2,13 +2,24 @@
   <v-container fluid>
     <v-row>
       <v-col class="text-right">
-        <v-btn depressed color="primary" dark class="mb-5 mt-2" @click="dialog = !dialog">
+        <v-btn
+          depressed
+          color="primary"
+          dark
+          class="mb-5 mt-2"
+          @click="dialog = !dialog"
+        >
           <v-icon left>mdi-plus-circle</v-icon>Tambah User
         </v-btn>
       </v-col>
     </v-row>
 
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+    <v-dialog
+      v-model="dialog"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
       <v-card>
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="dialog = false">
@@ -46,17 +57,36 @@
 
     <v-card>
       <v-card-title>
-        Data User
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          outlined
-          hide-details
-        ></v-text-field>
+        <v-row class="ma-1">
+          <div class="body-2 mt-2 mr-2">Tampilkan</div>
+          <v-select
+          v-model="showPerPage"
+            :items="itemsPerPage"
+            :value="10"
+            type="number"
+            style="max-width: min-content"
+            dense
+            outlined
+          ></v-select>
+          <div class="body-2 mt-2 ml-2">Data Per Halaman</div>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Pencarian"
+            outlined
+            dense
+            hide-details
+          ></v-text-field>
+        </v-row>
       </v-card-title>
-      <v-data-table :headers="headers" :items="desserts" :search="search"></v-data-table>
+      <v-data-table
+        :headers="headers"
+        :items-per-page="showPerPage"
+        hide-default-footer
+        :items="desserts"
+        :search="search"
+      ></v-data-table>
     </v-card>
   </v-container>
 </template>
@@ -68,6 +98,8 @@ export default {
     return {
       search: "",
       dialog: false,
+      itemsPerPage: [5, 10, 20, 30],
+      showPerPage: 10,
       kelasData: [],
       headers: [
         {
@@ -166,7 +198,7 @@ export default {
       ],
     };
   },
-  methods : {
+  methods: {
     fetchKelas() {
       // const params = {
       //   page:1,
@@ -183,11 +215,11 @@ export default {
         .catch((err) => {
           console.log(err);
         });
-    }
+    },
   },
   created() {
     this.fetchKelas();
-  }
+  },
 };
 </script>
 

@@ -15,6 +15,7 @@ export default new Vuetify({
         menu: '#003955',
         submitBtn: '#FFB800',
         exportBtn: '#006559',
+        tableHeader: '#007C7C',
         info: '#004a7c',
         success: '#4CAF50',
         warning: '#FFC107'

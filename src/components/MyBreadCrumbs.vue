@@ -1,14 +1,13 @@
  <template>
   <v-breadcrumbs large :items="items">
-    <template v-slot:divider>
-      <v-icon>mdi-chevron-right</v-icon>
-    </template>
     <template v-slot:item="{ item }">
+
       <v-breadcrumbs-item
         @click="itemPush(item)"
         :disabled="item.disabled"
         style="cursor: pointer"
       >
+      <v-icon class="mr-2">{{item.icon}}</v-icon>
         {{ item.text }}
       </v-breadcrumbs-item>
     </template>
@@ -35,6 +34,6 @@ export default {
 
 <style scoped>
 .v-breadcrumbs {
-  padding: 18px 12px 0px 15px;
+  padding: 0px 12px 0px 15px;
 }
 </style>

@@ -59,6 +59,7 @@ const routes = [
             {
               text: 'Home',
               disabled: false,
+              icon: 'mdi-home',
               name: 'dashboard',
             },
             {

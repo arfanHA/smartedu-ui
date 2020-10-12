@@ -10,33 +10,13 @@
       width="250"
       :temporary="temporary"
     >
-      <!-- <v-list>
-        <v-list-item class="px-2">
-          <v-list-item-avatar @click.stop="mini = !mini">
-            <v-img :src="this.avatar"></v-img>
-          </v-list-item-avatar>
-          <template>
-            <v-list-item-content>
-              <v-list-item-title class="title">Kurikulum</v-list-item-title>
-              <v-list-item-subtitle class="subtitle-2"
-                >Arfan Haikal</v-list-item-subtitle
-              >
-            </v-list-item-content>
-          </template>
-
-          <v-btn icon @click.stop="mini = !mini">
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
-        </v-list-item>
-      </v-list>
-      <v-divider></v-divider> -->
-      <v-list :flat="flat" :nav="nav">
+      <v-list :flat="flat" :nav="nav" dense>
         <v-list-item
           color="primary"
           @click="routerPush(menu.dashboard)"
           :class="
             menu.dashboard.routerName === menuSelected
-              ? 'v-list-item--active subtitle-2'
+              ? 'v-list-item--active'
               : ''
           "
         >
@@ -54,7 +34,7 @@
           @click="routerPush(menu.dataUser)"
           :class="
             menu.dataUser.routerName === menuSelected
-              ? 'v-list-item--active subtitle-2'
+              ? 'v-list-item--active body-2'
               : ''
           "
         >
@@ -88,7 +68,7 @@
             @click="routerPush(subItem)"
             :class="
               subItem.routerName === menuSelected
-                ? 'v-list-item--active subtitle-2'
+                ? 'v-list-item--active body-2'
                 : ''
             "
           >
@@ -125,7 +105,7 @@
             @click="routerPush(subItem)"
             :class="
               subItem.routerName === menuSelected
-                ? 'v-list-item--active subtitle-2'
+                ? 'v-list-item--active body-2'
                 : ''
             "
           >
@@ -151,7 +131,7 @@
               @click="warningDialog = true"
               :class="
                 menu.logout.routerName === navbarMenuSelected
-                  ? 'v-list-item--active subtitle-2'
+                  ? 'v-list-item--active body-2'
                   : ''
               "
             >
@@ -271,6 +251,7 @@
           </v-card-subtitle>
         </v-card>
       </v-alert>
+      <h2 class="h2 ml-4 pt-3">{{toolbarTitle}}</h2>
       <MyBreadcrumbs @bread-click="breadRouter($event)" :items="breadcrumb" />
       <router-view refs="router-home"></router-view>
     </v-content>
@@ -542,12 +523,26 @@ img {
 }
 
 .v-list-group--active {
-  /* background: #00527B; */
-  color: white !important;
+  color: rgb(255, 255, 255, 0.9) !important;
 }
 
 .v-list-item--active {
-  background: white;
-  color: white !important;
+  background: #00527B;
+}
+
+.v-list-item--active .v-list-item__title {
+  color: rgb(255, 255, 255, 0.9) !important;
+}
+
+.v-list-item--active .v-list-item__icon {
+  color: rgb(255, 255, 255, 0.9) !important;
+}
+
+.v-application--is-ltr .v-list--dense.v-list--nav .v-list-group--no-action>.v-list-group__items>.v-list-item {
+    padding-left: 35px;
+}
+
+.v-list--nav .v-list-item, .v-list--nav .v-list-item:before {
+    border-radius: 12px;
 }
 </style>
