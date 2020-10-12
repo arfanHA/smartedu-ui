@@ -33,6 +33,16 @@ const routes = [
         path: '/',
         name: 'dashboard',
         component: Dashboard,
+        meta: {
+          title: 'Dashboard',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: true,
+              name: 'dashboard',
+            }
+          ]
+        }
       },
       {
         path: '/user/list',
@@ -43,6 +53,21 @@ const routes = [
         path: '/data/mapel',
         name: 'dataMapel',
         component: DataMapel,
+        meta: {
+          title: 'Dashboard',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              name: 'dashboard',
+            },
+            {
+              text: 'Mata Pelajaran',
+              disabled: true,
+              name: 'dataMapel',
+            }
+          ]
+        }
       },{
         path: '/data/guru',
         name: 'dataGuru',

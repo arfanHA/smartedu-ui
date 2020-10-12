@@ -1,14 +1,16 @@
 <template>
   <v-app id="inspire">
     <v-navigation-drawer
+      class="menu"
       app
+      dark
       v-model="drawer"
       :mini-variant.sync="mini"
       :clipped="clipped"
       width="250"
       :temporary="temporary"
     >
-      <v-list>
+      <!-- <v-list>
         <v-list-item class="px-2">
           <v-list-item-avatar @click.stop="mini = !mini">
             <v-img :src="this.avatar"></v-img>
@@ -27,14 +29,14 @@
           </v-btn>
         </v-list-item>
       </v-list>
-      <v-divider></v-divider>
+      <v-divider></v-divider> -->
       <v-list :flat="flat" :nav="nav">
         <v-list-item
           color="primary"
           @click="routerPush(menu.dashboard)"
           :class="
             menu.dashboard.routerName === menuSelected
-              ? 'v-list-item--active'
+              ? 'v-list-item--active subtitle-2'
               : ''
           "
         >
@@ -52,7 +54,7 @@
           @click="routerPush(menu.dataUser)"
           :class="
             menu.dataUser.routerName === menuSelected
-              ? 'v-list-item--active'
+              ? 'v-list-item--active subtitle-2'
               : ''
           "
         >
@@ -85,14 +87,19 @@
             :key="subItem.menuTitle"
             @click="routerPush(subItem)"
             :class="
-              subItem.routerName === menuSelected ? 'v-list-item--active' : ''
+              subItem.routerName === menuSelected
+                ? 'v-list-item--active subtitle-2'
+                : ''
             "
           >
             <v-list-item-icon>
               <v-icon v-text="subItem.icon"></v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title v-text="subItem.menuTitle"></v-list-item-title>
+              <v-list-item-title
+                class="caption"
+                v-text="subItem.menuTitle"
+              ></v-list-item-title>
             </v-list-item-content>
             <!-- <v-chip v-if="subItem.menuTitle=='Contact'">+23</v-chip>
             <v-chip v-if="subItem.menuTitle=='Credit Limit'">2</v-chip>-->
@@ -117,7 +124,9 @@
             :key="subItem.menuTitle"
             @click="routerPush(subItem)"
             :class="
-              subItem.routerName === menuSelected ? 'v-list-item--active' : ''
+              subItem.routerName === menuSelected
+                ? 'v-list-item--active subtitle-2'
+                : ''
             "
           >
             <v-list-item-icon>
@@ -142,7 +151,7 @@
               @click="warningDialog = true"
               :class="
                 menu.logout.routerName === navbarMenuSelected
-                  ? 'v-list-item--active'
+                  ? 'v-list-item--active subtitle-2'
                   : ''
               "
             >
@@ -186,20 +195,26 @@
     </v-navigation-drawer>
 
     <v-app-bar app color="primary" dark :clipped-left="clipped">
+      <v-toolbar-title style="padding-left: 0px">
+        <img src="../assets/logoSmarteducation.png" />
+      </v-toolbar-title>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title v-on:myvent="onChangeTitle">{{
-        toolbarTitle
-      }}</v-toolbar-title>
+      <v-toolbar-title v-on:myvent="onChangeTitle"
+        ><v-list-item two-line>
+          <v-list-item-content>
+            <v-list-item-title>SMP NEGERI 1 KENDARI</v-list-item-title>
+            <v-list-item-subtitle>Tahun Ajaran: 2019/2020</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-toolbar-title>
       <div class="flex-grow-1"></div>
 
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn small icon @click="alert = !alert" v-bind="attrs" v-on="on">
-            <v-icon>mdi-information-outline</v-icon>
-          </v-btn>
-        </template>
-        <span>Tentang SmartEDU</span>
-      </v-tooltip>
+      <v-list-item two-line style="flex: none" class="text-right">
+        <v-list-item-content>
+          <v-list-item-title>Thomas alfa edison</v-list-item-title>
+          <v-list-item-subtitle>Guru</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
 
       <v-menu
         :close-on-content-click="closeOnContentClick"
@@ -207,13 +222,10 @@
         bottom
       >
         <template v-slot:activator="{ on }">
-          <v-btn
-            small
-            icon
-            v-on="on"
-            style="margin-right: 5px; margin-left: 10px"
-          >
-            <v-icon>mdi-account-circle</v-icon>
+          <v-btn fab icon v-on="on">
+            <v-avatar size="45">
+               <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
+            </v-avatar>
           </v-btn>
         </template>
         <v-list>
@@ -338,43 +350,43 @@ export default {
           {
             title: "Data Mata Pelajaran",
             menuTitle: "Mata Pelajaran",
-            icon: "mdi-notebook",
+            icon: "mdi-circle-medium",
             routerName: "dataMapel",
           },
           {
             title: "Data Guru",
             menuTitle: "Guru",
-            icon: "mdi-teach",
+            icon: "mdi-circle-medium",
             routerName: "dataGuru",
           },
           {
             title: "Data Tingkatan Kelas",
             menuTitle: "Tingkatan Kelas",
-            icon: "mdi-podium",
+            icon: "mdi-circle-medium",
             routerName: "dataTingkatanKelas",
           },
           {
             title: "Data Kelas",
             menuTitle: "Kelas",
-            icon: "mdi-home-floor-a",
+            icon: "mdi-circle-medium",
             routerName: "dataKelas",
           },
           {
             title: "Data Jabatan",
             menuTitle: "Data Jabatan",
-            icon: "mdi-account-tie",
+            icon: "mdi-circle-medium",
             routerName: "dataJabatan",
           },
           {
             title: "Data Pegawai",
             menuTitle: "Data Pegawai",
-            icon: "mdi-clipboard-account",
+            icon: "mdi-circle-medium",
             routerName: "dataPegawai",
           },
-           {
+          {
             title: "Data Tahun Ajar",
             menuTitle: "Data Tahun Ajar",
-            icon: "mdi-calendar-clock",
+            icon: "mdi-circle-medium",
             routerName: "dataTahunAjar",
           },
         ],
@@ -384,22 +396,22 @@ export default {
         title: "Pengaturan Kelas",
         menuTitle: "Pengaturan",
         items: [
-           {
+          {
             title: "Pengaturan Kelas Semester",
             menuTitle: "Kelas Semester",
-            icon: "mdi-timeline-help",
+            icon: "mdi-circle-medium",
             routerName: "pengaturanKelasSemester",
           },
           {
             title: "Pengaturan Mata Pelajaran Kelas",
             menuTitle: "Mata Pelajaran Kelas",
-            icon: "mdi-file-tree",
+            icon: "mdi-circle-medium",
             routerName: "pengaturanMapelKelas",
           },
           {
             title: "Pengaturan Tugas Mengajar Kelas",
             menuTitle: "Tugas Mengajar Kelas",
-            icon: "mdi-calendar-check-outline",
+            icon: "mdi-circle-medium",
             routerName: "pengaturanTugasMengajarKelas",
           },
         ],
@@ -409,76 +421,6 @@ export default {
         // toolbarTitle: "Loading",
         menuTitle: "Logout",
         name: "Login",
-      },
-      warehouse: {
-        action: "mdi-warehouse",
-        title: "Warehouse ",
-        menuTitle: "Warehouse",
-        items: [
-          {
-            title: "Order Transaction",
-            menuTitle: "Order Transaction",
-            icon: "mdi-package-variant",
-            routerName: "warehouseOrderTrx",
-          },
-          {
-            title: "Stock Adjustment",
-            menuTitle: "Stock Adjustment",
-            icon: "mdi-image-auto-adjust",
-            routerName: "stockAdjustment",
-          },
-          {
-            title: "Shipping Price List",
-            menuTitle: "Shipping Price List",
-            icon: "mdi-cube-send",
-            routerName: "courierPriceList",
-          },
-        ],
-      },
-      promotion: {
-        action: "mdi-brightness-percent",
-        title: "Promo",
-        menuTitle: "Promo",
-        items: [
-          {
-            title: "Promotion List",
-            menuTitle: "Promotion List",
-            icon: "mdi-file-percent-outline",
-            routerName: "promotionList",
-          },
-        ],
-      },
-      reporting: {
-        action: "mdi-chart-bar",
-        title: "Reporting",
-        menuTitle: "Reporting",
-        routerName: "reporting",
-      },
-      userSetting: {
-        action: "mdi-brightness-percent",
-        title: "Setting",
-        menuTitle: "Pengaturan",
-        items: [
-          {
-            title: "User",
-            menuTitle: "User",
-            icon: "mdi-account-cog",
-            routerName: "userSetting",
-          },
-        ],
-      },
-      courierSetting: {
-        action: "mdi-brightness-percent",
-        title: "Setting",
-        menuTitle: "Pengaturan",
-        items: [
-          {
-            title: "Kurir",
-            menuTitle: "Kurir",
-            icon: "mdi-truck-check",
-            routerName: "courier",
-          },
-        ],
       },
     },
     shiftMenu: [
@@ -589,5 +531,23 @@ export default {
 
 .v-alert {
   opacity: 0.5;
+}
+
+img {
+  height: 66px;
+  width: auto;
+  padding-top: 8px;
+  padding-left: 40px;
+  padding-right: 32px;
+}
+
+.v-list-group--active {
+  /* background: #00527B; */
+  color: white !important;
+}
+
+.v-list-item--active {
+  background: white;
+  color: white !important;
 }
 </style>

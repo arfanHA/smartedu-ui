@@ -22,13 +22,19 @@ export default {
     items: {
       type: Array,
       required: true,
-    }
+    },
   },
-  methods:{
+  methods: {
     itemPush(item) {
       console.log(item);
-      this.$emit('bread-click', item );
+      this.$emit("bread-click", item);
     },
-  }
+  },
 };
 </script>
+
+<style scoped>
+.v-breadcrumbs {
+  padding: 18px 12px 0px 15px;
+}
+</style>

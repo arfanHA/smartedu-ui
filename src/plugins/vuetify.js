@@ -11,10 +11,10 @@ export default new Vuetify({
       },
     themes: {
       light: {
-        primary: '#222831',
-        secondary: '#e8f1f5',
-        accent: '#00adb5',
-        error: '#FF5252',
+        primary: '#00527B',
+        menu: '#003955',
+        submitBtn: '#FFB800',
+        exportBtn: '#006559',
         info: '#004a7c',
         success: '#4CAF50',
         warning: '#FFC107'
