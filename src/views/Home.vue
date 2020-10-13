@@ -178,6 +178,13 @@
       <v-toolbar-title style="padding-left: 0px">
         <img src="../assets/logoSmarteducation.png" />
       </v-toolbar-title>
+      <v-progress-linear
+        :active="progress"
+        :indeterminate="progress"
+        absolute
+        bottom
+        color="submitBtn"
+      ></v-progress-linear>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title v-on:myvent="onChangeTitle"
         ><v-list-item two-line>
@@ -204,7 +211,7 @@
         <template v-slot:activator="{ on }">
           <v-btn fab icon v-on="on">
             <v-avatar size="45">
-               <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
+              <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
             </v-avatar>
           </v-btn>
         </template>
@@ -251,7 +258,7 @@
           </v-card-subtitle>
         </v-card>
       </v-alert>
-      <h2 class="h2 ml-4 pt-3">{{toolbarTitle}}</h2>
+      <h2 class="h2 ml-4 pt-3">{{ toolbarTitle }}</h2>
       <MyBreadcrumbs @bread-click="breadRouter($event)" :items="breadcrumb" />
       <router-view refs="router-home"></router-view>
     </v-content>
@@ -335,10 +342,22 @@ export default {
             routerName: "dataMapel",
           },
           {
+            title: "Data Kategori Mata Pelajaran",
+            menuTitle: "Kategori Mata Pelajaran",
+            icon: "mdi-circle-medium",
+            routerName: "dataKategoriMapel",
+          },
+          {
             title: "Data Guru",
             menuTitle: "Guru",
             icon: "mdi-circle-medium",
             routerName: "dataGuru",
+          },
+          {
+            title: "Data Siswa",
+            menuTitle: "Data Siswa",
+            icon: "mdi-circle-medium",
+            routerName: "dataSiswa",
           },
           {
             title: "Data Tingkatan Kelas",
@@ -493,6 +512,9 @@ export default {
     breadcrumb: function () {
       return this.$route.meta.breadcrumbs;
     },
+    progress: function () {
+      return this.$store.state.progressStatus;
+    },
   },
 };
 </script>
@@ -527,7 +549,7 @@ img {
 }
 
 .v-list-item--active {
-  background: #00527B;
+  background: #00527b;
 }
 
 .v-list-item--active .v-list-item__title {
@@ -538,11 +560,16 @@ img {
   color: rgb(255, 255, 255, 0.9) !important;
 }
 
-.v-application--is-ltr .v-list--dense.v-list--nav .v-list-group--no-action>.v-list-group__items>.v-list-item {
-    padding-left: 35px;
+.v-application--is-ltr
+  .v-list--dense.v-list--nav
+  .v-list-group--no-action
+  > .v-list-group__items
+  > .v-list-item {
+  padding-left: 35px;
 }
 
-.v-list--nav .v-list-item, .v-list--nav .v-list-item:before {
-    border-radius: 12px;
+.v-list--nav .v-list-item,
+.v-list--nav .v-list-item:before {
+  border-radius: 12px;
 }
 </style>

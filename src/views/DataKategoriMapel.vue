@@ -20,11 +20,10 @@
         <v-btn
           depressed
           color="primary"
-          dark
           class="mb-5 mt-2 submitBtn black--text"
           @click="dialog = !dialog"
         >
-          <v-icon left>mdi-plus-circle</v-icon>Tambah Data Jabatan
+          <v-icon left>mdi-plus</v-icon>Tambah Kategori Mata Pelajaran
         </v-btn>
       </v-col>
     </v-row>
@@ -41,7 +40,7 @@
           <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Tambah Data Jabatan</v-toolbar-title>
+          <v-toolbar-title>Tambah Mata Pelajaran</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
@@ -68,8 +67,9 @@
               <v-row>
                 <v-col cols="12" sm="12">
                   <v-text-field
-                    label="Nama Jabatan"
-                    filled
+                    label="Nama Kelompok Mata Pelajaran"
+                    outlined
+                    dense
                     :rules="formRules"
                     v-model="editedItem.nama"
                     required
@@ -78,7 +78,8 @@
                 <v-col cols="12" sm="12">
                   <v-textarea
                     label="Keterangan"
-                    filled
+                    outlined
+                    dense
                     :rules="formRules"
                     v-model="editedItem.keterangan"
                     required
@@ -119,7 +120,8 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="jabtanData"
+        :items="kategoriMapelData"
+        :items-per-page="skip.limit"
         :search="search"
         class="elevation-1"
         hide-default-footer
@@ -163,9 +165,9 @@
       <v-pagination
         class="pt-3 pb-3"
         circle
+        color="tableHeader"
         v-model="pageSelected"
         :length="totalPage"
-        color="tableHeader"
         :total-visible="7"
         @input="selectPage($event)"
       ></v-pagination>
@@ -208,7 +210,7 @@ export default {
       warnDialog: false,
       updateProcess: false,
       totalPage: null,
-      jabtanData: [],
+      kategoriMapelData: [],
       editedItem: {
         nama: "",
         keterangan: "",
@@ -229,8 +231,8 @@ export default {
           text: "No",
           align: "start",
           width: "10%",
-          sortable: false,
           class: "tableHeader white--text",
+          sortable: false,
           value: "name",
         },
         {
@@ -243,23 +245,27 @@ export default {
           value: "keterangan",
           class: "tableHeader white--text",
         },
-        { text: "Aksi", value: "keterangan", class: "tableHeader white--text" },
+        {
+          text: "Aksi",
+          value: "keterangan",
+          class: "tableHeader white--text",
+        },
       ],
     };
   },
   methods: {
-    fetchJabatan(myOffset) {
+    fetchKategoriMapel(myOffset) {
       this.$store.commit("progressFunctionOn", true);
       const params = {
         per_page: this.skip.limit,
         page: myOffset,
       };
       this.$http
-        .get("/api/jabatan", { params: params })
+        .get("/api/kategori-mata-pelajaran", { params: params })
         .then((r) => {
-          this.jabtanData = r.data.data.data || [];
+          this.kategoriMapelData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
-           this.skip.offset =
+          this.skip.offset =
             (r.data.data.current_page - 1) * r.data.data.per_page;
           this.$store.commit("progressFunctionOn", false);
         })
@@ -269,13 +275,14 @@ export default {
         });
     },
     selectPage($event) {
-      this.fetchJabatan($event);
+      console.log($event);
+      this.fetchKategoriMapel($event);
     },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         this.$http
-          .post("/api/jabatan", this.editedItem)
+          .post("/api/kategori-mata-pelajaran", this.editedItem)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -284,7 +291,7 @@ export default {
               color: "success",
             };
             this.dialog = false;
-            this.fetchJabatan(1);
+            this.fetchKategoriMapel(1);
             this.reset();
           })
           .catch((err) => {
@@ -295,7 +302,7 @@ export default {
               color: "red",
             };
             this.dialog = false;
-            this.fetchJabatan(1);
+            this.fetchKategoriMapel(1);
             this.reset();
           });
       }
@@ -309,12 +316,11 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         let params = {
-          kode: this.editedItem.kode,
           nama: this.editedItem.nama,
           keterangan: this.editedItem.keterangan,
         };
         this.$http
-          .put(`/api/jabatan/${this.editedItem.id}`, params)
+          .put(`/api/kategori-mata-pelajaran/${this.editedItem.id}`, params)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -322,7 +328,7 @@ export default {
               text: r.data.msg,
               color: "success",
             };
-            this.fetchJabatan(1);
+            this.fetchKategoriMapel(1);
             this.reset();
             this.dialog = false;
           })
@@ -334,7 +340,7 @@ export default {
               color: "red",
             };
             this.dialog = false;
-            this.fetchJabatan(1);
+            this.fetchKategoriMapel(1);
             this.reset();
           });
         this.updateProcess = false;
@@ -349,7 +355,7 @@ export default {
     },
     processingDelete(item) {
       this.$http
-        .delete(`/api/jabatan/${item.id}`)
+        .delete(`/api/kategori-mata-pelajaran/${item.id}`)
         .then((r) => {
           this.snackbar = {
             show: true,
@@ -359,7 +365,7 @@ export default {
           };
           this.dialog = false;
           this.warnDialog = false;
-          this.fetchJabatan(1);
+          this.fetchKategoriMapel(1);
           this.reset();
         })
         .catch((err) => {
@@ -370,7 +376,7 @@ export default {
             color: "red",
           };
           this.dialog = false;
-          this.fetchJabatan(1);
+          this.fetchKategoriMapel(1);
           this.reset();
         });
     },
@@ -384,11 +390,11 @@ export default {
     },
     setRowPerPage(event) {
       this.skip.limit = event;
-      this.fetchJabatan(0);
+      this.fetchKategoriMapel(0);
     },
   },
   created() {
-    this.fetchJabatan(1);
+    this.fetchKategoriMapel(1);
   },
 };
 </script>
@@ -396,6 +402,6 @@ export default {
 <style scoped>
 .v-card.dialogField {
   margin: auto;
-  max-width: 750px;
+  width: auto;
 }
 </style>

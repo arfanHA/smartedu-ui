@@ -136,14 +136,13 @@
         :items="mapelData"
         :items-per-page="skip.limit"
         :search="search"
-        :loading="loading"
         class="elevation-1"
         hide-default-footer
       >
         <template v-slot:body="{ items }">
           <tbody>
             <tr v-for="(item, index) in items" :key="item.id">
-              <td>{{ index + skip.offset }}</td>
+              <td>{{ index + 1 + skip.offset }}</td>
               <td class="text-xs-right">{{ item.kode }}</td>
               <td class="text-xs-right">{{ item.nama }}</td>
               <td class="text-xs-right">{{ item.keterangan }}</td>
@@ -224,7 +223,6 @@ export default {
       dialog: false,
       warnDialog: false,
       updateProcess: false,
-      loading: true,
       totalPage: null,
       mapelData: [],
       editedItem: {
@@ -273,25 +271,26 @@ export default {
   },
   methods: {
     fetchMapel(myOffset) {
-      this.loading = true;
+      this.$store.commit("progressFunctionOn", true);
       const params = {
         per_page: this.skip.limit,
         page: myOffset,
       };
-      this.skip.offset = params.page;
       this.$http
         .get("/api/mata-pelajaran", { params: params })
         .then((r) => {
           this.mapelData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
-          this.loading = false;
+          this.skip.offset = (r.data.data.current_page - 1) * r.data.data.per_page;
+         this.$store.commit("progressFunctionOn", false);
         })
         .catch((err) => {
           console.log(err);
-          this.loading = false;
+          this.$store.commit("progressFunctionOn", false);
         });
     },
     selectPage($event) {
+      console.log($event);
       this.fetchMapel($event);
     },
     save() {
@@ -402,6 +401,7 @@ export default {
       this.dialog = false;
     },
     reset() {
+      this.updateProcess = false;
       this.$refs.form.reset();
     },
     setRowPerPage(event) {

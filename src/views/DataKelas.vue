@@ -21,7 +21,7 @@
           depressed
           color="primary"
           dark
-          class="mb-5 mt-2"
+          class="mb-5 mt-2 submitBtn black--text"
           @click="dialog = !dialog"
         >
           <v-icon left>mdi-plus-circle</v-icon>Tambah Kelas
@@ -103,28 +103,41 @@
 
     <v-card>
       <v-card-title>
-        Data Kelas
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          outlined
-          hide-details
-        ></v-text-field>
+        <v-row class="ma-1">
+          <div class="body-2 mt-2 mr-2">Tampilkan</div>
+          <v-select
+            v-model="skip.limit"
+            :items="itemsPerPage"
+            :value="10"
+            type="number"
+            style="max-width: min-content"
+            dense
+            outlined
+            @input="setRowPerPage($event)"
+          ></v-select>
+          <div class="body-2 mt-2 ml-2">Data Per Halaman</div>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Pencarian"
+            outlined
+            dense
+            hide-details
+          ></v-text-field>
+        </v-row>
       </v-card-title>
       <v-data-table
         :headers="headers"
         :items="kelasData"
         :search="search"
-        :loading="loading"
         class="elevation-1"
         hide-default-footer
       >
         <template v-slot:body="{ items }">
           <tbody>
             <tr v-for="(item, index) in items" :key="item.id">
-              <td>{{ index + skip.offset }}</td>
+              <td>{{ index + 1 + skip.offset }}</td>
               <td class="text-xs-right">{{ item.nama }}</td>
               <td class="text-xs-right">
                 <v-tooltip bottom>
@@ -159,6 +172,7 @@
       <v-pagination
         class="pt-3 pb-3"
         circle
+        color="tableHeader"
         v-model="pageSelected"
         :length="totalPage"
         :total-visible="7"
@@ -212,11 +226,11 @@ export default {
     return {
       valid: true,
       search: "",
+      itemsPerPage: [5, 10, 20, 30],
       updateProcess: false,
       dialog: false,
       warnDialog: false,
       formRules: [(v) => !!v || "Tidak boleh kosong"],
-      loading: true,
       pageSelected: 1,
       kelasData: [],
       tingkatKelasData: [],
@@ -242,17 +256,18 @@ export default {
           text: "No",
           align: "start",
           width: "10%",
+           class: "tableHeader white--text",
           sortable: false,
           value: "name",
         },
-        { text: "Kelas", value: "nama" },
-        { text: "", width: "10%", value: "nama" },
+        { text: "Kelas",  class: "tableHeader white--text", value: "nama" },
+        { text: "Aksi", width: "10%",  class: "tableHeader white--text", value: "nama" },
       ],
     };
   },
   methods: {
     fetchKelas(myOffset) {
-      this.loading = true;
+      this.$store.commit("progressFunctionOn", true);
       const params = {
         per_page: this.skip.limit,
         page: myOffset,
@@ -263,11 +278,11 @@ export default {
         .then((r) => {
           this.kelasData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
-          this.loading = false;
+          this.$store.commit("progressFunctionOn", false);
         })
         .catch((err) => {
           console.log(err);
-          this.loading = false;
+          this.$store.commit("progressFunctionOn", false);
         });
     },
     fetchTingkatanKelas() {
@@ -399,7 +414,12 @@ export default {
       this.dialog = false;
     },
     reset() {
+      this.updateProcess = false;
       this.$refs.form.reset();
+    },
+     setRowPerPage(event) {
+      this.skip.limit = event;
+      this.fetchKelas(0);
     },
   },
   created() {

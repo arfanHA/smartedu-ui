@@ -5,19 +5,21 @@ import Login from '../views/Login.vue'
 import Dashboard from '../views/Dashboard.vue'
 import DataUser from '../views/DataUser.vue'
 import DataGuru from '../views/DataGuru.vue'
+import DataSiswa from '../views/DataSiswa.vue'
 import DataTingkatanKelas from '../views/DataTingkatanKelas.vue'
 import DataKelas from '../views/DataKelas.vue'
 import DataJabatan from '../views/DataJabatan.vue'
 import DataPegawai from '../views/DataPegawai.vue'
 import DataTahunAjar from '../views/DataTahunAjar.vue'
 import DataMapel from '../views/DataMapel.vue'
+import DataKategoriMapel from '../views/DataKategoriMapel.vue'
 import PengaturanMapelKelas from '../views/PengaturanMapelKelas.vue'
 import PengaturanTugasMengajarKelas from '../views/PengaturanTugasMengajarKelas.vue'
 import PengaturanKelasSemester from '../views/PengaturanKelasSemester.vue'
 
 Vue.use(VueRouter)
 
-  
+
 const routes = [
   {
     path: '/',
@@ -28,7 +30,7 @@ const routes = [
     path: '/home',
     name: 'home',
     component: Home,
-    children:[
+    children: [
       {
         path: '/',
         name: 'dashboard',
@@ -39,6 +41,7 @@ const routes = [
             {
               text: 'Home',
               disabled: true,
+              icon: 'mdi-home',
               name: 'dashboard',
             }
           ]
@@ -69,11 +72,55 @@ const routes = [
             }
           ]
         }
-      },{
+      },
+      {
+        path: '/data/kategoriMapel',
+        name: 'dataKategoriMapel',
+        component: DataKategoriMapel,
+        meta: {
+          title: 'Dashboard',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Kategori Mata Pelajaran',
+              disabled: true,
+              name: 'dataKategoriMapel',
+            }
+          ]
+        }
+      },
+      {
         path: '/data/guru',
         name: 'dataGuru',
         component: DataGuru,
-      },{
+      },
+      {
+        path: '/data/siswa',
+        name: 'dataSiswa',
+        component: DataSiswa,
+        meta: {
+          title: 'Data Siswa',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Data Siswa',
+              disabled: true,
+              name: 'dataSiswa',
+            }
+          ]
+        }
+      },
+      {
         path: '/data/tingkatan-kelas',
         name: 'dataTingkatanKelas',
         component: DataTingkatanKelas,
@@ -83,6 +130,7 @@ const routes = [
             {
               text: 'Home',
               disabled: false,
+              icon: 'mdi-home',
               name: 'dashboard',
             },
             {
@@ -103,6 +151,7 @@ const routes = [
             {
               text: 'Home',
               disabled: false,
+              icon: 'mdi-home',
               name: 'dashboard',
             },
             {
@@ -123,6 +172,7 @@ const routes = [
             {
               text: 'Home',
               disabled: false,
+              icon: 'mdi-home',
               name: 'dashboard',
             },
             {
@@ -143,6 +193,7 @@ const routes = [
             {
               text: 'Home',
               disabled: false,
+              icon: 'mdi-home',
               name: 'dashboard',
             },
             {
@@ -163,6 +214,7 @@ const routes = [
             {
               text: 'Home',
               disabled: false,
+              icon: 'mdi-home',
               name: 'dashboard',
             },
             {
@@ -187,6 +239,22 @@ const routes = [
         path: '/pengaturan/kelasSemester',
         name: 'pengaturanKelasSemester',
         component: PengaturanKelasSemester,
+        meta: {
+          title: 'Kelas Semester',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Pengaturan Kelas Semester',
+              disabled: true,
+              name: 'pengaturanKelasSemester',
+            }
+          ]
+        }
       },
     ]
   },

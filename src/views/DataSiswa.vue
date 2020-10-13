@@ -24,7 +24,7 @@
           class="mb-5 mt-2 submitBtn black--text"
           @click="dialog = !dialog"
         >
-          <v-icon left>mdi-plus-circle</v-icon>Tambah Pegawai
+          <v-icon left>mdi-plus-circle</v-icon>Tambah Siswa
         </v-btn>
       </v-col>
     </v-row>
@@ -41,7 +41,7 @@
           <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Tambah Pegawai</v-toolbar-title>
+          <v-toolbar-title>Tambah Siswa</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
@@ -86,70 +86,193 @@
             </v-snackbar>
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-row>
-                <v-col md="6" sm="12">
-                  <v-select
-                    v-model="editedItem.master_jabatan_id"
-                    item-value="id"
-                    :items="jabatanData"
-                    item-text="nama"
-                    filled
-                    :rules="formRules"
-                    label="Jabatan"
-                    required
-                  ></v-select>
+                <v-col>
+                  <div class="caption">Data Siswa</div>
                 </v-col>
+              </v-row>
+              <v-row>
                 <v-col md="6" sm="12">
-                  <v-select
-                    v-model="editedItem.user_id"
-                    :items="userData"
-                    item-value="id"
-                    item-text="nama"
-                    filled
-                    :rules="formRules"
-                    label="Pengguna"
-                    required
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" sm="12">
                   <v-text-field
-                    label="Nama"
-                    filled
+                    label="Nama Lengkap"
+                    outlined
+                    dense
                     :rules="formRules"
-                    v-model="editedItem.nama"
+                    v-model="editedItem.nama_lengkap"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col md="6" sm="12">
+                <v-col md="3" sm="12">
                   <v-text-field
-                    label="NIP"
-                    filled
+                    label="Nomor Induk"
+                    outlined
+                    dense
                     :rules="formRules"
-                    v-model="editedItem.nip"
+                    v-model="editedItem.nomor_induk"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col md="6" sm="12">
+                <v-col md="3" sm="12">
+                  <v-text-field
+                    label="NISN"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.nisn"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="3" sm="12">
+                  <v-text-field
+                    label="Tempat Lahir"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.tempat_lahir"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="3" sm="12">
+                  <v-menu
+                    v-model="dateMenu1"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="editedItem.tanggal_lahir"
+                        label="Tanggal Lahir"
+                        append-icon="mdi-calendar"
+                        outlined
+                        dense
+                        readonly
+                        required
+                        :rules="formRules"
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="editedItem.tanggal_lahir"
+                      @input="dateMenu1 = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col md="3" sm="12">
                   <v-select
                     v-model="editedItem.jenis_kelamin"
                     :items="jk"
                     item-text="nama"
                     item-value="value"
-                    filled
+                    outlined
+                    dense
                     :rules="formRules"
                     label="Jenis Kelamin"
                     required
                   ></v-select>
                 </v-col>
-                <v-col md="9" sm="12">
-                  <v-textarea
-                    label="Alamat"
-                    filled
+                <v-col md="3" sm="12">
+                  <v-text-field
+                    label="Agama"
+                    outlined
+                    dense
                     :rules="formRules"
-                    v-model="editedItem.alamat"
+                    v-model="editedItem.agama"
                     required
-                  ></v-textarea>
+                  ></v-text-field>
                 </v-col>
                 <v-col md="3" sm="12">
+                  <v-text-field
+                    label="Status dalam keluarga"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.status_dalam_keluarga"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="3" sm="12">
+                  <v-text-field
+                    label="Anak ke-"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.anak_ke"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="6" sm="12">
+                  <v-text-field
+                    label="Alamat peserta didik"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.alamat_peserta_didik"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="3" sm="12">
+                  <v-text-field
+                    label="No. Telp Rumah"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.no_telp_rumah"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="6" sm="12">
+                  <v-text-field
+                    label="Sekolah Asal"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.sekolah_asal"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="3" sm="12">
+                  <v-text-field
+                    label="Diterima di kelas"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.diterima_di_kelas"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="3" sm="12">
+                  <v-menu
+                    v-model="dateMenu2"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="editedItem.diterima_tanggal"
+                        label="Diterima Tanggal"
+                        append-icon="mdi-calendar"
+                        outlined
+                        dense
+                        readonly
+                        required
+                        :rules="formRules"
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="editedItem.diterima_tanggal"
+                      @input="dateMenu2 = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col md="3" sm="12" style="height: 200px">
                   <v-card
                     v-bind:style="{ height: heightVal, background: bgImgVal }"
                     ma-0
@@ -171,6 +294,120 @@
                       />
                     </div>
                   </v-card>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <div class="caption">Data Orang Tua</div>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col md="6" sm="12">
+                  <v-text-field
+                    label="Nama Ayah"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.ortu_nama_ayah"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="6" sm="12">
+                  <v-text-field
+                    label="Nama Ibu"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.ortu_nama_ibu"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="6" sm="12">
+                  <v-text-field
+                    label="Alamat Orang Tua"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.ortu_alamat"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="3" sm="12">
+                  <v-text-field
+                    label="Nomor Telepon Rumah"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.ortu_no_telp_rumah"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="3" sm="12">
+                  <v-text-field
+                    label="Pekerjaan Ayah"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.ortu_pekerjaan_ayah"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="3" sm="12">
+                  <v-text-field
+                    label="Pekerjaan Ibu"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.ortu_pekerjaan_ibu"
+                    required
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <div class="caption">Data Wali</div>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col md="6" sm="12">
+                  <v-text-field
+                    label="Nama Orang Tua Wali"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.wali_nama"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="6" sm="12">
+                  <v-text-field
+                    label="Alamat"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.wali_alamat"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="3" sm="12">
+                  <v-text-field
+                    label="Nomor Telepon Rumah"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.wali_no_telp_rumah"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col md="3" sm="12">
+                  <v-text-field
+                    label="Pekerjaan"
+                    outlined
+                    dense
+                    :rules="formRules"
+                    v-model="editedItem.wali_pekerjaan"
+                    required
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-form>
@@ -208,9 +445,7 @@
       <v-dialog persistent v-model="dialogImageDesc" max-width="500px">
         <v-card>
           <v-card-title class="primary">
-            <span class="subtitle-1" style="color: white"
-              >Image Description</span
-            >
+            <span class="subtitle-1" style="color: white">Foto Siswa</span>
           </v-card-title>
           <v-container fluid>
             <v-row dense>
@@ -238,7 +473,7 @@
       </v-dialog>
       <v-data-table
         :headers="headers"
-        :items="pegawaiData"
+        :items="siswaData"
         :search="search"
         class="elevation-1"
         hide-default-footer
@@ -247,11 +482,15 @@
           <tbody>
             <tr v-for="(item, index) in items" :key="item.id">
               <td>{{ index + 1 + skip.offset }}</td>
-              <td class="text-xs-right">{{ item.nama }}</td>
-              <td class="text-xs-right">{{ item.nip }}</td>
-              <td class="text-xs-right">{{ item.master_jabatan_id.nama }}</td>
+              <td class="text-xs-right">{{ item.nama_lengkap }}</td>
+              <td class="text-xs-right">{{ item.nomor_induk }}</td>
+              <td class="text-xs-right">{{ item.nisn }}</td>
+              <td class="text-xs-right">
+                {{ item.tempat_lahir }} &nbsp; {{ item.tanggal_lahir }}
+              </td>
               <td class="text-xs-right">{{ item.jenis_kelamin }}</td>
-              <td class="text-xs-right">{{ item.alamat }}</td>
+              <td class="text-xs-right">{{ item.agama }}</td>
+              <td class="text-xs-right">{{ item.alamat_peserta_didik }}</td>
               <td class="text-xs-right">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
@@ -335,6 +574,10 @@ export default {
   data() {
     return {
       search: "",
+      docDate1: new Date().toISOString().substr(0, 10),
+      docDate2: new Date().toISOString().substr(0, 10),
+      dateMenu1: false,
+      dateMenu2: false,
       itemsPerPage: [5, 10, 20, 30],
       jk: [
         { nama: "Laki-Laki", value: "L" },
@@ -353,17 +596,33 @@ export default {
       updateProcess: false,
       dialogImageDesc: false,
       totalPage: null,
-      pegawaiData: [],
-      jabatanData: [],
+      siswaData: [],
       editedItem: {
-        master_jabatan_id: null,
-        user_id: null,
-        nip: null,
-        nama: null,
-        alamat: null,
+        nama_lengkap: null,
         foto: null,
+        nomor_induk: null,
+        nisn: null,
+        tempat_lahir: null,
+        tanggal_lahir: new Date().toISOString().substr(0, 10),
         jenis_kelamin: null,
-        active: 1,
+        agama: null,
+        status_dalam_keluarga: null,
+        anak_ke: null,
+        alamat_peserta_didik: null,
+        no_telp_rumah: null,
+        sekolah_asal: null,
+        diterima_di_kelas: null,
+        diterima_tanggal: new Date().toISOString().substr(0, 10),
+        ortu_nama_ayah: null,
+        ortu_nama_ibu: null,
+        ortu_alamat: null,
+        ortu_no_telp_rumah: null,
+        ortu_pekerjaan_ayah: null,
+        ortu_pekerjaan_ibu: null,
+        wali_nama: null,
+        wali_alamat: null,
+        wali_no_telp_rumah: null,
+        wali_pekerjaan: null,
       },
       snackbar: {
         show: false,
@@ -399,14 +658,28 @@ export default {
           value: "name",
         },
         { text: "Nama", class: "tableHeader white--text", value: "kode" },
-        { text: "NIP", class: "tableHeader white--text", value: "nama" },
         {
-          text: "Jabatan",
+          text: "Nomor Induk",
+          class: "tableHeader white--text",
+          value: "nama",
+        },
+        {
+          text: "NISN",
+          class: "tableHeader white--text",
+          value: "keterangan",
+        },
+        {
+          text: "TTL",
           class: "tableHeader white--text",
           value: "keterangan",
         },
         {
           text: "Jenis Kelamin",
+          class: "tableHeader white--text",
+          value: "keterangan",
+        },
+        {
+          text: "Agama",
           class: "tableHeader white--text",
           value: "keterangan",
         },
@@ -420,16 +693,16 @@ export default {
     };
   },
   methods: {
-    fetchPegawai(myOffset) {
+    fetchSiswa(myOffset) {
       this.$store.commit("progressFunctionOn", true);
       const params = {
         per_page: this.skip.limit,
         page: myOffset,
       };
       this.$http
-        .get("/api/pegawai", { params: params })
+        .get("/api/siswa", { params: params })
         .then((r) => {
-          this.pegawaiData = r.data.data.data || [];
+          this.siswaData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
           this.skip.offset = (r.data.data.current_page - 1) * r.data.data.per_page;
           this.$store.commit("progressFunctionOn", false);
@@ -439,23 +712,8 @@ export default {
           this.$store.commit("progressFunctionOn", false);
         });
     },
-    fetchJabatan() {
-      const params = {
-        per_page: 999,
-        page: 0,
-      };
-      this.$http
-        .get("/api/jabatan", { params: params })
-        .then((r) => {
-          this.jabatanData = r.data.data.data || [];
-          this.totalPage = r.data.data.last_page;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
     selectPage($event) {
-      this.fetchPegawai($event);
+      this.fetchSiswa($event);
     },
     save() {
       this.$refs.form.validate();
@@ -468,19 +726,42 @@ export default {
           };
         } else {
           let fd = new FormData();
-          fd.append("master_jabatan_id", this.editedItem.master_jabatan_id);
-          fd.append("user_id", this.editedItem.user_id);
-          fd.append("nip", this.editedItem.nip);
-          fd.append("nama", this.editedItem.nama);
-          fd.append("alamat", this.editedItem.alamat);
+          fd.append("nama_lengkap", this.editedItem.nama_lengkap);
+          fd.append("nomor_induk", this.editedItem.nomor_induk);
+          fd.append("nisn", this.editedItem.nisn);
+          fd.append("tempat_lahir", this.editedItem.tempat_lahir);
+          fd.append("tanggal_lahir", this.editedItem.tanggal_lahir);
           fd.append("jenis_kelamin", this.editedItem.jenis_kelamin);
-          fd.append("active", this.editedItem.active);
+          fd.append("agama", this.editedItem.agama);
+          fd.append(
+            "status_dalam_keluarga",
+            this.editedItem.status_dalam_keluarga
+          );
+          fd.append("anak_ke", this.editedItem.anak_ke);
+          fd.append(
+            "alamat_peserta_didik",
+            this.editedItem.alamat_peserta_didik
+          );
+          fd.append("no_telp_rumah", this.editedItem.no_telp_rumah);
+          fd.append("sekolah_asal", this.editedItem.sekolah_asal);
+          fd.append("diterima_di_kelas", this.editedItem.diterima_di_kelas);
+          fd.append("diterima_tanggal", this.editedItem.diterima_tanggal);
+          fd.append("ortu_nama_ayah", this.editedItem.ortu_nama_ayah);
+          fd.append("ortu_nama_ibu", this.editedItem.ortu_nama_ibu);
+          fd.append("ortu_alamat", this.editedItem.ortu_alamat);
+          fd.append("ortu_no_telp_rumah", this.editedItem.ortu_no_telp_rumah);
+          fd.append("ortu_pekerjaan_ayah", this.editedItem.ortu_pekerjaan_ayah);
+          fd.append("ortu_pekerjaan_ibu", this.editedItem.ortu_pekerjaan_ibu);
+          fd.append("wali_nama", this.editedItem.wali_nama);
+          fd.append("wali_alamat", this.editedItem.wali_alamat);
+          fd.append("wali_no_telp_rumah", this.editedItem.wali_no_telp_rumah);
+          fd.append("wali_pekerjaan", this.editedItem.wali_pekerjaan);
           if (this.srcImg.file != null) {
             fd.append("foto", this.srcImg.file);
           }
 
           this.$http
-            .post("/api/pegawai", fd)
+            .post("/api/siswa", fd)
             .then((r) => {
               this.snackbar = {
                 show: true,
@@ -489,7 +770,7 @@ export default {
                 color: "success",
               };
               this.dialog = false;
-              this.fetchPegawai(1);
+              this.fetchSiswa(1);
               this.reset();
             })
             .catch((err) => {
@@ -500,7 +781,7 @@ export default {
                 color: "red",
               };
               this.dialog = false;
-              this.fetchPegawai(1);
+              this.fetchSiswa(1);
               this.reset();
             });
         }
@@ -529,19 +810,39 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         let fd = new FormData();
-        fd.append("master_jabatan_id", this.editedItem.master_jabatan_id.id);
-        fd.append("user_id", this.editedItem.user_id.id);
-        fd.append("nip", this.editedItem.nip);
-        fd.append("nama", this.editedItem.nama);
-        fd.append("alamat", this.editedItem.alamat);
+        fd.append("nama_lengkap: ", this.editedItem.nama_lengkap);
+        fd.append("nomor_induk: ", this.editedItem.nomor_induk);
+        fd.append("nisn: ", this.editedItem.nisn);
+        fd.append("tempat_lahir", this.editedItem.tempat_lahir);
+        fd.append("tanggal_lahir", this.editedItem.tanggal_lahir);
         fd.append("jenis_kelamin", this.editedItem.jenis_kelamin);
-        fd.append("active", this.editedItem.active);
+        fd.append("agama", this.editedItem.agama);
+        fd.append(
+          "status_dalam_keluarga",
+          this.editedItem.status_dalam_keluarga
+        );
+        fd.append("anak_ke", this.editedItem.anak_ke);
+        fd.append("alamat_peserta_didik", this.editedItem.alamat_peserta_didik);
+        fd.append("no_telp_rumah", this.editedItem.no_telp_rumah);
+        fd.append("sekolah_asal", this.editedItem.sekolah_asal);
+        fd.append("diterima_di_kelas", this.editedItem.diterima_di_kelas);
+        fd.append("diterima_tanggal", this.editedItem.diterima_tanggal);
+        fd.append("ortu_nama_ayah", this.editedItem.ortu_nama_ayah);
+        fd.append("ortu_nama_ibu", this.editedItem.ortu_nama_ibu);
+        fd.append("ortu_alamat", this.editedItem.ortu_alamat);
+        fd.append("ortu_no_telp_rumah", this.editedItem.ortu_no_telp_rumah);
+        fd.append("ortu_pekerjaan_ayah", this.editedItem.ortu_pekerjaan_ayah);
+        fd.append("ortu_pekerjaan_ibu", this.editedItem.ortu_pekerjaan_ibu);
+        fd.append("wali_nama", this.editedItem.wali_nama);
+        fd.append("wali_alamat", this.editedItem.wali_alamat);
+        fd.append("wali_no_telp_rumah", this.editedItem.wali_no_telp_rumah);
+        fd.append("wali_pekerjaan", this.editedItem.wali_pekerjaan);
         if (this.srcImg.file != null) {
           fd.append("foto", this.srcImg.file);
         }
 
         this.$http
-          .post(`/api/pegawai/${this.editedItem.id}?_method=PUT`, fd)
+          .post(`/api/siswa/${this.editedItem.id}?_method=PUT`, fd)
           .then((r) => {
             this.snackbar = {
               show: true,
@@ -550,7 +851,7 @@ export default {
               color: "success",
             };
             this.dialog = false;
-            this.fetchPegawai(1);
+            this.fetchSiswa(1);
             this.reset();
           })
           .catch((err) => {
@@ -561,7 +862,7 @@ export default {
               color: "red",
             };
             this.dialog = false;
-            this.fetchPegawai(1);
+            this.fetchSiswa(1);
             this.reset();
           });
         this.updateProcess = false;
@@ -576,7 +877,7 @@ export default {
     },
     processingDelete(item) {
       this.$http
-        .delete(`/api/pegawai/${item.id}`)
+        .delete(`/api/siswa/${item.id}`)
         .then((r) => {
           this.snackbar = {
             show: true,
@@ -586,7 +887,7 @@ export default {
           };
           this.dialog = false;
           this.warnDialog = false;
-          this.fetchPegawai(1);
+          this.fetchSiswa(1);
           this.reset();
         })
         .catch((err) => {
@@ -597,7 +898,7 @@ export default {
             color: "red",
           };
           this.dialog = false;
-          this.fetchPegawai(1);
+          this.fetchSiswa(1);
           this.reset();
         });
     },
@@ -606,7 +907,7 @@ export default {
       this.dialog = false;
     },
     reset() {
-      this.updateProcess = false;
+        this.updateProcess = false;
       this.$refs.form.reset();
       this.srcImg = {
         bufImg: null,
@@ -642,12 +943,11 @@ export default {
     },
     setRowPerPage(event) {
       this.skip.limit = event;
-      this.fetchPegawai(0);
+      this.fetchSiswa(0);
     },
   },
   created() {
-    this.fetchPegawai(1);
-    this.fetchJabatan();
+    this.fetchSiswa(1);
   },
 };
 </script>

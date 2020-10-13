@@ -21,7 +21,7 @@
           depressed
           color="primary"
           dark
-          class="mb-5 mt-2"
+          class="mb-5 mt-2 submitBtn black--text"
           @click="dialog = !dialog"
         >
           <v-icon left>mdi-plus-circle</v-icon>Tambah Kelas Semester
@@ -67,7 +67,7 @@
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-row>
                 <v-col cols="12" sm="12">
-                   <v-select
+                  <v-select
                     v-model="editedItem.master_tahun_ajar_id"
                     item-value="id"
                     :items="tahunAjarData"
@@ -79,7 +79,7 @@
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="12">
-                   <v-select
+                  <v-select
                     v-model="editedItem.master_kelas_id"
                     item-value="id"
                     :items="kelasData"
@@ -91,7 +91,7 @@
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="12">
-                   <v-select
+                  <v-select
                     v-model="editedItem.master_pegawai_id"
                     item-value="id"
                     :items="pegawaiData"
@@ -120,21 +120,34 @@
 
     <v-card>
       <v-card-title>
-        Data Kelas Semester
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          outlined
-          hide-details
-        ></v-text-field>
+        <v-row class="ma-1">
+          <div class="body-2 mt-2 mr-2">Tampilkan</div>
+          <v-select
+            v-model="skip.limit"
+            :items="itemsPerPage"
+            :value="10"
+            type="number"
+            style="max-width: min-content"
+            dense
+            outlined
+            @input="setRowPerPage($event)"
+          ></v-select>
+          <div class="body-2 mt-2 ml-2">Data Per Halaman</div>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Pencarian"
+            outlined
+            dense
+            hide-details
+          ></v-text-field>
+        </v-row>
       </v-card-title>
       <v-data-table
         :headers="headers"
         :items="kelasSemesterData"
         :search="search"
-        :loading="loading"
         class="elevation-1"
         hide-default-footer
       >
@@ -142,7 +155,9 @@
           <tbody>
             <tr v-for="(item, index) in items" :key="item.id">
               <td>{{ index + skip.offset }}</td>
-              <td class="text-xs-right">{{ item.master_tahun_ajar_id.sebutan }}</td>
+              <td class="text-xs-right">
+                {{ item.master_tahun_ajar_id.sebutan }}
+              </td>
               <td class="text-xs-right">{{ item.master_kelas_id.nama }}</td>
               <td class="text-xs-right">{{ item.master_pegawai_id.nama }}</td>
               <td class="text-xs-right">{{ item.keterangan }}</td>
@@ -179,6 +194,7 @@
       <v-pagination
         class="pt-3 pb-3"
         circle
+        color="tableHeader"
         v-model="pageSelected"
         :length="totalPage"
         :total-visible="7"
@@ -216,12 +232,12 @@ export default {
   data() {
     return {
       search: "",
+      itemsPerPage: [5, 10, 20, 30],
       formRules: [(v) => !!v || "Tidak boleh kosong"],
       valid: true,
       dialog: false,
       warnDialog: false,
       updateProcess: false,
-      loading: true,
       totalPage: null,
       kelasSemesterData: [],
       pegawaiData: [],
@@ -249,20 +265,33 @@ export default {
           text: "No",
           align: "start",
           width: "10%",
+          class: "tableHeader white--text",
           sortable: false,
           value: "name",
         },
-        { text: "Tahun Ajar", value: "kode" },
-        { text: "Kelas", value: "nama" },
-        { text: "Nama Pegawai", value: "keterangan" },
-        { text: "Keterangan", value: "keterangan" },
-        { text: "Action", value: "keterangan" },
+        { text: "Tahun Ajar", class: "tableHeader white--text", value: "kode" },
+        { text: "Kelas", class: "tableHeader white--text", value: "nama" },
+        {
+          text: "Nama Pegawai",
+          class: "tableHeader white--text",
+          value: "keterangan",
+        },
+        {
+          text: "Keterangan",
+          class: "tableHeader white--text",
+          value: "keterangan",
+        },
+        {
+          text: "Action",
+          class: "tableHeader white--text",
+          value: "keterangan",
+        },
       ],
     };
   },
   methods: {
     fetchKelasSemester(myOffset) {
-      this.loading = true;
+      this.$store.commit("progressFunctionOn",true);
       const params = {
         per_page: this.skip.limit,
         page: myOffset,
@@ -273,15 +302,14 @@ export default {
         .then((r) => {
           this.kelasSemesterData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
-          this.loading = false;
+          this.$store.commit("progressFunctionOn", false);
         })
         .catch((err) => {
           console.log(err);
-          this.loading = false;
+          this.$store.commit("progressFunctionOn", false);
         });
     },
     fetchTahunAjar() {
-      this.loading = true;
       const params = {
         per_page: 999,
         page: 0,
@@ -291,15 +319,12 @@ export default {
         .then((r) => {
           this.tahunAjarData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
-          this.loading = false;
         })
         .catch((err) => {
           console.log(err);
-          this.loading = false;
         });
     },
     fetchKelas() {
-      this.loading = true;
       const params = {
         per_page: 999,
         page: 0,
@@ -309,15 +334,12 @@ export default {
         .then((r) => {
           this.kelasData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
-          this.loading = false;
         })
         .catch((err) => {
           console.log(err);
-          this.loading = false;
         });
     },
     fetchPegawai() {
-      this.loading = true;
       const params = {
         per_page: 999,
         page: 0,
@@ -327,11 +349,9 @@ export default {
         .then((r) => {
           this.pegawaiData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
-          this.loading = false;
         })
         .catch((err) => {
           console.log(err);
-          this.loading = false;
         });
     },
     selectPage($event) {
@@ -382,7 +402,7 @@ export default {
           keterangan: this.editedItem.keterangan,
         };
         console.log(params);
-        
+
         this.$http
           .put(`/api/pengaturan-kelas-semester/${this.editedItem.id}`, params)
           .then((r) => {
@@ -449,7 +469,12 @@ export default {
       this.dialog = false;
     },
     reset() {
+      this.updateProcess = false;
       this.$refs.form.reset();
+    },
+    setRowPerPage(event) {
+      this.skip.limit = event;
+      this.fetchKelasSemester(0);
     },
   },
   created() {

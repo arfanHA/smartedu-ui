@@ -5,8 +5,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    progressStatus: false,
   },
   mutations: {
+    progressFunctionOn(state, status) {
+      state.progressStatus = status;
+  },
   },
   actions: {
   },

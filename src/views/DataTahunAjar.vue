@@ -21,7 +21,7 @@
           depressed
           color="primary"
           dark
-          class="mb-5 mt-2"
+          class="mb-5 mt-2 submitBtn black--text"
           @click="dialog = !dialog"
         >
           <v-icon left>mdi-plus-circle</v-icon>Tambah Tahun Ajar
@@ -84,7 +84,7 @@
                     required
                   ></v-text-field>
                 </v-col>
-                 <v-col cols="12" sm="12">
+                <v-col cols="12" sm="12">
                   <v-text-field
                     label="Semester"
                     filled
@@ -111,28 +111,41 @@
 
     <v-card>
       <v-card-title>
-        Data Tahun Ajar
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          outlined
-          hide-details
-        ></v-text-field>
+        <v-row class="ma-1">
+          <div class="body-2 mt-2 mr-2">Tampilkan</div>
+          <v-select
+            v-model="skip.limit"
+            :items="itemsPerPage"
+            :value="10"
+            type="number"
+            style="max-width: min-content"
+            dense
+            outlined
+            @input="setRowPerPage($event)"
+          ></v-select>
+          <div class="body-2 mt-2 ml-2">Data Per Halaman</div>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Pencarian"
+            outlined
+            dense
+            hide-details
+          ></v-text-field>
+        </v-row>
       </v-card-title>
       <v-data-table
         :headers="headers"
         :items="tahunAjarData"
         :search="search"
-        :loading="loading"
         class="elevation-1"
         hide-default-footer
       >
         <template v-slot:body="{ items }">
           <tbody>
             <tr v-for="(item, index) in items" :key="item.id">
-              <td>{{ index + skip.offset }}</td>
+              <td>{{ index + 1 + skip.offset }}</td>
               <td class="text-xs-right">{{ item.tahun }}</td>
               <td class="text-xs-right">{{ item.sebutan }}</td>
               <td class="text-xs-right">{{ item.semester }}</td>
@@ -170,6 +183,7 @@
       <v-pagination
         class="pt-3 pb-3"
         circle
+        color="tableHeader"
         v-model="pageSelected"
         :length="totalPage"
         :total-visible="7"
@@ -207,12 +221,12 @@ export default {
   data() {
     return {
       search: "",
+      itemsPerPage: [5, 10, 20, 30],
       formRules: [(v) => !!v || "Tidak boleh kosong"],
       valid: true,
       dialog: false,
       warnDialog: false,
       updateProcess: false,
-      loading: true,
       totalPage: null,
       tahunAjarData: [],
       editedItem: {
@@ -236,35 +250,40 @@ export default {
           text: "No",
           align: "start",
           width: "10%",
+          class: "tableHeader white--text",
           sortable: false,
           value: "name",
         },
-        { text: "Tahun", value: "kode" },
-        { text: "Sebutan", value: "nama" },
-        { text: "Semester", value: "nama" },
-        { text: "Keterangan", value: "keterangan" },
-        { text: "Action", value: "keterangan" },
+        { text: "Tahun", class: "tableHeader white--text", value: "kode" },
+        { text: "Sebutan", class: "tableHeader white--text", value: "nama" },
+        { text: "Semester", class: "tableHeader white--text", value: "nama" },
+        {
+          text: "Keterangan",
+          class: "tableHeader white--text",
+          value: "keterangan",
+        },
+        { text: "Aksi", class: "tableHeader white--text", value: "keterangan" },
       ],
     };
   },
   methods: {
     fetchTahunAjar(myOffset) {
-      this.loading = true;
+      this.$store.commit("progressFunctionOn", true);
       const params = {
         per_page: this.skip.limit,
         page: myOffset,
       };
-      this.skip.offset = params.page;
       this.$http
         .get("/api/tahun-ajar", { params: params })
         .then((r) => {
           this.tahunAjarData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
-          this.loading = false;
+          this.skip.offset = (r.data.data.current_page - 1) * r.data.data.per_page;
+           this.$store.commit("progressFunctionOn", false);
         })
         .catch((err) => {
           console.log(err);
-          this.loading = false;
+          this.$store.commit("progressFunctionOn", false);
         });
     },
     selectPage($event) {
@@ -373,7 +392,12 @@ export default {
       this.dialog = false;
     },
     reset() {
+      this.updateProcess = false;
       this.$refs.form.reset();
+    },
+    setRowPerPage(event) {
+      this.skip.limit = event;
+      this.fetchTahunAjar(0);
     },
   },
   created() {

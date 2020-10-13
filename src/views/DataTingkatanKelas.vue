@@ -21,7 +21,7 @@
           depressed
           color="primary"
           dark
-          class="mb-5 mt-2"
+          class="mb-5 mt-2 submitBtn black--text"
           @click="dialog = !dialog"
         >
           <v-icon left>mdi-plus-circle</v-icon>Tambah Tingkatan Kelas
@@ -83,28 +83,41 @@
 
     <v-card>
       <v-card-title>
-        Data Tingkatan Kelas
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          outlined
-          hide-details
-        ></v-text-field>
+        <v-row class="ma-1">
+          <div class="body-2 mt-2 mr-2">Tampilkan</div>
+          <v-select
+            v-model="skip.limit"
+            :items="itemsPerPage"
+            :value="10"
+            type="number"
+            style="max-width: min-content"
+            dense
+            outlined
+            @input="setRowPerPage($event)"
+          ></v-select>
+          <div class="body-2 mt-2 ml-2">Data Per Halaman</div>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Pencarian"
+            outlined
+            dense
+            hide-details
+          ></v-text-field>
+        </v-row>
       </v-card-title>
       <v-data-table
         :headers="headers"
         :items="tingkatKelasData"
         :search="search"
-        :loading="loading"
         class="elevation-1"
         hide-default-footer
       >
         <template v-slot:body="{ items }">
           <tbody>
             <tr v-for="(item, index) in items" :key="item.name">
-              <td>{{ index + skip.offset }}</td>
+              <td>{{ index + 1 + skip.offset }}</td>
               <td class="text-xs-right">{{ item.tingkatan }}</td>
               <td class="text-xs-right">
                 <v-tooltip bottom>
@@ -139,6 +152,7 @@
       <v-pagination
         class="pt-3 pb-3"
         circle
+        color="tableHeader"
         v-model="pageSelected"
         :length="page"
         :total-visible="7"
@@ -176,6 +190,7 @@ export default {
   data() {
     return {
       search: "",
+      itemsPerPage: [5, 10, 20, 30],
       dialog: false,
       updateProcess: false,
       valid: true,
@@ -203,31 +218,41 @@ export default {
           align: "start",
           sortable: false,
           width: "10%",
+          class: "tableHeader white--text",
           value: "seq",
         },
-        { text: "Tingkatan", value: "tingkatan" },
-        { text: "", width: "10%", value: "action" },
+        {
+          text: "Tingkatan",
+          class: "tableHeader white--text",
+          value: "tingkatan",
+        },
+        {
+          text: "Aksi",
+          width: "10%",
+          class: "tableHeader white--text",
+          value: "action",
+        },
       ],
     };
   },
   methods: {
     fetchTingkatanKelas(myOffset) {
-      this.loading = true;
+       this.$store.commit("progressFunctionOn", true);
       const params = {
         per_page: this.skip.limit,
         page: myOffset,
       };
-      this.skip.offset = params.page;
       this.$http
         .get("/api/kelas-tingkatan", { params: params })
         .then((r) => {
           this.tingkatKelasData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
-          this.loading = false;
+           this.skip.offset = (r.data.data.current_page - 1) * r.data.data.per_page;
+           this.$store.commit("progressFunctionOn", false);
         })
         .catch((err) => {
           console.log(err);
-          this.loading = false;
+           this.$store.commit("progressFunctionOn", false);
         });
     },
     save() {
@@ -336,7 +361,12 @@ export default {
       this.dialog = false;
     },
     reset() {
+      this.updateProcess = false;
       this.$refs.form.reset();
+    },
+    setRowPerPage(event) {
+      this.skip.limit = event;
+      this.fetchTingkatanKelas(0);
     },
   },
   created() {
