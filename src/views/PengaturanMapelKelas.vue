@@ -2,10 +2,20 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" sm="3">
-        <v-select :items="items" label="Pilih Tingkatan Kelas" outlined></v-select>
+        <v-select
+          :items="items"
+          label="Pilih Tingkatan Kelas"
+          outlined
+        ></v-select>
       </v-col>
       <v-col class="text-right">
-        <v-btn depressed color="primary" dark class="mb-5 mt-2 mr-3" @click="dialog = !dialog">
+        <v-btn
+          depressed
+          color="primary"
+          dark
+          class="mb-5 mt-2 mr-3"
+          @click="dialog = !dialog"
+        >
           <v-icon left>mdi-plus-circle</v-icon>Tambah Mapel Tingkatan Kelas
         </v-btn>
         <v-btn depressed color="accent" dark class="mb-5 mt-2">
@@ -14,8 +24,13 @@
       </v-col>
     </v-row>
 
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
-      <v-card>
+    <v-dialog
+      v-model="dialog"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+      <v-card ou>
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="dialog = false">
             <v-icon>mdi-close</v-icon>
@@ -23,84 +38,44 @@
           <v-toolbar-title>Tambah Mata Pelajaran Kelas</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="dialog = false">Simpan</v-btn>
+            <v-btn dark text @click="save">Simpan</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-card class="dialogField mt-5 pb-5">
-          <v-container>
-            <v-row class="pt-5">
-              <v-col cols="12" sm="12">
+          <v-stepper v-model="e6" vertical>
+            <v-stepper-step :complete="e6 > 1" step="1">
+              Pilih Mata Pelajaran Sesuai Kategori
+            </v-stepper-step>
+
+            <v-stepper-content step="1">
+              <div v-for="(item, index) in kategoriMapelData" :key="item.id">
                 <v-combobox
-                  v-model="model"
-                  :filter="filter"
-                  :hide-no-data="!searchC"
-                  :items="itemsC"
-                  :search-input.sync="searchC"
-                  hide-selected
-                  label="Pilih Mata Pelajaran Kelompok A (Umum)"
+                  v-model="mapelSelected[index]"
+                  :items="mapelData"
+                  item-text="nama"
+                  :label="item.keterangan"
                   multiple
-                  small-chips
-                  outlined
-                >
-                  <template v-slot:no-data>
-                    <v-list-item>
-                      <span class="subheading">No data</span>
-                      <!-- <v-chip :color="`${colors[nonce - 1]} lighten-3`" label small>{{ searchC }}</v-chip> -->
-                    </v-list-item>
-                  </template>
-                  <template v-slot:selection="{ attrs, item, parent, selected }">
-                    <v-chip
-                      v-if="item === Object(item)"
-                      v-bind="attrs"
-                      :color="`${item.color} lighten-3`"
-                      :input-value="selected"
-                      label
-                      small
-                    >
-                      <span class="pr-2">{{ item.text }}</span>
-                      <v-icon small @click="parent.selectItem(item)">mdi-close</v-icon>
-                    </v-chip>
-                  </template>
-                  <template v-slot:item="{ index, item }">
-                    <v-text-field
-                      v-if="editing === item"
-                      v-model="editing.text"
-                      autofocus
-                      flat
-                      background-color="transparent"
-                      hide-details
-                      solo
-                    ></v-text-field>
-                    <v-chip
-                      v-else
-                      :color="`${item.color} lighten-3`"
-                      dark
-                      label
-                      small
-                    >{{ item.text }}</v-chip>
-                    <v-spacer></v-spacer>
-                    <!-- <v-list-item-action @click.stop>
-                      <v-btn icon @click.stop.prevent="edit(index, item)">
-                        <v-icon>{{ editing !== item ? 'mdi-pencil' : 'mdi-check' }}</v-icon>
-                      </v-btn>
-                    </v-list-item-action>-->
-                  </template>
-                </v-combobox>
-              </v-col>
-              <!-- <v-col cols="12" sm="12">
-                <v-text-field label="Nama Mata Pelajaran" filled></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12">
-                <v-text-field label="KKM" filled></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12">
-                <v-text-field label="Kategori" filled></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12">
-                <v-textarea label="Keterangan" filled></v-textarea>
-              </v-col>-->
-            </v-row>
-          </v-container>
+                  chips
+                ></v-combobox>
+              </div>
+
+              <v-btn color="primary" @click="e6 = 2"> Next </v-btn>
+              <v-btn text> Cancel </v-btn>
+            </v-stepper-content>
+
+            <v-stepper-step :complete="e6 > 2" step="2">
+              Tentukan Urutan Mata Pelajaran
+            </v-stepper-step>
+
+            <v-stepper-content step="2">
+              <v-card
+                color="grey lighten-1"
+                class="mb-12"
+                height="200px"
+              ></v-card>
+              <v-btn text  @click="e6 = 1"> Cancel </v-btn>
+            </v-stepper-content>
+          </v-stepper>
         </v-card>
       </v-card>
     </v-dialog>
@@ -117,7 +92,11 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :items="desserts" :search="search"></v-data-table>
+      <v-data-table
+        :headers="headers"
+        :items="desserts"
+        :search="search"
+      ></v-data-table>
     </v-card>
   </v-container>
 </template>
@@ -127,13 +106,16 @@ export default {
   data() {
     return {
       search: "",
+      e6: 1,
       dialog: false,
+      mapelSelected: [],
       items: ["VII", "VIII", "IX"],
       ctivator: null,
       attach: null,
       colors: ["green", "purple", "indigo", "cyan", "teal", "orange"],
       editing: null,
       index: -1,
+      mapelData: [],
       itemsC: [
         { header: "Select an option or create one" },
         {
@@ -179,8 +161,7 @@ export default {
       ],
       nonce: 1,
       menu: false,
-      model: [
-      ],
+      kategoriMapelData: [],
       x: 0,
       searchC: null,
       y: 0,
@@ -281,20 +262,70 @@ export default {
       ],
     };
   },
-   methods: {
-      filter (item, queryText, itemText) {
-        if (item.header) return false
+  methods: {
+    filter(item, queryText, itemText) {
+      if (item.header) return false;
 
-        const hasValue = val => val != null ? val : ''
+      const hasValue = (val) => (val != null ? val : "");
 
-        const text = hasValue(itemText)
-        const query = hasValue(queryText)
+      const text = hasValue(itemText);
+      const query = hasValue(queryText);
 
-        return text.toString()
-          .toLowerCase()
-          .indexOf(query.toString().toLowerCase()) > -1
-      },
+      return (
+        text.toString().toLowerCase().indexOf(query.toString().toLowerCase()) >
+        -1
+      );
     },
+    fetchKategoriMapel() {
+      const params = {
+        per_page: 999,
+        page: 1,
+      };
+      this.$http
+        .get("/api/kategori-mata-pelajaran", { params: params })
+        .then((r) => {
+          this.kategoriMapelData = r.data.data.data || [];
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    fetchMapel() {
+      const params = {
+        per_page: 999,
+        page: 1,
+      };
+      this.$http
+        .get("/api/mata-pelajaran", { params: params })
+        .then((r) => {
+          this.mapelData = r.data.data.data || [];
+          this.totalPage = r.data.data.last_page;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    save() {
+      console.log(this.mapelSelected);
+      let joinData = [];
+      for (let x = 0; x < this.kategoriMapelData.length; x++) {
+        for (let i = 0; i < this.mapelSelected.length; i++) {
+          if (x == i) {
+            joinData.push({
+              kelompok: this.kategoriMapelData[x],
+              mapel: this.mapelSelected[i],
+            });
+          }
+        }
+      }
+
+      console.log(joinData);
+    },
+  },
+  created() {
+    this.fetchKategoriMapel();
+    this.fetchMapel();
+  },
 };
 </script>
 

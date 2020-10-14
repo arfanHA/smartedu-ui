@@ -810,9 +810,9 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         let fd = new FormData();
-        fd.append("nama_lengkap: ", this.editedItem.nama_lengkap);
-        fd.append("nomor_induk: ", this.editedItem.nomor_induk);
-        fd.append("nisn: ", this.editedItem.nisn);
+        fd.append("nama_lengkap", this.editedItem.nama_lengkap);
+        fd.append("nomor_induk", this.editedItem.nomor_induk);
+        fd.append("nisn", this.editedItem.nisn);
         fd.append("tempat_lahir", this.editedItem.tempat_lahir);
         fd.append("tanggal_lahir", this.editedItem.tanggal_lahir);
         fd.append("jenis_kelamin", this.editedItem.jenis_kelamin);
