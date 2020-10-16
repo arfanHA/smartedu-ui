@@ -41,42 +41,34 @@
             <v-btn dark text @click="save">Simpan</v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <v-card class="dialogField mt-5 pb-5">
-          <v-stepper v-model="e6" vertical>
-            <v-stepper-step :complete="e6 > 1" step="1">
-              Pilih Mata Pelajaran Sesuai Kategori
-            </v-stepper-step>
-
-            <v-stepper-content step="1">
-              <div v-for="(item, index) in kategoriMapelData" :key="item.id">
-                <v-combobox
-                  v-model="mapelSelected[index]"
-                  :items="mapelData"
-                  item-text="nama"
-                  :label="item.keterangan"
-                  multiple
-                  chips
-                ></v-combobox>
-              </div>
-
-              <v-btn color="primary" @click="e6 = 2"> Next </v-btn>
-              <v-btn text> Cancel </v-btn>
-            </v-stepper-content>
-
-            <v-stepper-step :complete="e6 > 2" step="2">
-              Tentukan Urutan Mata Pelajaran
-            </v-stepper-step>
-
-            <v-stepper-content step="2">
-              <v-card
-                color="grey lighten-1"
-                class="mb-12"
-                height="200px"
-              ></v-card>
-              <v-btn text  @click="e6 = 1"> Cancel </v-btn>
-            </v-stepper-content>
-          </v-stepper>
-        </v-card>
+        <v-container>
+          <v-card class="mx-5">
+            <v-list>
+              <v-list-item-group>
+                <v-list-item
+                  v-for="(item, i) in kategoriMapelData"
+                  :key="i"
+                  style="height: auto !important; padding: 15px"
+                >
+                  <v-list-item-content>
+                    <v-combobox
+                      v-model="mapelSelected[i]"
+                      :items="mapelData"
+                      @change="comboSelected($event)"
+                      item-text="nama"
+                      :label="'Pilih Mata Pelajaran ' + item.nama"
+                      multiple
+                      outlined
+                      persistent-hint
+                      hint="Urutan Mata Pelajaran Sesuai Dengan Urutan Saat Memilih"
+                      chips
+                    ></v-combobox>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
+          </v-card>
+        </v-container>
       </v-card>
     </v-dialog>
 
@@ -109,6 +101,7 @@ export default {
       e6: 1,
       dialog: false,
       mapelSelected: [],
+      dataToFilter: [],
       items: ["VII", "VIII", "IX"],
       ctivator: null,
       attach: null,
@@ -116,49 +109,7 @@ export default {
       editing: null,
       index: -1,
       mapelData: [],
-      itemsC: [
-        { header: "Select an option or create one" },
-        {
-          text: "Pendidikan Agama Islam",
-          color: "blue",
-        },
-        {
-          text: "PPKN",
-          color: "red",
-        },
-        {
-          text: "Bahasa Indonesia",
-          color: "purple",
-        },
-        {
-          text: "Bahasa Inggris",
-          color: "indigo",
-        },
-        {
-          text: "Matematika",
-          color: "cyan",
-        },
-        {
-          text: "Sejarah Indonesia",
-          color: "teal",
-        },
-        {
-          text: "PJOK",
-          color: "orange",
-        },
-        {
-          text: "Prakarya dan Kewirausahaan",
-          color: "yellow",
-        },
-        {
-          text: "Seni Budaya",
-          color: "green",
-        },
-        {
-          text: "Biologi",
-          color: "pink",
-        },
-      ],
+      item: 1,
       nonce: 1,
       menu: false,
       kategoriMapelData: [],
@@ -177,6 +128,15 @@ export default {
         { text: "Carbs (g)", value: "carbs" },
         { text: "Protein (g)", value: "protein" },
         { text: "Iron (%)", value: "iron" },
+      ],
+      step2Header: [
+        {
+          text: "Kelompok",
+          align: "start",
+          sortable: false,
+          value: "name",
+        },
+        { text: "Mapel", value: "calories" },
       ],
       desserts: [
         {
@@ -263,6 +223,9 @@ export default {
     };
   },
   methods: {
+    comboSelected(event) {
+      console.log(event);
+    },
     filter(item, queryText, itemText) {
       if (item.header) return false;
 
@@ -307,7 +270,13 @@ export default {
     },
     save() {
       console.log(this.mapelSelected);
-      let joinData = [];
+      let joinData = {
+        master_tahun_ajar_id: 1,
+        master_kelas_tingkatan_id: 1,
+        master_mata_pelajaran_kategori_id: [],
+        master_mata_pelajaran_id: [],
+        urutan: [],
+      };
       for (let x = 0; x < this.kategoriMapelData.length; x++) {
         for (let i = 0; i < this.mapelSelected.length; i++) {
           if (x == i) {
@@ -319,7 +288,7 @@ export default {
         }
       }
 
-      console.log(joinData);
+      this.dataToFilter = joinData;
     },
   },
   created() {

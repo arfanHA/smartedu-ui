@@ -32,6 +32,13 @@
   }
 }
 
+@media (max-width: 1366px) {
+ .v-dialog.v-dialog--active.v-dialog--fullscreen {
+    width: 82%;
+    left: 18.4%;
+  }
+}
+
 @media (max-width: 1024px) {
  .v-dialog.v-dialog--active.v-dialog--fullscreen {
     width: 100%;
