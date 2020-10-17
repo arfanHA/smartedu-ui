@@ -229,6 +229,22 @@ const routes = [
         path: '/pengaturan/mapel/kelas',
         name: 'pengaturanMapelKelas',
         component: PengaturanMapelKelas,
+        meta: {
+          title: 'Dashboard',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Mata Pelajaran Kelas',
+              disabled: true,
+              name: 'pengaturanMapelKelas',
+            }
+          ]
+        }
       },
       {
         path: '/pengaturan/tugas-mengajar/kelas',

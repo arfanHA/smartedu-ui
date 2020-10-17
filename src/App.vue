@@ -55,7 +55,8 @@
 }
 
 .v-list-item__title {
-    font-size: 0.9rem !important;
+    font-size: 0.8rem !important;
+    font-weight: 400;
 }
 
 .v-application--is-ltr .v-list-item__action:first-child, .v-application--is-ltr .v-list-item__icon:first-child {

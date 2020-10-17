@@ -1,11 +1,27 @@
 <template>
   <v-container fluid>
+    <v-snackbar
+      v-model="snackbar.show"
+      :timeout="2000"
+      centered
+      absolute
+      top
+      :color="snackbar.color"
+    >
+      {{ snackbar.text }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" icon v-bind="attrs" @click="snackbar.show = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-row>
       <v-col cols="12" sm="3">
         <v-select
           :items="items"
           label="Pilih Tingkatan Kelas"
           outlined
+          dense
         ></v-select>
       </v-col>
       <v-col class="text-right">
@@ -13,7 +29,7 @@
           depressed
           color="primary"
           dark
-          class="mb-5 mt-2 mr-3"
+          class="mb-5 mt-2 mr-3 submitBtn black--text"
           @click="dialog = !dialog"
         >
           <v-icon left>mdi-plus-circle</v-icon>Tambah Mapel Tingkatan Kelas
@@ -43,30 +59,64 @@
         </v-toolbar>
         <v-container>
           <v-card class="mx-5">
-            <v-list>
-              <v-list-item-group>
-                <v-list-item
-                  v-for="(item, i) in kategoriMapelData"
-                  :key="i"
-                  style="height: auto !important; padding: 15px"
-                >
-                  <v-list-item-content>
-                    <v-combobox
-                      v-model="mapelSelected[i]"
-                      :items="mapelData"
-                      @change="comboSelected($event)"
-                      item-text="nama"
-                      :label="'Pilih Mata Pelajaran ' + item.nama"
-                      multiple
-                      outlined
-                      persistent-hint
-                      hint="Urutan Mata Pelajaran Sesuai Dengan Urutan Saat Memilih"
-                      chips
-                    ></v-combobox>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list>
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-select
+                    class="mx-5"
+                    v-model="editedItem.master_tahun_ajar_id"
+                    :items="tahunAjarData"
+                    item-text="sebutan"
+                    item-value="id"
+                    outlined
+                    label="Tahun Ajar"
+                    required
+                  ></v-select>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col class="pb-0">
+                  <v-select
+                    class="mx-5"
+                    v-model="editedItem.master_kelas_tingkatan_id"
+                    :items="tingkatKelasData"
+                    item-text="tingkatan"
+                    item-value="id"
+                    outlined
+                    label="Tingkatan Kelas"
+                    required
+                  ></v-select>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col class="pt-0">
+                  <v-list>
+                    <v-list-item-group>
+                      <v-list-item
+                        v-for="(item, i) in kategoriMapelData"
+                        :key="i"
+                        style="height: auto !important; padding: 15px"
+                      >
+                        <v-list-item-content>
+                          <v-combobox
+                            v-model="mapelSelected[i]"
+                            :items="mapelData"
+                            @change="comboSelected($event)"
+                            item-text="nama"
+                            :label="'Pilih Mata Pelajaran ' + item.nama"
+                            multiple
+                            outlined
+                            persistent-hint
+                            hint="Urutan Mata Pelajaran Sesuai Dengan Urutan Saat Memilih"
+                            chips
+                          ></v-combobox>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </v-list>
+                </v-col>
+              </v-row>
+            </v-container>
           </v-card>
         </v-container>
       </v-card>
@@ -74,21 +124,81 @@
 
     <v-card>
       <v-card-title>
-        Data Mata Pelajaran
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          outlined
-          hide-details
-        ></v-text-field>
+        <v-row class="ma-1">
+          <div class="body-2 mt-2 mr-2">Tampilkan</div>
+          <v-select
+            v-model="skip.limit"
+            :items="itemsPerPage"
+            :value="10"
+            type="number"
+            style="max-width: min-content"
+            dense
+            outlined
+            @input="setRowPerPage($event)"
+          ></v-select>
+          <div class="body-2 mt-2 ml-2">Data Per Halaman</div>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Pencarian"
+            outlined
+            dense
+            hide-details
+          ></v-text-field>
+        </v-row>
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="desserts"
+        :items="mapelKelasData"
         :search="search"
-      ></v-data-table>
+        class="elevation-1"
+        hide-default-footer
+      >
+        <template v-slot:body="{ items }">
+          <tbody>
+            <tr v-for="(item, index) in items" :key="item.id">
+              <td>{{ index + 1 + skip.offset }}</td>
+              <td class="text-xs-right">{{ item.nama }}</td>
+              <td class="text-xs-right">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      medium
+                      class="ml-1 mr-1"
+                      v-on="on"
+                      @click="editItem(item)"
+                      >mdi-pencil</v-icon
+                    >
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      medium
+                      class="ml-1"
+                      v-on="on"
+                      @click="deleteItem(item)"
+                      >mdi-delete</v-icon
+                    >
+                  </template>
+                  <span>Delete</span>
+                </v-tooltip>
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-data-table>
+      <v-pagination
+        class="pt-3 pb-3"
+        circle
+        color="tableHeader"
+        v-model="pageSelected"
+        :length="totalPage"
+        :total-visible="7"
+        @input="selectPage($event)"
+      ></v-pagination>
     </v-card>
   </v-container>
 </template>
@@ -102,6 +212,7 @@ export default {
       dialog: false,
       mapelSelected: [],
       dataToFilter: [],
+      mapelKelasData: [],
       items: ["VII", "VIII", "IX"],
       ctivator: null,
       attach: null,
@@ -109,10 +220,26 @@ export default {
       editing: null,
       index: -1,
       mapelData: [],
+      tahunAjarData: [],
+      tingkatKelasData: [],
       item: 1,
       nonce: 1,
       menu: false,
       kategoriMapelData: [],
+      editedItem: {
+        master_tahun_ajar_id: null,
+        master_kelas_tingkatan_id: null,
+      },
+      skip: {
+        limit: 10,
+        offset: 1,
+      },
+      snackbar: {
+        show: false,
+        status: null,
+        text: "",
+        color: "",
+      },
       x: 0,
       searchC: null,
       y: 0,
@@ -128,97 +255,6 @@ export default {
         { text: "Carbs (g)", value: "carbs" },
         { text: "Protein (g)", value: "protein" },
         { text: "Iron (%)", value: "iron" },
-      ],
-      step2Header: [
-        {
-          text: "Kelompok",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-        { text: "Mapel", value: "calories" },
-      ],
-      desserts: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%",
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%",
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: "7%",
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: "8%",
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: "16%",
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: "0%",
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: "2%",
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: "45%",
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: "22%",
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: "6%",
-        },
       ],
     };
   },
@@ -238,6 +274,36 @@ export default {
         text.toString().toLowerCase().indexOf(query.toString().toLowerCase()) >
         -1
       );
+    },
+    fetchTingkatanKelas() {
+      const params = {
+        per_page: 999,
+        page: 1,
+      };
+      this.$http
+        .get("/api/kelas-tingkatan", { params: params })
+        .then((r) => {
+          this.tingkatKelasData = r.data.data.data || [];
+          this.totalPage = r.data.data.last_page;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    fetchTahunAjar() {
+      const params = {
+        per_page: 999,
+        page: 1,
+      };
+      this.$http
+        .get("/api/tahun-ajar", { params: params })
+        .then((r) => {
+          this.tahunAjarData = r.data.data.data || [];
+          this.totalPage = r.data.data.last_page;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     fetchKategoriMapel() {
       const params = {
@@ -269,7 +335,7 @@ export default {
         });
     },
     save() {
-      console.log(this.mapelSelected);
+      let urutanCount = 0;
       let joinData = {
         master_tahun_ajar_id: 1,
         master_kelas_tingkatan_id: 1,
@@ -278,22 +344,45 @@ export default {
         urutan: [],
       };
       for (let x = 0; x < this.kategoriMapelData.length; x++) {
-        for (let i = 0; i < this.mapelSelected.length; i++) {
-          if (x == i) {
-            joinData.push({
-              kelompok: this.kategoriMapelData[x],
-              mapel: this.mapelSelected[i],
-            });
-          }
+        for (let i = 0; i < this.mapelSelected[x].length; i++) {
+          urutanCount += 1;
+          joinData.master_mata_pelajaran_kategori_id.push(
+            this.kategoriMapelData[x].id
+          );
+          joinData.master_mata_pelajaran_id.push(this.mapelSelected[x][i].id);
+          joinData.urutan.push(urutanCount);
         }
       }
 
-      this.dataToFilter = joinData;
+      this.editedItem = Object.assign(joinData);
+
+      this.$http
+        .post("/api/pengaturan-mata-pelajaran-kelas", this.editedItem)
+        .then((r) => {
+          this.snackbar = {
+            show: true,
+            status: r.data.status,
+            text: r.data.msg,
+            color: "success",
+          };
+          this.dialog = false;
+        })
+        .catch((err) => {
+          this.snackbar = {
+            show: true,
+            status: err.data.status,
+            text: err.data.msg,
+            color: "red",
+          };
+          this.dialog = false;
+        });
     },
   },
   created() {
     this.fetchKategoriMapel();
     this.fetchMapel();
+    this.fetchTahunAjar();
+    this.fetchTingkatanKelas();
   },
 };
 </script>
