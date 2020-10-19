@@ -122,7 +122,7 @@
       </v-card>
     </v-dialog>
 
-    <v-card>
+    <!-- <v-card>
       <v-card-title>
         <v-row class="ma-1">
           <div class="body-2 mt-2 mr-2">Tampilkan</div>
@@ -199,6 +199,67 @@
         :total-visible="7"
         @input="selectPage($event)"
       ></v-pagination>
+    </v-card> -->
+    <v-card>
+      <div v-for="(item, index) in mapelData" :key="item.id" class="ml-5 mr-5">
+        <v-row v-if="index == 0">
+          <v-col class="showTable" md="1" sm="12"> No </v-col>
+          <v-col class="showTable" md="3" sm="12">Mata Pelajaran</v-col>
+          <v-col class="showTable" md="3" sm="12">Kelompok</v-col>
+          <v-col class="showTable" md="3" sm="12">Urutan Rapor</v-col>
+          <v-col class="showTable" md="2" sm="12">Status</v-col>
+        </v-row>
+        <v-divider></v-divider>
+        <v-row class="pb-0 pt-0">
+          <v-col class="showTable" md="1" sm="12">
+            {{ index + 1 }}
+          </v-col>
+          <v-col class="showTable" md="3" sm="12">
+            {{ item.nama }}
+          </v-col>
+          <v-col class="showTable pt-1" md="3" sm="12">
+            <div>
+              <v-combobox
+                v-model="kategoriArray[index]"
+                :items="kategoriMapelData"
+                item-text="nama"
+                item-value="id"
+                label="Pilih Kategori"
+                outlined
+                dense
+              ></v-combobox>
+            </div>
+          </v-col>
+          <v-col class="showTable pt-1" md="3" sm="12">
+            <v-text-field
+              label="Urutan Rapor"
+              v-model="urutanArray[index]"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+          <v-col class="showTable pt-0" md="2" sm="12">
+            <v-checkbox
+              class="mb-3"
+              v-model="checkbox[index]"
+              :label="`${checkbox[index] === undefined || checkbox[index] === false ? 'Tidak Aktif' : 'Aktif'}`"
+            ></v-checkbox>
+          </v-col>
+        </v-row>
+      </div>
+      <v-row>
+        <v-col class="text-right">
+          <v-btn
+            depressed
+            color="primary"
+            dark
+            class="mb-5 mt-2 mr-3 submitBtn black--text"
+            @click="save"
+          >
+            <v-icon left>mdi-plus-circle</v-icon>Terapkan
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-card>
   </v-container>
 </template>
@@ -211,8 +272,11 @@ export default {
       e6: 1,
       dialog: false,
       mapelSelected: [],
+      kategoriArray: [],
+      urutanArray: [],
       dataToFilter: [],
       mapelKelasData: [],
+      checkbox: [],
       items: ["VII", "VIII", "IX"],
       ctivator: null,
       attach: null,
@@ -320,6 +384,7 @@ export default {
         });
     },
     fetchMapel() {
+      this.$store.commit("progressFunctionOn", true);
       const params = {
         per_page: 999,
         page: 1,
@@ -329,32 +394,38 @@ export default {
         .then((r) => {
           this.mapelData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
+          this.$store.commit("progressFunctionOn", false);
         })
         .catch((err) => {
           console.log(err);
         });
     },
     save() {
-      let urutanCount = 0;
-      let joinData = {
-        master_tahun_ajar_id: 1,
-        master_kelas_tingkatan_id: 1,
-        master_mata_pelajaran_kategori_id: [],
-        master_mata_pelajaran_id: [],
-        urutan: [],
-      };
-      for (let x = 0; x < this.kategoriMapelData.length; x++) {
-        for (let i = 0; i < this.mapelSelected[x].length; i++) {
-          urutanCount += 1;
-          joinData.master_mata_pelajaran_kategori_id.push(
-            this.kategoriMapelData[x].id
-          );
-          joinData.master_mata_pelajaran_id.push(this.mapelSelected[x][i].id);
-          joinData.urutan.push(urutanCount);
-        }
-      }
+      // let urutanCount = 0;
+      // let joinData = {
+      //   master_tahun_ajar_id: 1,
+      //   master_kelas_tingkatan_id: 1,
+      //   master_mata_pelajaran_kategori_id: [],
+      //   master_mata_pelajaran_id: [],
+      //   urutan: [],
+      // };
+      // for (let x = 0; x < this.kategoriMapelData.length; x++) {
+      //   for (let i = 0; i < this.mapelSelected[x].length; i++) {
+      //     urutanCount += 1;
+      //     joinData.master_mata_pelajaran_kategori_id.push(
+      //       this.kategoriMapelData[x].id
+      //     );
+      //     joinData.master_mata_pelajaran_id.push(this.mapelSelected[x][i].id);
+      //     joinData.urutan.push(urutanCount);
+      //   }
+      // }
 
-      this.editedItem = Object.assign(joinData);
+      // this.editedItem = Object.assign(joinData);
+
+      console.log(this.kategoriArray);
+      console.log(this.mapelData);
+      console.log(this.urutanArray);
+      console.log(this.checkbox);
 
       this.$http
         .post("/api/pengaturan-mata-pelajaran-kelas", this.editedItem)
@@ -384,6 +455,11 @@ export default {
     this.fetchTahunAjar();
     this.fetchTingkatanKelas();
   },
+  computed: {
+    progress: function () {
+      return this.$store.state.progressStatus;
+    },
+  },
 };
 </script>
 
@@ -391,5 +467,9 @@ export default {
 .v-card.dialogField {
   margin: auto;
   max-width: 750px;
+}
+
+.showTable{
+  height: 50px !important;
 }
 </style>
