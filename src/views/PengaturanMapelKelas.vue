@@ -18,7 +18,10 @@
     <v-row>
       <v-col cols="12" sm="3">
         <v-select
-          :items="items"
+          v-model="selectedTingkatanKelas"
+          :items="tingkatKelasData"
+          item-value="id"
+          item-text="tingkatan"
           label="Pilih Tingkatan Kelas"
           outlined
           dense
@@ -32,7 +35,7 @@
           class="mb-5 mt-2 mr-3 submitBtn black--text"
           @click="dialog = !dialog"
         >
-          <v-icon left>mdi-plus-circle</v-icon>Tambah Mapel Tingkatan Kelas
+          <v-icon left>mdi-eye</v-icon>Tampilkan Mapel Tingkatan Kelas
         </v-btn>
         <v-btn depressed color="accent" dark class="mb-5 mt-2">
           <v-icon left>mdi-plus-circle</v-icon>Download .xls
@@ -59,207 +62,102 @@
         </v-toolbar>
         <v-container>
           <v-card class="mx-5">
-            <v-container>
-              <v-row>
-                <v-col>
-                  <v-select
-                    class="mx-5"
-                    v-model="editedItem.master_tahun_ajar_id"
-                    :items="tahunAjarData"
-                    item-text="sebutan"
-                    item-value="id"
+            <div
+              v-for="(item, index) in mapelData"
+              :key="item.id"
+              class="ml-5 mr-5"
+            >
+              <v-row v-if="index == 0">
+                <v-col class="showTable" md="1" sm="12"> No </v-col>
+                <v-col class="showTable" md="3" sm="12">Mata Pelajaran</v-col>
+                <v-col class="showTable" md="3" sm="12">Kelompok</v-col>
+                <v-col class="showTable" md="3" sm="12">Urutan Rapor</v-col>
+                <v-col class="showTable" md="2" sm="12">Status</v-col>
+              </v-row>
+              <v-divider></v-divider>
+              <v-row class="pb-0 pt-0">
+                <v-col class="showTable" md="1" sm="12">
+                  {{ index + 1 }}
+                </v-col>
+                <v-col class="showTable" md="3" sm="12">
+                  {{ item.nama }}
+                </v-col>
+                <v-col class="showTable pt-1" md="3" sm="12">
+                  <div>
+                    <v-combobox
+                      v-model="kategoriArray[index]"
+                      :items="kategoriMapelData"
+                      item-text="nama"
+                      item-value="id"
+                      label="Pilih Kategori"
+                      outlined
+                      dense
+                    ></v-combobox>
+                  </div>
+                </v-col>
+                <v-col class="showTable pt-1" md="3" sm="12">
+                  <v-text-field
+                    label="Urutan Rapor"
+                    v-model="urutanArray[index]"
                     outlined
-                    label="Tahun Ajar"
-                    required
-                  ></v-select>
+                    dense
+                  ></v-text-field>
+                </v-col>
+                <v-col class="showTable pt-0" md="2" sm="12">
+                  <v-checkbox
+                    class="mb-3"
+                    v-model="checkbox[index]"
+                    :label="`${
+                      checkbox[index] === undefined || checkbox[index] === false
+                        ? 'Tidak Aktif'
+                        : 'Aktif'
+                    }`"
+                  ></v-checkbox>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col class="pb-0">
-                  <v-select
-                    class="mx-5"
-                    v-model="editedItem.master_kelas_tingkatan_id"
-                    :items="tingkatKelasData"
-                    item-text="tingkatan"
-                    item-value="id"
-                    outlined
-                    label="Tingkatan Kelas"
-                    required
-                  ></v-select>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="pt-0">
-                  <v-list>
-                    <v-list-item-group>
-                      <v-list-item
-                        v-for="(item, i) in kategoriMapelData"
-                        :key="i"
-                        style="height: auto !important; padding: 15px"
-                      >
-                        <v-list-item-content>
-                          <v-combobox
-                            v-model="mapelSelected[i]"
-                            :items="mapelData"
-                            @change="comboSelected($event)"
-                            item-text="nama"
-                            :label="'Pilih Mata Pelajaran ' + item.nama"
-                            multiple
-                            outlined
-                            persistent-hint
-                            hint="Urutan Mata Pelajaran Sesuai Dengan Urutan Saat Memilih"
-                            chips
-                          ></v-combobox>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list-item-group>
-                  </v-list>
-                </v-col>
-              </v-row>
-            </v-container>
+            </div>
+            <v-row>
+              <v-col class="text-right">
+                <v-btn
+                  depressed
+                  color="primary"
+                  dark
+                  class="mb-5 mt-2 mr-3 submitBtn black--text"
+                  @click="save"
+                >
+                  <v-icon left>mdi-plus-circle</v-icon>Terapkan
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-card>
         </v-container>
       </v-card>
     </v-dialog>
-
-    <!-- <v-card>
-      <v-card-title>
-        <v-row class="ma-1">
-          <div class="body-2 mt-2 mr-2">Tampilkan</div>
-          <v-select
-            v-model="skip.limit"
-            :items="itemsPerPage"
-            :value="10"
-            type="number"
-            style="max-width: min-content"
-            dense
-            outlined
-            @input="setRowPerPage($event)"
-          ></v-select>
-          <div class="body-2 mt-2 ml-2">Data Per Halaman</div>
-          <v-spacer></v-spacer>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Pencarian"
-            outlined
-            dense
-            hide-details
-          ></v-text-field>
-        </v-row>
-      </v-card-title>
+    <v-card>
       <v-data-table
         :headers="headers"
         :items="mapelKelasData"
         :search="search"
         class="elevation-1"
         hide-default-footer
+        items-per-page="100"
       >
         <template v-slot:body="{ items }">
           <tbody>
             <tr v-for="(item, index) in items" :key="item.id">
-              <td>{{ index + 1 + skip.offset }}</td>
-              <td class="text-xs-right">{{ item.nama }}</td>
+              <td>{{ index + 1 }}</td>
               <td class="text-xs-right">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-icon
-                      medium
-                      class="ml-1 mr-1"
-                      v-on="on"
-                      @click="editItem(item)"
-                      >mdi-pencil</v-icon
-                    >
-                  </template>
-                  <span>Edit</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-icon
-                      medium
-                      class="ml-1"
-                      v-on="on"
-                      @click="deleteItem(item)"
-                      >mdi-delete</v-icon
-                    >
-                  </template>
-                  <span>Delete</span>
-                </v-tooltip>
+                {{ item.master_mata_pelajaran_id.nama }}
               </td>
+              <td class="text-xs-right">
+                {{ item.master_mata_pelajaran_kategori_id.nama }}
+              </td>
+              <td class="text-xs-right">{{ item.urutan }}</td>
+              <td class="text-xs-right">{{ item.active }}</td>
             </tr>
           </tbody>
         </template>
       </v-data-table>
-      <v-pagination
-        class="pt-3 pb-3"
-        circle
-        color="tableHeader"
-        v-model="pageSelected"
-        :length="totalPage"
-        :total-visible="7"
-        @input="selectPage($event)"
-      ></v-pagination>
-    </v-card> -->
-    <v-card>
-      <div v-for="(item, index) in mapelData" :key="item.id" class="ml-5 mr-5">
-        <v-row v-if="index == 0">
-          <v-col class="showTable" md="1" sm="12"> No </v-col>
-          <v-col class="showTable" md="3" sm="12">Mata Pelajaran</v-col>
-          <v-col class="showTable" md="3" sm="12">Kelompok</v-col>
-          <v-col class="showTable" md="3" sm="12">Urutan Rapor</v-col>
-          <v-col class="showTable" md="2" sm="12">Status</v-col>
-        </v-row>
-        <v-divider></v-divider>
-        <v-row class="pb-0 pt-0">
-          <v-col class="showTable" md="1" sm="12">
-            {{ index + 1 }}
-          </v-col>
-          <v-col class="showTable" md="3" sm="12">
-            {{ item.nama }}
-          </v-col>
-          <v-col class="showTable pt-1" md="3" sm="12">
-            <div>
-              <v-combobox
-                v-model="kategoriArray[index]"
-                :items="kategoriMapelData"
-                item-text="nama"
-                item-value="id"
-                label="Pilih Kategori"
-                outlined
-                dense
-              ></v-combobox>
-            </div>
-          </v-col>
-          <v-col class="showTable pt-1" md="3" sm="12">
-            <v-text-field
-              label="Urutan Rapor"
-              v-model="urutanArray[index]"
-              outlined
-              dense
-            ></v-text-field>
-          </v-col>
-          <v-col class="showTable pt-0" md="2" sm="12">
-            <v-checkbox
-              class="mb-3"
-              v-model="checkbox[index]"
-              :label="`${checkbox[index] === undefined || checkbox[index] === false ? 'Tidak Aktif' : 'Aktif'}`"
-            ></v-checkbox>
-          </v-col>
-        </v-row>
-      </div>
-      <v-row>
-        <v-col class="text-right">
-          <v-btn
-            depressed
-            color="primary"
-            dark
-            class="mb-5 mt-2 mr-3 submitBtn black--text"
-            @click="save"
-          >
-            <v-icon left>mdi-plus-circle</v-icon>Terapkan
-          </v-btn>
-        </v-col>
-      </v-row>
     </v-card>
   </v-container>
 </template>
@@ -289,6 +187,7 @@ export default {
       item: 1,
       nonce: 1,
       menu: false,
+      selectedTingkatanKelas: null,
       kategoriMapelData: [],
       editedItem: {
         master_tahun_ajar_id: null,
@@ -309,16 +208,16 @@ export default {
       y: 0,
       headers: [
         {
-          text: "Dessert (100g serving)",
+          text: "No",
           align: "start",
+          width: "6%",
           sortable: false,
           value: "name",
         },
-        { text: "Calories", value: "calories" },
-        { text: "Fat (g)", value: "fat" },
-        { text: "Carbs (g)", value: "carbs" },
-        { text: "Protein (g)", value: "protein" },
-        { text: "Iron (%)", value: "iron" },
+        { text: "Mata Pelajaran" },
+        { text: "Kelompok" },
+        { text: "Urutan Rapor" },
+        { text: "Status" },
       ],
     };
   },
@@ -339,6 +238,43 @@ export default {
         -1
       );
     },
+    mapMapelKelas(items, props) {
+      return items.map((i) => {
+        if(props == 1){
+          return i.urutan;
+        }else if (props == 2){
+          return i.active;
+        }else if (props == 3){
+          return i.master_mata_pelajaran_kategori_id;
+        }else if (props == 4){
+          return i.master_mata_pelajaran_id;
+        }else{
+          return i[props].id;
+        }
+      });
+    },
+    fetchMapelKelas() {
+      const params = {
+        tahun_ajar: 1,
+        kelas_tingkatan: 1,
+      };
+      this.$http
+        .get("/api/pengaturan-mata-pelajaran-kelas", { params: params })
+        .then((r) => {
+          this.mapelKelasData = r.data.data || [];
+
+          // this.tahunAjarData = this.mapMapelKelas(this.mapelKelasData, 'master_tahun_ajar_id'),
+          //   this.kelasthis.mapMapelKelas(this.mapelKelasData, 'master_kelas_tingkatan_id'),
+            this.kategoriArray = this.mapMapelKelas(this.mapelKelasData, 3);
+            this.mapelData = this.mapMapelKelas(this.mapelKelasData, 4);
+            this.urutanArray = this.mapMapelKelas(this.mapelKelasData, 1);
+            this.checkbox = this.mapMapelKelas(this.mapelKelasData, 2);
+
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     fetchTingkatanKelas() {
       const params = {
         per_page: 999,
@@ -348,6 +284,8 @@ export default {
         .get("/api/kelas-tingkatan", { params: params })
         .then((r) => {
           this.tingkatKelasData = r.data.data.data || [];
+          this.selectedTingkatanKelas = this.tingkatKelasData[0].id;
+          console.log(this.selectedTingkatanKelas);
           this.totalPage = r.data.data.last_page;
         })
         .catch((err) => {
@@ -400,36 +338,44 @@ export default {
           console.log(err);
         });
     },
+    mapStatus(items) {
+      return items.map((i) => {
+        if (i == undefined) {
+          return 0;
+        } else {
+          return 1;
+        }
+      });
+    },
+    mapItems(items) {
+      return items.map((i) => {
+        return i.id;
+      });
+    },
     save() {
       // let urutanCount = 0;
-      // let joinData = {
-      //   master_tahun_ajar_id: 1,
-      //   master_kelas_tingkatan_id: 1,
-      //   master_mata_pelajaran_kategori_id: [],
-      //   master_mata_pelajaran_id: [],
-      //   urutan: [],
-      // };
-      // for (let x = 0; x < this.kategoriMapelData.length; x++) {
-      //   for (let i = 0; i < this.mapelSelected[x].length; i++) {
-      //     urutanCount += 1;
-      //     joinData.master_mata_pelajaran_kategori_id.push(
-      //       this.kategoriMapelData[x].id
-      //     );
-      //     joinData.master_mata_pelajaran_id.push(this.mapelSelected[x][i].id);
-      //     joinData.urutan.push(urutanCount);
-      //   }
-      // }
+      let joinData = {
+        master_tahun_ajar_id: 1,
+        master_kelas_tingkatan_id: 1,
+        master_mata_pelajaran_kategori_id: [],
+        master_mata_pelajaran_id: [],
+        urutan: [],
+      };
 
-      // this.editedItem = Object.assign(joinData);
+      joinData.master_mata_pelajaran_kategori_id = this.mapItems(
+        this.kategoriArray
+      );
+      joinData.master_mata_pelajaran_id = this.mapItems(this.mapelData);
+      joinData.active = this.mapStatus(this.checkbox);
+      joinData.urutan = this.urutanArray;
 
-      console.log(this.kategoriArray);
-      console.log(this.mapelData);
-      console.log(this.urutanArray);
-      console.log(this.checkbox);
+      console.log(joinData);
 
+      this.$store.commit("progressFunctionOn", true);
       this.$http
-        .post("/api/pengaturan-mata-pelajaran-kelas", this.editedItem)
+        .post("/api/pengaturan-mata-pelajaran-kelas", joinData)
         .then((r) => {
+          this.$store.commit("progressFunctionOn", false);
           this.snackbar = {
             show: true,
             status: r.data.status,
@@ -439,6 +385,7 @@ export default {
           this.dialog = false;
         })
         .catch((err) => {
+          this.$store.commit("progressFunctionOn", false);
           this.snackbar = {
             show: true,
             status: err.data.status,
@@ -454,6 +401,10 @@ export default {
     this.fetchMapel();
     this.fetchTahunAjar();
     this.fetchTingkatanKelas();
+
+    // if(this.selectedTingkatanKelas !== null && this.tahunAjarData !== []){
+    this.fetchMapelKelas();
+    // }
   },
   computed: {
     progress: function () {
@@ -469,7 +420,7 @@ export default {
   max-width: 750px;
 }
 
-.showTable{
+.showTable {
   height: 50px !important;
 }
 </style>
