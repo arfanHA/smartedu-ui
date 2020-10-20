@@ -35,7 +35,7 @@
           class="mb-5 mt-2 mr-3 submitBtn black--text"
           @click="dialog = !dialog"
         >
-          <v-icon left>mdi-eye</v-icon>Tampilkan Mapel Tingkatan Kelas
+          <v-icon left>mdi-eye</v-icon>Tampilkan Pengaturan
         </v-btn>
         <v-btn depressed color="accent" dark class="mb-5 mt-2">
           <v-icon left>mdi-plus-circle</v-icon>Download .xls
@@ -48,6 +48,7 @@
       fullscreen
       hide-overlay
       transition="dialog-bottom-transition"
+      style="overflow-y: hidden"
     >
       <v-card ou>
         <v-toolbar dark color="primary">
@@ -116,7 +117,7 @@
                 </v-col>
               </v-row>
             </div>
-            <v-row>
+            <!-- <v-row>
               <v-col class="text-right">
                 <v-btn
                   depressed
@@ -128,7 +129,7 @@
                   <v-icon left>mdi-plus-circle</v-icon>Terapkan
                 </v-btn>
               </v-col>
-            </v-row>
+            </v-row> -->
           </v-card>
         </v-container>
       </v-card>
@@ -140,7 +141,7 @@
         :search="search"
         class="elevation-1"
         hide-default-footer
-        items-per-page="100"
+        :items-per-page="itemsPerPage"
       >
         <template v-slot:body="{ items }">
           <tbody>
@@ -169,6 +170,7 @@ export default {
       search: "",
       e6: 1,
       dialog: false,
+      itemsPerPage: 100,
       mapelSelected: [],
       kategoriArray: [],
       urutanArray: [],
@@ -240,15 +242,15 @@ export default {
     },
     mapMapelKelas(items, props) {
       return items.map((i) => {
-        if(props == 1){
+        if (props == 1) {
           return i.urutan;
-        }else if (props == 2){
+        } else if (props == 2) {
           return i.active;
-        }else if (props == 3){
+        } else if (props == 3) {
           return i.master_mata_pelajaran_kategori_id;
-        }else if (props == 4){
+        } else if (props == 4) {
           return i.master_mata_pelajaran_id;
-        }else{
+        } else {
           return i[props].id;
         }
       });
@@ -256,20 +258,18 @@ export default {
     fetchMapelKelas() {
       const params = {
         tahun_ajar: 1,
-        kelas_tingkatan: 1,
+        kelas_tingkatan: this.selectedTingkatanKelas,
       };
       this.$http
         .get("/api/pengaturan-mata-pelajaran-kelas", { params: params })
         .then((r) => {
           this.mapelKelasData = r.data.data || [];
-
-          // this.tahunAjarData = this.mapMapelKelas(this.mapelKelasData, 'master_tahun_ajar_id'),
-          //   this.kelasthis.mapMapelKelas(this.mapelKelasData, 'master_kelas_tingkatan_id'),
+          if(r.data.data.length > 0) {
             this.kategoriArray = this.mapMapelKelas(this.mapelKelasData, 3);
             this.mapelData = this.mapMapelKelas(this.mapelKelasData, 4);
             this.urutanArray = this.mapMapelKelas(this.mapelKelasData, 1);
             this.checkbox = this.mapMapelKelas(this.mapelKelasData, 2);
-
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -336,14 +336,15 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+          this.$store.commit("progressFunctionOn", false);
         });
     },
     mapStatus(items) {
       return items.map((i) => {
-        if (i == undefined) {
-          return 0;
+        if (i == undefined || i == false) {
+          return "0";
         } else {
-          return 1;
+          return "1";
         }
       });
     },
@@ -353,10 +354,40 @@ export default {
       });
     },
     save() {
-      // let urutanCount = 0;
+      if (this.mapelKelasData) {
+        this.processingReset();
+      }else {
+        this.processingSave();
+      }
+    },
+    processingReset() {
+      this.$store.commit("progressFunctionOn", true);
+      const params = {
+        tahun_ajar: 1,
+        kelas_tingkatan: this.selectedTingkatanKelas,
+      };
+      this.$http
+        .delete("/api/pengaturan-mata-pelajaran-kelas", { params: params })
+        .then((r) => {
+          this.snackbar = {
+            show: true,
+            status: r.data.status,
+            text: r.data.msg,
+            color: "success",
+          };
+          this.dialog = false;
+          this.$store.commit("progressFunctionOn", false);
+          this.processingSave();
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$store.commit("progressFunctionOn", false);
+        });
+    },
+    processingSave() {
       let joinData = {
         master_tahun_ajar_id: 1,
-        master_kelas_tingkatan_id: 1,
+        master_kelas_tingkatan_id: this.selectedTingkatanKelas,
         master_mata_pelajaran_kategori_id: [],
         master_mata_pelajaran_id: [],
         urutan: [],
@@ -365,11 +396,10 @@ export default {
       joinData.master_mata_pelajaran_kategori_id = this.mapItems(
         this.kategoriArray
       );
+
       joinData.master_mata_pelajaran_id = this.mapItems(this.mapelData);
       joinData.active = this.mapStatus(this.checkbox);
       joinData.urutan = this.urutanArray;
-
-      console.log(joinData);
 
       this.$store.commit("progressFunctionOn", true);
       this.$http
@@ -383,6 +413,7 @@ export default {
             color: "success",
           };
           this.dialog = false;
+          this.fetchMapelKelas();
         })
         .catch((err) => {
           this.$store.commit("progressFunctionOn", false);
@@ -403,12 +434,17 @@ export default {
     this.fetchTingkatanKelas();
 
     // if(this.selectedTingkatanKelas !== null && this.tahunAjarData !== []){
-    this.fetchMapelKelas();
+    // this.fetchMapelKelas();
     // }
   },
   computed: {
     progress: function () {
       return this.$store.state.progressStatus;
+    },
+  },
+  watch: {
+    selectedTingkatanKelas: function () {
+      this.fetchMapelKelas();
     },
   },
 };

@@ -178,13 +178,6 @@
       <v-toolbar-title style="padding-left: 0px">
         <img src="../assets/logoSmarteducation.png" />
       </v-toolbar-title>
-      <!-- <v-progress-linear
-        :active="progress"
-        :indeterminate="progress"
-        absolute
-        bottom
-        color="submitBtn"
-      ></v-progress-linear> -->
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title v-on:myvent="onChangeTitle"
         ><v-list-item two-line>
@@ -260,17 +253,21 @@
       </v-alert>
       <h2 class="h2 ml-4 pt-3">{{ toolbarTitle }}</h2>
       <MyBreadcrumbs @bread-click="breadRouter($event)" :items="breadcrumb" />
-      <v-dialog v-model="progress" persistent width="300">
-        <v-card color="primary" dark>
-          <v-card-text>
-            Proses Sedang Berjalan
-            <v-progress-linear
-              indeterminate
-              color="white"
-              class="mb-0"
-            ></v-progress-linear>
-          </v-card-text>
-        </v-card>
+      <v-dialog
+        class="logoDialog"
+        v-model="progress"
+        persistent
+        max-width="10%"
+      >
+        <v-progress-circular
+          style="position: absolute"
+          :size="110"
+          :width="3"
+          color="white"
+          indeterminate
+        >
+          <img class="loadImg" src="../assets/tutwurihandayani.png" />
+        </v-progress-circular>
       </v-dialog>
       <router-view refs="router-home"></router-view>
     </v-content>
@@ -554,6 +551,12 @@ img {
   padding-top: 8px;
   padding-left: 40px;
   padding-right: 32px;
+}
+
+.loadImg {
+  height: 88px;
+  width: auto;
+  padding: 0px 0px 0px 5px;
 }
 
 .v-list-group--active {

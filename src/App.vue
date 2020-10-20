@@ -71,4 +71,9 @@ tbody tr:nth-of-type(even) {
    background-color: rgba(0, 0, 0, .05);
  }
 
+ .v-dialog .logoDialog{
+    overflow-y: hidden;
+    box-shadow: none !important;
+}
+
 </style>
