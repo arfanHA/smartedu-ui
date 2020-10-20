@@ -269,6 +269,12 @@ export default {
             this.mapelData = this.mapMapelKelas(this.mapelKelasData, 4);
             this.urutanArray = this.mapMapelKelas(this.mapelKelasData, 1);
             this.checkbox = this.mapMapelKelas(this.mapelKelasData, 2);
+          }else {
+            this.kategoriArray = [];
+            this.mapelData = [];
+            this.urutanArray = [];
+            this.checkbox = [];
+            this.fetchMapel();
           }
         })
         .catch((err) => {
@@ -432,10 +438,6 @@ export default {
     this.fetchMapel();
     this.fetchTahunAjar();
     this.fetchTingkatanKelas();
-
-    // if(this.selectedTingkatanKelas !== null && this.tahunAjarData !== []){
-    // this.fetchMapelKelas();
-    // }
   },
   computed: {
     progress: function () {
