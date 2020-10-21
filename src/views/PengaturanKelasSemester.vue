@@ -155,9 +155,6 @@
           <tbody>
             <tr v-for="(item, index) in items" :key="item.id">
               <td>{{ index + skip.offset }}</td>
-              <td class="text-xs-right">
-                {{ item.master_tahun_ajar_id.sebutan }}
-              </td>
               <td class="text-xs-right">{{ item.master_kelas_id.nama }}</td>
               <td class="text-xs-right">{{ item.master_pegawai_id.nama }}</td>
               <td class="text-xs-right">{{ item.keterangan }}</td>
@@ -269,10 +266,9 @@ export default {
           sortable: false,
           value: "name",
         },
-        { text: "Tahun Ajar", class: "tableHeader white--text", value: "kode" },
         { text: "Kelas", class: "tableHeader white--text", value: "nama" },
         {
-          text: "Nama Pegawai",
+          text: "Wali Kelas",
           class: "tableHeader white--text",
           value: "keterangan",
         },

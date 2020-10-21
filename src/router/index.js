@@ -250,6 +250,22 @@ const routes = [
         path: '/pengaturan/tugas-mengajar/kelas',
         name: 'pengaturanTugasMengajarKelas',
         component: PengaturanTugasMengajarKelas,
+        meta: {
+          title: 'Dashboard',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Pengaturan Tugas Mengajar Kelas',
+              disabled: true,
+              name: 'pengaturanTugasMengajarKelas',
+            }
+          ]
+        }
       },
       {
         path: '/pengaturan/kelasSemester',

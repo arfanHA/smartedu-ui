@@ -154,7 +154,22 @@
                 {{ item.master_mata_pelajaran_kategori_id.nama }}
               </td>
               <td class="text-xs-right">{{ item.urutan }}</td>
-              <td class="text-xs-right">{{ item.active }}</td>
+              <td class="text-xs-right">
+                 <v-chip
+                  color="green"
+                  text-color="white"
+                  v-if="item.active == 1"
+                >
+                  Aktif
+                </v-chip>
+                <v-chip
+                  color="red"
+                  text-color="white"
+                  v-if="item.active != 1"
+                >
+                  Tidak Aktif
+                </v-chip>
+              </td>
             </tr>
           </tbody>
         </template>
@@ -269,6 +284,7 @@ export default {
             this.mapelData = this.mapMapelKelas(this.mapelKelasData, 4);
             this.urutanArray = this.mapMapelKelas(this.mapelKelasData, 1);
             this.checkbox = this.mapMapelKelas(this.mapelKelasData, 2);
+            console.log(this.mapelData);
           }else {
             this.kategoriArray = [];
             this.mapelData = [];

@@ -1,20 +1,51 @@
 <template>
   <v-container fluid>
-    <v-card class="mb-3">
-      <v-card-title class="topCard" style="color: white">
-        Pengaturan Pembagian Guru Mata Pelajaran
-      </v-card-title>
-      <v-container>
-        <v-row>
-          <v-col cols="12" sm="3" class="p-0">
-            <v-select :items="items" label="Pilih Tingkatan Kelas" outlined></v-select>
-          </v-col>
-          <v-col cols="12" sm="3">
-            <v-select :items="items" label="Pilih Tingkatan Kelas" outlined></v-select>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card>
+    <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-header class="submitBtn">
+          <template v-slot:default="{ open }">
+            <v-row no-gutters>
+              <v-col cols="4"> Input Parameter </v-col>
+              <v-col cols="8" class="text--secondary">
+                <v-fade-transition leave-absolute>
+                  <span v-if="open" key="0"> </span>
+                </v-fade-transition>
+              </v-col>
+            </v-row>
+          </template>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-container>
+            <v-row>
+              <v-col cols="12" sm="6" class="p-0">
+                <v-select
+                  :items="items"
+                  label="Pilih Tingkatan Kelas"
+                  outlined
+                  dense
+                ></v-select>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-select
+                  :items="items"
+                  label="Pilih Tingkatan Kelas"
+                  outlined
+                  dense
+                ></v-select>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-select
+                  :items="items"
+                  label="Pilih Tingkatan Kelas"
+                  outlined
+                  dense
+                ></v-select>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
     <v-row>
       <v-col class="text-right">
@@ -24,7 +55,65 @@
       </v-col>
     </v-row>
 
-    <v-card>
+    <v-dialog
+      v-model="dialog"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+      style="overflow-y: hidden"
+    >
+      <v-card ou>
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="dialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Pengaturan Pengajar Mata Pelajaran</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn dark text @click="save">Simpan</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-container>
+          <v-card class="mx-5">
+            <div
+              v-for="(item, index) in pegawaiData"
+              :key="item.id"
+              class="ml-5 mr-5"
+            >
+              <v-row v-if="index == 0">
+                <v-col class="showTable" md="1" sm="12"> No </v-col>
+                <v-col class="showTable" md="3" sm="12">Guru</v-col>
+                <v-col class="showTable" md="2" sm="12"
+                  >Pilih Sebagai Pengajar</v-col
+                >
+              </v-row>
+              <v-divider></v-divider>
+              <v-row class="pb-0 pt-0">
+                <v-col class="showTable" md="1" sm="12">
+                  {{ index + 1 }}
+                </v-col>
+                <v-col class="showTable" md="3" sm="12">
+                  {{ item.nama }}
+                </v-col>
+                <v-col class="showTable pt-0" md="2" sm="12">
+                  <v-checkbox
+                    class="mb-3"
+                    v-model="checkbox[index]"
+                    :label="`${
+                      checkbox[index] === undefined || checkbox[index] === false
+                        ? 'Tidak Aktif'
+                        : 'Aktif'
+                    }`"
+                  ></v-checkbox>
+                </v-col>
+              </v-row>
+            </div>
+          </v-card>
+        </v-container>
+      </v-card>
+    </v-dialog>
+
+    <!-- <v-card>
       <v-card-title>
         Daftar Pengaturan Pembagian Guru Mata Pelajaran
         <v-spacer></v-spacer>
@@ -36,7 +125,86 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :items="desserts" :search="search"></v-data-table>
+      <v-data-table :headers="headers" :items="tableItems" :search="search">
+        <template v-slot:body="{ items }">
+          <tbody>
+            <tr v-for="(item, index) in items" :key="item.id">
+              <td>{{ index + 1 }}</td>
+              <td class="text-xs-right">
+                {{ item.kode_mapel }}
+              </td>
+              <td class="text-xs-right">
+                {{ item.mapelKelas.mapel }}
+              </td>
+              <td class="text-xs-right">{{ item.guru.nama }}</td>
+              <td class="text-xs-right">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      medium
+                      class="ml-1 mr-1"
+                      v-on="on"
+                      @click="editItem()"
+                      >mdi-pencil</v-icon
+                    >
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-data-table>
+    </v-card> -->
+    <v-card>
+      <v-data-table
+        v-if="NoDataShowTable"
+        :headers="headers"
+        :items="tableItems"
+        :search="search"
+        class="elevation-1"
+        hide-default-footer
+        :items-per-page="itemsPerPage"
+      >
+        <template v-slot:body="{ items }">
+          <tbody>
+            <tr v-for="(item, index) in items" :key="item.id">
+              <td>{{ index + 1 }}</td>
+              <td class="text-xs-right">
+                {{ item.kode_mapel }}
+              </td>
+              <td class="text-xs-right">
+                {{ item.mapelKelas.mapel }}
+              </td>
+              <td class="text-xs-right">{{ item.guru.nama }}</td>
+              <td class="text-xs-right">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      medium
+                      class="ml-1 mr-1"
+                      v-on="on"
+                      @click="editItem()"
+                      >mdi-pencil</v-icon
+                    >
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-data-table>
+      <v-data-table
+        v-if="!NoDataShowTable"
+        :headers="headers"
+        class="elevation-1"
+        hide-default-footer
+      >
+        <template v-slot:no-data>
+          Parameter belum di tentukan / Data Tidak Ada
+        </template>
+      </v-data-table>
     </v-card>
   </v-container>
 </template>
@@ -47,53 +215,48 @@ export default {
     return {
       search: "",
       dialog: false,
+      NoDataShowTable: true,
       items: ["VII", "VIII", "IX"],
       ctivator: null,
       attach: null,
       colors: ["green", "purple", "indigo", "cyan", "teal", "orange"],
       editing: null,
       index: -1,
-      itemsC: [
-        { header: "Select an option or create one" },
+      pegawaiData: [],
+      checkbox: [],
+      tableItems: [
         {
-          text: "Pendidikan Agama Islam",
-          color: "blue",
+          kode_mapel: 1,
+          mapelKelas: {
+            id: 1,
+            mapel: "MATEMATIKA",
+          },
+          guru: {
+            id: 1,
+            nama: "Albert Einstein",
+          },
         },
         {
-          text: "PPKN",
-          color: "red",
+          kode_mapel: 1,
+          mapelKelas: {
+            id: 1,
+            mapel: "BIOLOGI",
+          },
+          guru: {
+            id: 1,
+            nama: "Albert Einstein",
+          },
         },
         {
-          text: "Bahasa Indonesia",
-          color: "purple",
-        },
-        {
-          text: "Bahasa Inggris",
-          color: "indigo",
-        },
-        {
-          text: "Matematika",
-          color: "cyan",
-        },
-        {
-          text: "Sejarah Indonesia",
-          color: "teal",
-        },
-        {
-          text: "PJOK",
-          color: "orange",
-        },
-        {
-          text: "Prakarya dan Kewirausahaan",
-          color: "yellow",
-        },
-        {
-          text: "Seni Budaya",
-          color: "green",
-        },
-        {
-          text: "Biologi",
-          color: "pink",
+          kode_mapel: 1,
+          mapelKelas: {
+            id: 1,
+            mapel: "FISIKA",
+          },
+          guru: {
+            id: 1,
+            nama: "Albert Einstein",
+          },
         },
       ],
       nonce: 1,
@@ -102,104 +265,39 @@ export default {
       x: 0,
       searchC: null,
       y: 0,
+      itemsPerPage: 100,
       headers: [
         {
-          text: "Dessert (100g serving)",
+          text: "No",
           align: "start",
           sortable: false,
-          value: "name",
+          value: "nomor",
         },
-        { text: "Calories", value: "calories" },
-        { text: "Fat (g)", value: "fat" },
-        { text: "Carbs (g)", value: "carbs" },
-        { text: "Protein (g)", value: "protein" },
-        { text: "Iron (%)", value: "iron" },
-      ],
-      desserts: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%",
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%",
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: "7%",
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: "8%",
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: "16%",
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: "0%",
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: "2%",
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: "45%",
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: "22%",
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: "6%",
-        },
+        { text: "Kode Mapel", value: "nomor" },
+        { text: "Mata Pelajaran", value: "fat" },
+        { text: "Guru", value: "carbs" },
+        { text: "Action", value: "actions" },
       ],
     };
   },
   methods: {
+    fetchPegawai() {
+      this.$store.commit("progressFunctionOn", true);
+      const params = {
+        per_page: 999,
+        page: 1,
+      };
+      this.$http
+        .get("/api/pegawai", { params: params })
+        .then((r) => {
+          this.pegawaiData = r.data.data.data || [];
+          this.$store.commit("progressFunctionOn", false);
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$store.commit("progressFunctionOn", false);
+        });
+    },
     filter(item, queryText, itemText) {
       if (item.header) return false;
 
@@ -213,6 +311,12 @@ export default {
         -1
       );
     },
+    editItem() {
+      this.dialog = true;
+    },
+  },
+  created() {
+    this.fetchPegawai();
   },
 };
 </script>
