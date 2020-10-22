@@ -1,5 +1,20 @@
 <template>
   <v-container fluid>
+    <v-snackbar
+      v-model="snackbar.show"
+      :timeout="2000"
+      centered
+      absolute
+      top
+      :color="snackbar.color"
+    >
+      {{ snackbar.text }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" icon v-bind="attrs" @click="snackbar.show = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-expansion-panels>
       <v-expansion-panel>
         <v-expansion-panel-header class="submitBtn">
@@ -83,7 +98,7 @@
         <v-container>
           <v-card class="mx-5">
             <div
-              v-for="(item, index) in mapelData"
+              v-for="(item, index) in mapelKelasData"
               :key="item.id"
               class="ml-5 mr-5"
             >
@@ -99,10 +114,10 @@
                   {{ index + 1 }}
                 </v-col>
                 <v-col class="showTable" md="3" sm="12">
-                  {{ item.kode }}
+                  {{ item.master_mata_pelajaran_id.kode }}
                 </v-col>
                 <v-col class="showTable" md="3" sm="12">
-                  {{ item.nama }}
+                  {{ item.master_mata_pelajaran_id.nama }}
                 </v-col>
                 <v-col class="showTable pt-1" md="3" sm="12">
                   <div>
@@ -174,7 +189,6 @@ export default {
       search: "",
       dialog: false,
       NoDataShowTable: true,
-      items: ["VII", "VIII", "IX"],
       ctivator: null,
       attach: null,
       colors: ["green", "purple", "indigo", "cyan", "teal", "orange"],
@@ -183,8 +197,15 @@ export default {
       pegawaiData: [],
       mapelData: [],
       guruArray: [],
-      kelas: null,
       kelas_tingkatan: null,
+      kelas: null,
+      kelas_semester: null,
+      snackbar: {
+        show: false,
+        status: null,
+        text: "",
+        color: "",
+      },
       tableItems: [
         {
           kode_mapel: 1,
@@ -226,6 +247,7 @@ export default {
       kelasData: [],
       kelasTingkatanData: [],
       tugasMengajarData: [],
+      mapelKelasData: [],
       inputParam: {
         tahun_ajar: 1,
         kelas_tingkatan: null,
@@ -293,11 +315,13 @@ export default {
         })
         .then((r) => {
           this.tugasMengajarData = r.data.data || [];
-          console.log(this.tugasMengajarData);
-          if (this.tugasMengajarData.length > 0) {
+
+          if (r.data.data.length > 0) {
             this.NoDataShowTable = false;
+            this.guruArray = this.mapTugasMengajarData(this.tugasMengajarData);
           } else {
             this.NoDataShowTable = true;
+            this.guruArray = [];
           }
           this.$store.commit("progressFunctionOn", false);
         })
@@ -330,6 +354,34 @@ export default {
           console.log(err);
         });
     },
+    fetchMapelKelas() {
+      const params = {
+        tahun_ajar: 1,
+        kelas_tingkatan: this.kelas_tingkatan,
+      };
+      this.$http
+        .get("/api/pengaturan-mata-pelajaran-kelas", { params: params })
+        .then((r) => {
+          this.mapelKelasData = r.data.data || [];
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    fetchKelasSemester() {
+      const params = {
+        tahun_ajar: 1,
+        kelas: this.kelas,
+      };
+      this.$http
+        .get("/api/option/wali-kelas", { params: params })
+        .then((r) => {
+          this.kelas_semester = r.data.data.id || [];
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     filter(item, queryText, itemText) {
       if (item.header) return false;
 
@@ -346,6 +398,54 @@ export default {
     editItem() {
       this.dialog = true;
     },
+    mapItems(items) {
+      return items.map((i) => {
+        return i.id;
+      });
+    },
+    mapTugasMengajarData(items) {
+      return items.map((i) => {
+        return i.master_pegawai_id;
+      });
+    },
+    save() {
+      this.processingSave();
+    },
+    processingSave() {
+      let joinData = {
+        pengaturan_kelas_semester_id: this.kelas_semester,
+        pengaturan_mapel_kelas_id: [],
+        master_pegawai_id: [],
+      };
+
+      joinData.pengaturan_mapel_kelas_id = this.mapItems(this.mapelKelasData);
+      joinData.master_pegawai_id = this.mapItems(this.guruArray);
+
+      this.$store.commit("progressFunctionOn", true);
+      this.$http
+        .post("/api/pengaturan-pengajar-mata-pelajaran", joinData)
+        .then((r) => {
+          this.$store.commit("progressFunctionOn", false);
+          this.snackbar = {
+            show: true,
+            status: r.data.status,
+            text: r.data.msg,
+            color: r.data.status == 200 ? "success" : "red",
+          };
+          this.dialog = false;
+          this.fetchTugasMengajar();
+        })
+        .catch((err) => {
+          this.$store.commit("progressFunctionOn", false);
+          this.snackbar = {
+            show: true,
+            status: err.data.status,
+            text: err.data.msg,
+            color: "red",
+          };
+          this.dialog = false;
+        });
+    },
   },
   created() {
     this.fetchPegawai();
@@ -356,9 +456,11 @@ export default {
   watch: {
     kelas_tingkatan: function () {
       this.fetchTugasMengajar();
+      this.fetchMapelKelas();
     },
     kelas: function () {
       this.fetchTugasMengajar();
+      this.fetchKelasSemester();
     },
   },
 };
