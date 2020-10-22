@@ -55,7 +55,7 @@
           <v-btn icon dark @click="dialog = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Tambah Mata Pelajaran Kelas</v-toolbar-title>
+          <v-toolbar-title>Pengaturan Mata Pelajaran Kelas</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn dark text @click="save">Simpan</v-btn>
@@ -117,19 +117,6 @@
                 </v-col>
               </v-row>
             </div>
-            <!-- <v-row>
-              <v-col class="text-right">
-                <v-btn
-                  depressed
-                  color="primary"
-                  dark
-                  class="mb-5 mt-2 mr-3 submitBtn black--text"
-                  @click="save"
-                >
-                  <v-icon left>mdi-plus-circle</v-icon>Terapkan
-                </v-btn>
-              </v-col>
-            </v-row> -->
           </v-card>
         </v-container>
       </v-card>
@@ -353,7 +340,6 @@ export default {
         .get("/api/mata-pelajaran", { params: params })
         .then((r) => {
           this.mapelData = r.data.data.data || [];
-          this.totalPage = r.data.data.last_page;
           this.$store.commit("progressFunctionOn", false);
         })
         .catch((err) => {
