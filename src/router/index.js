@@ -16,15 +16,15 @@ import DataKategoriMapel from '../views/DataKategoriMapel.vue'
 import PengaturanMapelKelas from '../views/PengaturanMapelKelas.vue'
 import PengaturanTugasMengajarKelas from '../views/PengaturanTugasMengajarKelas.vue'
 import PengaturanKelasSemester from '../views/PengaturanKelasSemester.vue'
+import PengaturanKelasSiswa from '../views/PengaturanKelasSiswa.vue' 
 
 Vue.use(VueRouter)
-
 
 const routes = [
   {
     path: '/',
     name: 'login',
-    component: Login
+    component: Login,
   },
   {
     path: '/home',
@@ -36,6 +36,7 @@ const routes = [
         name: 'dashboard',
         component: Dashboard,
         meta: {
+          requiresAuth: true,
           title: 'Dashboard',
           breadcrumbs: [
             {
@@ -57,6 +58,7 @@ const routes = [
         name: 'dataMapel',
         component: DataMapel,
         meta: {
+          requiresAuth: true,
           title: 'Dashboard',
           breadcrumbs: [
             {
@@ -78,6 +80,7 @@ const routes = [
         name: 'dataKategoriMapel',
         component: DataKategoriMapel,
         meta: {
+          requiresAuth: true,
           title: 'Dashboard',
           breadcrumbs: [
             {
@@ -104,6 +107,7 @@ const routes = [
         name: 'dataSiswa',
         component: DataSiswa,
         meta: {
+          requiresAuth: true,
           title: 'Data Siswa',
           breadcrumbs: [
             {
@@ -125,6 +129,7 @@ const routes = [
         name: 'dataTingkatanKelas',
         component: DataTingkatanKelas,
         meta: {
+          requiresAuth: true,
           title: 'Data Tingkatan Kelas',
           breadcrumbs: [
             {
@@ -146,6 +151,7 @@ const routes = [
         name: 'dataKelas',
         component: DataKelas,
         meta: {
+          requiresAuth: true,
           title: 'Data Kelas',
           breadcrumbs: [
             {
@@ -167,6 +173,7 @@ const routes = [
         name: 'dataJabatan',
         component: DataJabatan,
         meta: {
+          requiresAuth: true,
           title: 'Data Jabatan',
           breadcrumbs: [
             {
@@ -188,6 +195,7 @@ const routes = [
         name: 'dataPegawai',
         component: DataPegawai,
         meta: {
+          requiresAuth: true,
           title: 'Data Pegawai',
           breadcrumbs: [
             {
@@ -209,6 +217,7 @@ const routes = [
         name: 'dataTahunAjar',
         component: DataTahunAjar,
         meta: {
+          requiresAuth: true,
           title: 'Data Tahun Ajar',
           breadcrumbs: [
             {
@@ -230,6 +239,7 @@ const routes = [
         name: 'pengaturanMapelKelas',
         component: PengaturanMapelKelas,
         meta: {
+          requiresAuth: true,
           title: 'Dashboard',
           breadcrumbs: [
             {
@@ -251,6 +261,7 @@ const routes = [
         name: 'pengaturanTugasMengajarKelas',
         component: PengaturanTugasMengajarKelas,
         meta: {
+          requiresAuth: true,
           title: 'Dashboard',
           breadcrumbs: [
             {
@@ -268,10 +279,33 @@ const routes = [
         }
       },
       {
+        path: '/pengaturan/kelas-siswa',
+        name: 'pengaturanKelasSiswa',
+        component: PengaturanKelasSiswa,
+        meta: {
+          requiresAuth: true,
+          title: 'Dashboard',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Kelas Siswa',
+              disabled: true,
+              name: 'pengaturanKelasSiswa',
+            }
+          ]
+        }
+      },
+      {
         path: '/pengaturan/kelasSemester',
         name: 'pengaturanKelasSemester',
         component: PengaturanKelasSemester,
         meta: {
+          requiresAuth: true,
           title: 'Kelas Semester',
           breadcrumbs: [
             {
@@ -288,7 +322,7 @@ const routes = [
           ]
         }
       },
-    ]
+    ],
   },
 ]
 
@@ -297,5 +331,21 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.requiresAuth)) {
+      if (localStorage.getItem('token') == null) {
+          next({
+              path: '/',
+              params: { nextUrl: to.fullPath }
+          })
+      } else {
+          next()
+      }
+  } else {
+      next()
+  }
+})
+
 
 export default router

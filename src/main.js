@@ -11,6 +11,10 @@ import '@mdi/font/css/materialdesignicons.css'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = http;
+const token = localStorage.getItem('token');
+if (token) {
+  Vue.prototype.$http.defaults.headers.common['Authorization'] =  `Bearer ${token}`
+}
 
 new Vue({
   router,

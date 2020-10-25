@@ -165,7 +165,7 @@
               <v-btn
                 color="green darken-1"
                 text
-                @click="warning(navbarMenu.logout)"
+                @click="logout"
                 >Yakin</v-btn
               >
             </v-card-actions>
@@ -182,8 +182,8 @@
       <v-toolbar-title v-on:myvent="onChangeTitle"
         ><v-list-item two-line>
           <v-list-item-content>
-            <v-list-item-title>SMP NEGERI 1 KENDARI</v-list-item-title>
-            <v-list-item-subtitle>Tahun Ajaran: 2019/2020</v-list-item-subtitle>
+            <v-list-item-title>{{sekolah}}</v-list-item-title>
+            <v-list-item-subtitle>Tahun Ajaran: {{tahunAjaran.sebutan}}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-toolbar-title>
@@ -191,8 +191,8 @@
 
       <v-list-item two-line style="flex: none" class="text-right">
         <v-list-item-content>
-          <v-list-item-title>Thomas alfa edison</v-list-item-title>
-          <v-list-item-subtitle>Guru</v-list-item-subtitle>
+          <v-list-item-title>{{userData.detail_profile ? userData.detail_profile.nama : '' }}</v-list-item-title>
+          <v-list-item-subtitle>{{userData.detail_profile ? userData.detail_profile.jabatan : ''}}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
@@ -204,7 +204,7 @@
         <template v-slot:activator="{ on }">
           <v-btn fab icon v-on="on">
             <v-avatar size="45">
-              <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
+              <v-img :src="profileImage"></v-img>
             </v-avatar>
           </v-btn>
         </template>
@@ -282,6 +282,10 @@ import MyBreadcrumbs from "../components/MyBreadCrumbs";
 export default {
   components: { MyBreadcrumbs },
   data: () => ({
+    tahunAjaran: {},
+    profileImage: null,
+    userData: null,
+    sekolah: null,
     alert: false,
     navbarMenuSelected: "", //selected item
     warningDialog: false,
@@ -418,6 +422,12 @@ export default {
             routerName: "pengaturanMapelKelas",
           },
           {
+            title: "Pengaturan Kelas Siswa",
+            menuTitle: "Pengaturan Kelas Siswa",
+            icon: "mdi-circle-medium",
+            routerName: "pengaturanKelasSiswa",
+          },
+          {
             title: "Pengaturan Tugas Mengajar Kelas",
             menuTitle: "Tugas Mengajar Kelas",
             icon: "mdi-circle-medium",
@@ -471,14 +481,17 @@ export default {
       this.$router.replace({ name: i.name });
     },
     logout() {
+      this.$store.commit("progressFunctionOn", true);
       this.$http
-        .put("/api/v1/user/logout")
+        .post("/api/logout")
         .then((r) => {
           console.log(r);
           this.$router.replace({ name: "login" });
           localStorage.removeItem("token");
+          this.$store.commit("progressFunctionOn", false);
         })
         .catch(function (error) {
+          this.$store.commit("progressFunctionOn", false);
           console.log(error);
         });
     },
@@ -515,7 +528,14 @@ export default {
     },
   },
   created() {
-    // this.claimSavedToken();
+    this.tahunAjaran = JSON.parse(localStorage.getItem('tahunAjar'));
+    this.userData = JSON.parse(localStorage.getItem('user'));
+    if(this.userData.detail_profile){
+      this.profileImage = this.userData.detail_profile.foto;
+    }else {
+      this.profileImage = 'https://avatars.dicebear.com/v2/female/';
+    }
+    this.sekolah = 'SMP 1 UNAAHA';
   },
   computed: {
     breadcrumb: function () {
