@@ -301,21 +301,6 @@ export default {
           console.log(err);
         });
     },
-    fetchTahunAjar() {
-      const params = {
-        per_page: 999,
-        page: 1,
-      };
-      this.$http
-        .get("/api/tahun-ajar", { params: params })
-        .then((r) => {
-          this.tahunAjarData = r.data.data.data || [];
-          this.totalPage = r.data.data.last_page;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
     fetchKategoriMapel() {
       const params = {
         per_page: 999,
@@ -394,7 +379,7 @@ export default {
     },
     processingSave() {
       let joinData = {
-        master_tahun_ajar_id: 1,
+        master_tahun_ajar_id: this.tahunAjarData.id,
         master_kelas_tingkatan_id: this.selectedTingkatanKelas,
         master_mata_pelajaran_kategori_id: [],
         master_mata_pelajaran_id: [],
@@ -438,7 +423,7 @@ export default {
   created() {
     this.fetchKategoriMapel();
     this.fetchMapel();
-    this.fetchTahunAjar();
+    this.tahunAjarData = JSON.parse(localStorage.getItem('tahunAJar'));
     this.fetchTingkatanKelas();
   },
   computed: {

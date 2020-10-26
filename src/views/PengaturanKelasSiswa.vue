@@ -116,18 +116,42 @@
                 :selection-type="selectionType"
                 selectable
                 return-object
-                item-text='nama_lengkap'
+                item-text="nama_lengkap"
                 open-all
               ></v-treeview>
             </v-col>
             <v-divider vertical></v-divider>
             <v-col class="pa-6" cols="6">
-              <template v-if="!selection.length"> No nodes selected. </template>
+              <!-- <template v-if="!selection.length"> No nodes selected. </template>
               <template v-else>
                 <div v-for="node in selection" :key="node.id">
                   {{ node.nama_lengkap }}
                 </div>
-              </template>
+              </template> -->
+
+              <v-card-text>
+                <div
+                  v-if="!selection.length"
+                  key="title"
+                  class="title font-weight-light grey--text pa-4 text-center"
+                >
+                  Siswa Belum Dipilih
+                </div>
+
+                <v-scroll-x-transition group hide-on-leave>
+                  <v-chip
+                    v-for="node in selection"
+                    :key="node.id"
+                    color="grey"
+                    dark
+                    small
+                    class="ma-1"
+                  >
+                    <v-icon left small> mdi-account-tie </v-icon>
+                    {{ node.nama_lengkap }}
+                  </v-chip>
+                </v-scroll-x-transition>
+              </v-card-text>
             </v-col>
           </v-row>
         </v-container>
@@ -147,19 +171,10 @@
             <tr v-for="(item, index) in items" :key="item.id">
               <td>{{ index + 1 }}</td>
               <td class="text-xs-right">
-                {{ item.master_siswa_id }}
+                {{ item.master_siswa_id.nomor_induk }}
               </td>
               <td class="text-xs-right">
-                <v-chip
-                  color="green"
-                  text-color="white"
-                  v-if="item.active == 1"
-                >
-                  Aktif
-                </v-chip>
-                <v-chip color="red" text-color="white" v-if="item.active != 1">
-                  Tidak Aktif
-                </v-chip>
+                {{ item.master_siswa_id.nama_lengkap }}
               </td>
             </tr>
           </tbody>
@@ -178,6 +193,7 @@ export default {
       search: "",
       e6: 1,
       dialog: false,
+      doUpdate: false,
       itemsPerPage: 100,
       mapelSelected: [],
       kategoriArray: [],
@@ -224,8 +240,8 @@ export default {
           sortable: false,
           value: "name",
         },
+        { text: "NIS" },
         { text: "Nama Siswa" },
-        { text: "Aksi" },
       ],
     };
   },
@@ -263,25 +279,22 @@ export default {
     },
     fetchKelasSiswa() {
       const params = {
-        kelas: this.selectedKelasSemester,
+        kelas_semester_id: this.selectedKelasSemester,
+        per_page: 999,
+        page: 1,
       };
       this.$http
         .get("/api/pengaturan-kelas-siswa", { params: params })
         .then((r) => {
           this.siswaKelasData = r.data.data.data || [];
-          //   if (r.data.data.length > 0) {
-          //     this.kategoriArray = this.mapMapelKelas(this.mapelKelasData, 3);
-          //     this.mapelData = this.mapMapelKelas(this.mapelKelasData, 4);
-          //     this.urutanArray = this.mapMapelKelas(this.mapelKelasData, 1);
-          //     this.checkbox = this.mapMapelKelas(this.mapelKelasData, 2);
-          //     console.log(this.mapelData);
-          //   } else {
-          //     this.kategoriArray = [];
-          //     this.mapelData = [];
-          //     this.urutanArray = [];
-          //     this.checkbox = [];
-          //     this.fetchMapel();
-          //   }
+          if (this.siswaKelasData) {
+            this.selection = this.mapSelection(this.siswaKelasData);
+            this.doUpdate = true;
+          } else {
+            this.doUpdate = false;
+            this.selection = [];
+          }
+          console.log(this.selection);
         })
         .catch((err) => {
           console.log(err);
@@ -301,21 +314,6 @@ export default {
           //   this.selectedKelasSemester = this.tingkatKelasData[0].id;
           //   console.log(this.selectedTingkatanKelas);
           //   this.totalPage = r.data.data.last_page;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-    fetchTahunAjar() {
-      const params = {
-        per_page: 999,
-        page: 1,
-      };
-      this.$http
-        .get("/api/tahun-ajar", { params: params })
-        .then((r) => {
-          this.tahunAjarData = r.data.data.data || [];
-          this.totalPage = r.data.data.last_page;
         })
         .catch((err) => {
           console.log(err);
@@ -361,27 +359,33 @@ export default {
         }
       });
     },
+    mapSelection(items) {
+       return items.map((i) => {
+        return i.master_siswa_id;
+      });
+    },
     mapItems(items) {
       return items.map((i) => {
         return i.id;
       });
     },
     save() {
-      //   if (this.siswaKelasData) {
-      //     this.processingReset();
-      //   } else {
       this.processingSave();
-      //   }
     },
-    processingReset() {
-      this.$store.commit("progressFunctionOn", true);
-      const params = {
-        tahun_ajar: 1,
-        kelas_tingkatan: this.selectedTingkatanKelas,
+    processingUpdate() {
+      let joinData = {
+        tahun_ajar: this.tahunAjarData.id,
+        pengaturan_kelas_semester_id: this.selectedKelasSemester,
+        master_siswa_id: [],
       };
+
+      joinData.master_siswa_id = this.mapItems(this.selection);
+
+      this.$store.commit("progressFunctionOn", true);
       this.$http
-        .delete("/api/pengaturan-mata-pelajaran-kelas", { params: params })
+        .post(`/api/pengaturan-kelas-siswa/${this.editedItem.id}`, joinData)
         .then((r) => {
+          this.$store.commit("progressFunctionOn", false);
           this.snackbar = {
             show: true,
             status: r.data.status,
@@ -389,23 +393,27 @@ export default {
             color: "success",
           };
           this.dialog = false;
-          this.$store.commit("progressFunctionOn", false);
-          this.processingSave();
+          this.fetchKelasSiswa();
         })
         .catch((err) => {
-          console.log(err);
           this.$store.commit("progressFunctionOn", false);
+          this.snackbar = {
+            show: true,
+            status: err.data.status,
+            text: err.data.msg,
+            color: "red",
+          };
+          this.dialog = false;
         });
     },
     processingSave() {
       let joinData = {
-        tahun_ajar: 1,
+        tahun_ajar: this.tahunAjarData.id,
         pengaturan_kelas_semester_id: this.selectedKelasSemester,
         master_siswa_id: [],
       };
 
-      joinData.master_siswa_id = this.mapStatus(this.checkbox);
-      console.log(joinData);
+      joinData.master_siswa_id = this.mapItems(this.selection);
 
       this.$store.commit("progressFunctionOn", true);
       this.$http
@@ -436,7 +444,7 @@ export default {
   created() {
     this.fetchKategoriMapel();
     this.fetchSiswa();
-    this.fetchTahunAjar();
+    this.tahunAjarData = JSON.parse(localStorage.getItem("tahunAjar"));
     this.fetchKelasSemester();
   },
   computed: {
@@ -449,8 +457,8 @@ export default {
       this.fetchKelasSiswa();
     },
     selection: function () {
-        console.log(this.selection);
-    }
+      console.log(this.selection);
+    },
   },
 };
 </script>

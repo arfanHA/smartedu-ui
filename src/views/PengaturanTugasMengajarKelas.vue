@@ -248,8 +248,9 @@ export default {
       kelasTingkatanData: [],
       tugasMengajarData: [],
       mapelKelasData: [],
+      tahunAjarData: [],
       inputParam: {
-        tahun_ajar: 1,
+        tahun_ajar: null,
         kelas_tingkatan: null,
         kelas: null,
       },
@@ -305,7 +306,7 @@ export default {
     fetchTugasMengajar() {
       this.$store.commit("progressFunctionOn", true);
       const params = {
-        tahun_ajar: 1,
+        tahun_ajar: this.tahunAjarData.id,
         kelas_tingkatan: this.kelas_tingkatan,
         kelas: this.kelas,
       };
@@ -452,6 +453,7 @@ export default {
     this.fetchMapel();
     this.fetchKelasTingkatan();
     this.fetchKelas();
+    this.tahunAjarData = JSON.parse(localStorage.getItem('tahunAjar'));
   },
   watch: {
     kelas_tingkatan: function () {
