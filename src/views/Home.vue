@@ -402,6 +402,12 @@ export default {
             icon: "mdi-circle-medium",
             routerName: "dataTahunAjar",
           },
+           {
+            title: "Data Ekstrakurikuler",
+            menuTitle: "Data Ekstrakurikuler",
+            icon: "mdi-circle-medium",
+            routerName: "dataEkstrakurikuler",
+          },
         ],
       },
       pengaturanKelas: {
@@ -423,7 +429,7 @@ export default {
           },
           {
             title: "Pengaturan Kelas Siswa",
-            menuTitle: "Pengaturan Kelas Siswa",
+            menuTitle: "Kelas Siswa",
             icon: "mdi-circle-medium",
             routerName: "pengaturanKelasSiswa",
           },
@@ -432,6 +438,12 @@ export default {
             menuTitle: "Tugas Mengajar Kelas",
             icon: "mdi-circle-medium",
             routerName: "pengaturanTugasMengajarKelas",
+          },
+          {
+            title: "Pengaturan Ekstrakurikuler",
+            menuTitle: "Ekstrakurikuler",
+            icon: "mdi-circle-medium",
+            routerName: "pengaturanEkstrakurikuler",
           },
         ],
       },

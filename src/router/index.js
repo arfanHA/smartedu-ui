@@ -11,12 +11,14 @@ import DataKelas from '../views/DataKelas.vue'
 import DataJabatan from '../views/DataJabatan.vue'
 import DataPegawai from '../views/DataPegawai.vue'
 import DataTahunAjar from '../views/DataTahunAjar.vue'
+import DataEkstrakurikuler from '../views/DataEkstrakurikuler.vue'
 import DataMapel from '../views/DataMapel.vue'
 import DataKategoriMapel from '../views/DataKategoriMapel.vue'
 import PengaturanMapelKelas from '../views/PengaturanMapelKelas.vue'
 import PengaturanTugasMengajarKelas from '../views/PengaturanTugasMengajarKelas.vue'
 import PengaturanKelasSemester from '../views/PengaturanKelasSemester.vue'
 import PengaturanKelasSiswa from '../views/PengaturanKelasSiswa.vue' 
+import PengaturanEkstrakurikuler from '../views/PengaturanEkstrakurikuler.vue' 
 
 Vue.use(VueRouter)
 
@@ -235,6 +237,28 @@ const routes = [
         }
       },
       {
+        path: '/data/ekstrakurikuler',
+        name: 'dataEkstrakurikuler',
+        component: DataEkstrakurikuler,
+        meta: {
+          requiresAuth: true,
+          title: 'Data Ekstrakurikuler',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Data Ekstrakurikuler',
+              disabled: true,
+              name: 'dataEkstrakurikuler',
+            }
+          ]
+        }
+      },
+      {
         path: '/pengaturan/mapel/kelas',
         name: 'pengaturanMapelKelas',
         component: PengaturanMapelKelas,
@@ -318,6 +342,28 @@ const routes = [
               text: 'Pengaturan Kelas Semester',
               disabled: true,
               name: 'pengaturanKelasSemester',
+            }
+          ]
+        }
+      },
+      {
+        path: '/pengaturan/ekstrakurikuler',
+        name: 'pengaturanEkstrakurikuler',
+        component: PengaturanEkstrakurikuler,
+        meta: {
+          requiresAuth: true,
+          title: 'Ekstrakurikuler',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Pengaturan Ekstrakurikuler',
+              disabled: true,
+              name: 'pengaturanEkstrakurikuler',
             }
           ]
         }
