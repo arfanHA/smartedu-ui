@@ -84,52 +84,9 @@
           </v-btn>
           <v-toolbar-title>Pengaturan Mata Pelajaran Kelas</v-toolbar-title>
           <v-spacer></v-spacer>
-          <!-- <v-toolbar-items>
-            <v-btn dark text @click="save">Simpan</v-btn>
-          </v-toolbar-items> -->
         </v-toolbar>
-        <!-- <v-container>
-          <v-card class="mx-5">
-            <div
-              v-for="(item, index) in siswaData"
-              :key="item.id"
-              class="ml-5 mr-5"
-            >
-              <v-row v-if="index == 0">
-                <v-col class="showTable" md="1" sm="12"> No </v-col>
-                <v-col class="showTable" md="3" sm="12">Nama Siswa</v-col>
-                <v-col class="showTable" md="3" sm="12">NIS</v-col>
-                <v-col class="showTable" md="2" sm="12">Status</v-col>
-              </v-row>
-              <v-divider></v-divider>
-              <v-row class="pb-0 pt-0">
-                <v-col class="showTable" md="1" sm="12">
-                  {{ index + 1 }}
-                </v-col>
-                <v-col class="showTable" md="3" sm="12">
-                  <v-checkbox
-                  @change="comboSelected(item, $event)"
-                    :label="`${item.nama_lengkap}`"
-                  ></v-checkbox>
-                </v-col>
-                <v-col class="showTable" md="3" sm="12">
-                  {{ item.nomor_induk }}
-                </v-col>
-                <v-col class="showTable pt-0" md="2" sm="12">
-                  <v-list-item v-for="node in selection" :key="node.id">
-                    <v-list-item-content>
-                      <v-list-item-title>{{
-                        node.nama_lengkap
-                      }}</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-col>
-              </v-row>
-            </div>
-          </v-card>
-        </v-container> -->
         <v-container>
-          <v-row>
+          <!-- <v-row>
             <v-col>
               <v-subheader>Nama Lengkap</v-subheader>
               <v-treeview
@@ -174,6 +131,115 @@
                 </div>
               </template>
             </v-col>
+          </v-row> -->
+          <v-row>
+            <v-col md="6">
+              <v-card>
+                <v-card-title>
+                  <v-subheader>Daftar Siswa</v-subheader>
+                  <v-row class="ma-1">
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Pencarian"
+                      outlined
+                      dense
+                      hide-details
+                    ></v-text-field>
+                  </v-row>
+                </v-card-title>
+                <v-data-table
+                  :headers="dialogTableHeaders"
+                  :items="siswaData"
+                  :search="search"
+                  class="elevation-1"
+                  hide-default-footer
+                  :items-per-page="itemsPerPage"
+                >
+                  <template v-slot:body="{ items }">
+                    <tbody>
+                      <tr v-for="(item, index) in items" :key="item.id">
+                        <td>{{ index + 1 }}</td>
+                        <td class="text-xs-right">{{ item.nama_lengkap }}</td>
+                        <td class="text-xs-right">{{ item.nomor_induk }}</td>
+                        <td class="text-xs-right">
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                              <v-icon
+                                medium
+                                class="ml-1"
+                                v-on="on"
+                                @click="pushToSelection(item)"
+                                >mdi-arrow-right-box</v-icon
+                              >
+                            </template>
+                            <span>Daftarkan Siswa Kedalam Kelas</span>
+                          </v-tooltip>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-data-table>
+                <v-pagination
+                  class="pt-3 pb-3"
+                  circle
+                  color="tableHeader"
+                  v-model="pageSelected"
+                  :length="totalPage"
+                  :total-visible="7"
+                  @input="selectPage($event)"
+                ></v-pagination>
+              </v-card>
+            </v-col>
+            <v-col md="6">
+              <v-card>
+                <v-card-title>
+                  <v-subheader>Siswa Kelas</v-subheader>
+                  <v-row class="ma-1">
+                    <v-text-field
+                      v-model="searchSiswaKelas"
+                      append-icon="mdi-magnify"
+                      label="Pencarian"
+                      outlined
+                      dense
+                      hide-details
+                    ></v-text-field>
+                  </v-row>
+                </v-card-title>
+                <v-data-table
+                  :headers="dialogTableHeaders"
+                  :items="selection"
+                  :search="searchSiswaKelas"
+                  class="elevation-1"
+                  hide-default-footer
+                  :items-per-page="itemsPerPage"
+                >
+                  <template v-slot:body="{ items }">
+                    <tbody>
+                      <tr v-for="(item, index) in items" :key="item.id">
+                        <td>{{ index + 1 }}</td>
+                        <td class="text-xs-right">{{ item.nama_lengkap }}</td>
+                        <td class="text-xs-right">{{ item.nomor_induk }}</td>
+                        <td class="text-xs-right">
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                              <v-icon
+                                medium
+                                class="ml-1"
+                                v-on="on"
+                                @click="deleteSiswa(index)"
+                                >mdi-close</v-icon
+                              >
+                            </template>
+                            <span>Hapus Siswa Dari Kelas</span>
+                          </v-tooltip>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-data-table>
+              </v-card>
+            </v-col>
           </v-row>
         </v-container>
       </v-card>
@@ -211,13 +277,16 @@ export default {
     return {
       selectionType: "leaf",
       selection: [],
+      totalPage: null,
+      pageSelected: 1,
       search: "",
+      searchDaftarSiswa: '',
+      searchSiswaKelas: '',
       e6: 1,
       dialog: false,
       doUpdate: false,
       itemsPerPage: 100,
       mapelSelected: [],
-      treeSelection: [],
       kategoriArray: [],
       urutanArray: [],
       dataToFilter: [],
@@ -265,13 +334,23 @@ export default {
         { text: "NIS" },
         { text: "Nama Siswa" },
       ],
+      dialogTableHeaders: [
+        {
+          text: "No",
+          align: "start",
+          width: "6%",
+          sortable: false,
+        },
+        { text: "Nama Lengkap", value: 'nama_lengkap'},
+        { text: "Nomor Induk", value: 'nomor_induk' },
+        { text: "Aksi"},
+      ],
     };
   },
   methods: {
-    pushToSelection() {
-      this.selection.push(this.treeSelection[0]);
+    pushToSelection(item) {
+      this.selection.push(item);
       this.processingSave();
-      this.treeSelection = [];
     },
     deleteSiswa(index) {
       if (this.selection.length < 2) {
@@ -333,7 +412,6 @@ export default {
             this.doUpdate = false;
             this.selection = [];
           }
-          console.log(this.selection);
         })
         .catch((err) => {
           this.$store.commit("progressFunctionOn", false);
@@ -369,16 +447,20 @@ export default {
           console.log(err);
         });
     },
-    fetchSiswa() {
+    fetchSiswa(myOffset) {
       this.$store.commit("progressFunctionOn", true);
       const params = {
+        per_page: this.skip.limit,
+        page: myOffset,
         tahun_ajar: this.tahunAjarData.id,
         kelas: this.selectedKelasSemester,
       };
       this.$http
         .get("/api/option/siswa-semester", { params: params })
         .then((r) => {
-          this.siswaData = r.data.data || [];
+          this.siswaData = r.data.data.data || [];
+          this.totalPage = r.data.data.last_page;
+          this.skip.offset = (r.data.data.current_page - 1) * r.data.data.per_page;
           this.$store.commit("progressFunctionOn", false);
         })
         .catch((err) => {
@@ -464,7 +546,7 @@ export default {
           };
           // this.dialog = false;
           this.fetchKelasSiswa();
-          this.fetchSiswa();
+          this.fetchSiswa(1);
         })
         .catch((err) => {
           this.$store.commit("progressFunctionOn", false);
@@ -480,7 +562,7 @@ export default {
   },
   created() {
     this.fetchKategoriMapel();
-    this.fetchSiswa();
+    this.fetchSiswa(1);
     this.tahunAjarData = JSON.parse(localStorage.getItem("tahunAjar"));
     this.fetchKelasSemester();
   },
@@ -492,7 +574,7 @@ export default {
   watch: {
     selectedKelasSemester: function () {
       this.fetchKelasSiswa();
-      this.fetchSiswa();
+      this.fetchSiswa(1);
     },
     // selection: function () {
     //   console.log(this.selection);
