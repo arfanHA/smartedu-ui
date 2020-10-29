@@ -58,15 +58,35 @@
       style="overflow-y: hidden"
     >
       <v-card>
+        <v-snackbar
+          v-model="snackbar.show"
+          :timeout="2000"
+          centered
+          absolute
+          top
+          :color="snackbar.color"
+        >
+          {{ snackbar.text }}
+          <template v-slot:action="{ attrs }">
+            <v-btn
+              color="white"
+              icon
+              v-bind="attrs"
+              @click="snackbar.show = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+        </v-snackbar>
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="dialog = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>Pengaturan Mata Pelajaran Kelas</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-toolbar-items>
+          <!-- <v-toolbar-items>
             <v-btn dark text @click="save">Simpan</v-btn>
-          </v-toolbar-items>
+          </v-toolbar-items> -->
         </v-toolbar>
         <!-- <v-container>
           <v-card class="mx-5">
@@ -87,21 +107,22 @@
                   {{ index + 1 }}
                 </v-col>
                 <v-col class="showTable" md="3" sm="12">
-                  {{ item.nama_lengkap }}
+                  <v-checkbox
+                  @change="comboSelected(item, $event)"
+                    :label="`${item.nama_lengkap}`"
+                  ></v-checkbox>
                 </v-col>
                 <v-col class="showTable" md="3" sm="12">
                   {{ item.nomor_induk }}
                 </v-col>
                 <v-col class="showTable pt-0" md="2" sm="12">
-                  <v-checkbox
-                    class="mb-3"
-                    v-model="checkbox[index]"
-                    :label="`${
-                      checkbox[index] === undefined || checkbox[index] === false
-                        ? 'Tidak Aktif'
-                        : 'Aktif'
-                    }`"
-                  ></v-checkbox>
+                  <v-list-item v-for="node in selection" :key="node.id">
+                    <v-list-item-content>
+                      <v-list-item-title>{{
+                        node.nama_lengkap
+                      }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
                 </v-col>
               </v-row>
             </div>
@@ -110,48 +131,48 @@
         <v-container>
           <v-row>
             <v-col>
+              <v-subheader>Nama Lengkap</v-subheader>
               <v-treeview
-                v-model="selection"
+                v-model="treeSelection"
                 :items="siswaData"
                 :selection-type="selectionType"
                 selectable
                 return-object
                 item-text="nama_lengkap"
+                @input="pushToSelection"
+                open-all
+              ></v-treeview>
+            </v-col>
+            <v-col>
+              <v-subheader>Nomor Induk</v-subheader>
+              <v-treeview
+                :items="siswaData"
+                :selection-type="selectionType"
+                item-text="nomor_induk"
                 open-all
               ></v-treeview>
             </v-col>
             <v-divider vertical></v-divider>
-            <v-col class="pa-6" cols="6">
-              <!-- <template v-if="!selection.length"> No nodes selected. </template>
+            <v-col class="pa-6" cols="6" style="display: grid">
+              <template v-if="!selection.length">
+                Siswa Belum Dipilih
+              </template>
               <template v-else>
-                <div v-for="node in selection" :key="node.id">
-                  {{ node.nama_lengkap }}
-                </div>
-              </template> -->
-
-              <v-card-text>
-                <div
-                  v-if="!selection.length"
-                  key="title"
-                  class="title font-weight-light grey--text pa-4 text-center"
+                <v-chip color="blue" dark class="ma-1">
+                  Jumlah Siswa : {{ selection.length }}</v-chip
                 >
-                  Siswa Belum Dipilih
-                </div>
-
-                <v-scroll-x-transition group hide-on-leave>
+                <div v-for="(node, i) in selection" :key="node.id">
                   <v-chip
-                    v-for="node in selection"
-                    :key="node.id"
+                    style="width: min-content"
                     color="grey"
                     dark
-                    small
                     class="ma-1"
                   >
-                    <v-icon left small> mdi-account-tie </v-icon>
-                    {{ node.nama_lengkap }}
+                    {{ node.nama_lengkap + " : " + node.nomor_induk }}
                   </v-chip>
-                </v-scroll-x-transition>
-              </v-card-text>
+                  <v-icon @click="deleteSiswa(i)">mdi-close</v-icon>
+                </div>
+              </template>
             </v-col>
           </v-row>
         </v-container>
@@ -196,6 +217,7 @@ export default {
       doUpdate: false,
       itemsPerPage: 100,
       mapelSelected: [],
+      treeSelection: [],
       kategoriArray: [],
       urutanArray: [],
       dataToFilter: [],
@@ -246,8 +268,23 @@ export default {
     };
   },
   methods: {
-    comboSelected() {
-      console.log(this.selection);
+    pushToSelection() {
+      this.selection.push(this.treeSelection[0]);
+      this.processingSave();
+      this.treeSelection = [];
+    },
+    deleteSiswa(index) {
+      if (this.selection.length < 2) {
+        this.snackbar = {
+          show: true,
+          status: 200,
+          text: "Siswa Tidak Bisa Kosong",
+          color: "error",
+        };
+      } else {
+        this.selection.splice(index, 1);
+        this.save();
+      }
     },
     filter(item, queryText, itemText) {
       if (item.header) return false;
@@ -283,9 +320,11 @@ export default {
         per_page: 999,
         page: 1,
       };
+      this.$store.commit("progressFunctionOn", true);
       this.$http
         .get("/api/pengaturan-kelas-siswa", { params: params })
         .then((r) => {
+          this.$store.commit("progressFunctionOn", false);
           this.siswaKelasData = r.data.data.data || [];
           if (this.siswaKelasData) {
             this.selection = this.mapSelection(this.siswaKelasData);
@@ -297,6 +336,7 @@ export default {
           console.log(this.selection);
         })
         .catch((err) => {
+          this.$store.commit("progressFunctionOn", false);
           console.log(err);
         });
     },
@@ -310,10 +350,6 @@ export default {
         .get("/api/pengaturan-kelas-semester", { params: params })
         .then((r) => {
           this.kelasSemesterData = r.data.data.data || [];
-          console.log(this.kelasSemsterData);
-          //   this.selectedKelasSemester = this.tingkatKelasData[0].id;
-          //   console.log(this.selectedTingkatanKelas);
-          //   this.totalPage = r.data.data.last_page;
         })
         .catch((err) => {
           console.log(err);
@@ -336,13 +372,13 @@ export default {
     fetchSiswa() {
       this.$store.commit("progressFunctionOn", true);
       const params = {
-        per_page: 999,
-        page: 1,
+        tahun_ajar: this.tahunAjarData.id,
+        kelas: this.selectedKelasSemester,
       };
       this.$http
-        .get("/api/siswa", { params: params })
+        .get("/api/option/siswa-semester", { params: params })
         .then((r) => {
-          this.siswaData = r.data.data.data || [];
+          this.siswaData = r.data.data || [];
           this.$store.commit("progressFunctionOn", false);
         })
         .catch((err) => {
@@ -360,7 +396,7 @@ export default {
       });
     },
     mapSelection(items) {
-       return items.map((i) => {
+      return items.map((i) => {
         return i.master_siswa_id;
       });
     },
@@ -426,8 +462,9 @@ export default {
             text: r.data.msg,
             color: "success",
           };
-          this.dialog = false;
+          // this.dialog = false;
           this.fetchKelasSiswa();
+          this.fetchSiswa();
         })
         .catch((err) => {
           this.$store.commit("progressFunctionOn", false);
@@ -437,7 +474,7 @@ export default {
             text: err.data.msg,
             color: "red",
           };
-          this.dialog = false;
+          // this.dialog = false;
         });
     },
   },
@@ -455,10 +492,11 @@ export default {
   watch: {
     selectedKelasSemester: function () {
       this.fetchKelasSiswa();
+      this.fetchSiswa();
     },
-    selection: function () {
-      console.log(this.selection);
-    },
+    // selection: function () {
+    //   console.log(this.selection);
+    // },
   },
 };
 </script>
