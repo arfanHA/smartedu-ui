@@ -445,6 +445,12 @@ export default {
             icon: "mdi-circle-medium",
             routerName: "pengaturanEkstrakurikuler",
           },
+           {
+            title: "Pengaturan Ekstrakurikuler Rombel",
+            menuTitle: "Ekstrakurikuler Rombel",
+            icon: "mdi-circle-medium",
+            routerName: "pengaturanEkstrakurikulerRombel",
+          },
         ],
       },
       logout: {

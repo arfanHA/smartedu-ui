@@ -19,6 +19,7 @@ import PengaturanTugasMengajarKelas from '../views/PengaturanTugasMengajarKelas.
 import PengaturanKelasSemester from '../views/PengaturanKelasSemester.vue'
 import PengaturanKelasSiswa from '../views/PengaturanKelasSiswa.vue' 
 import PengaturanEkstrakurikuler from '../views/PengaturanEkstrakurikuler.vue' 
+import PengaturanEkstrakRombel from '../views/PengaturanEkstrakRombel.vue' 
 
 Vue.use(VueRouter)
 
@@ -364,6 +365,28 @@ const routes = [
               text: 'Pengaturan Ekstrakurikuler',
               disabled: true,
               name: 'pengaturanEkstrakurikuler',
+            }
+          ]
+        }
+      },
+      {
+        path: '/pengaturan/ekstrakurikuler-rombel',
+        name: 'pengaturanEkstrakurikulerRombel',
+        component: PengaturanEkstrakRombel,
+        meta: {
+          requiresAuth: true,
+          title: 'Ekstrakurikuler Rombel',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Pengaturan Ekstrakurikuler Rombel',
+              disabled: true,
+              name: 'pengaturanEkstrakurikulerRombel',
             }
           ]
         }

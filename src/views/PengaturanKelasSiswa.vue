@@ -82,56 +82,10 @@
           <v-btn icon dark @click="dialog = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Pengaturan Mata Pelajaran Kelas</v-toolbar-title>
+          <v-toolbar-title>Pengaturan Kelas Siswa</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-container>
-          <!-- <v-row>
-            <v-col>
-              <v-subheader>Nama Lengkap</v-subheader>
-              <v-treeview
-                v-model="treeSelection"
-                :items="siswaData"
-                :selection-type="selectionType"
-                selectable
-                return-object
-                item-text="nama_lengkap"
-                @input="pushToSelection"
-                open-all
-              ></v-treeview>
-            </v-col>
-            <v-col>
-              <v-subheader>Nomor Induk</v-subheader>
-              <v-treeview
-                :items="siswaData"
-                :selection-type="selectionType"
-                item-text="nomor_induk"
-                open-all
-              ></v-treeview>
-            </v-col>
-            <v-divider vertical></v-divider>
-            <v-col class="pa-6" cols="6" style="display: grid">
-              <template v-if="!selection.length">
-                Siswa Belum Dipilih
-              </template>
-              <template v-else>
-                <v-chip color="blue" dark class="ma-1">
-                  Jumlah Siswa : {{ selection.length }}</v-chip
-                >
-                <div v-for="(node, i) in selection" :key="node.id">
-                  <v-chip
-                    style="width: min-content"
-                    color="grey"
-                    dark
-                    class="ma-1"
-                  >
-                    {{ node.nama_lengkap + " : " + node.nomor_induk }}
-                  </v-chip>
-                  <v-icon @click="deleteSiswa(i)">mdi-close</v-icon>
-                </div>
-              </template>
-            </v-col>
-          </v-row> -->
           <v-row>
             <v-col md="6">
               <v-card>
