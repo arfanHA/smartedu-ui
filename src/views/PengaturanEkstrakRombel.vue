@@ -15,7 +15,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-row>
+    <!-- <v-row>
       <v-col class="text-right">
         <v-btn
           depressed
@@ -26,7 +26,7 @@
           <v-icon left>mdi-plus</v-icon>Pengaturan Ekstrakurikuler
         </v-btn>
       </v-col>
-    </v-row>
+    </v-row> -->
 
     <v-dialog
       v-model="dialog"
