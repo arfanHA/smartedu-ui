@@ -20,6 +20,7 @@ import PengaturanKelasSemester from '../views/PengaturanKelasSemester.vue'
 import PengaturanKelasSiswa from '../views/PengaturanKelasSiswa.vue' 
 import PengaturanEkstrakurikuler from '../views/PengaturanEkstrakurikuler.vue' 
 import PengaturanEkstrakRombel from '../views/PengaturanEkstrakRombel.vue' 
+import FormBahanAjar from '../views/FormBahanAjar.vue' 
 
 Vue.use(VueRouter)
 
@@ -387,6 +388,28 @@ const routes = [
               text: 'Pengaturan Ekstrakurikuler Rombel',
               disabled: true,
               name: 'pengaturanEkstrakurikulerRombel',
+            }
+          ]
+        }
+      },
+      {
+        path: '/learning-media/bahan-ajar',
+        name: 'formBahanAjar',
+        component: FormBahanAjar,
+        meta: {
+          requiresAuth: true,
+          title: 'Form Bahan Ajar',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Form Bahan Ajar',
+              disabled: true,
+              name: 'formBahanAjar',
             }
           ]
         }

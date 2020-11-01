@@ -120,6 +120,41 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
+        <v-list-group
+          color="#616161"
+          :prepend-icon="menu.learningMedia.action"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title
+                v-text="menu.learningMedia.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            color="primary"
+            v-for="subItem in menu.learningMedia.items"
+            :key="subItem.menuTitle"
+            @click="routerPush(subItem)"
+            :class="
+              subItem.routerName === menuSelected
+                ? 'v-list-item--active body-2'
+                : ''
+            "
+          >
+            <v-list-item-icon>
+              <v-icon v-text="subItem.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title
+                class="caption"
+                v-text="subItem.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
       </v-list>
 
       <template v-slot:append>
@@ -162,12 +197,7 @@
                 >Batal</v-btn
               >
 
-              <v-btn
-                color="green darken-1"
-                text
-                @click="logout"
-                >Yakin</v-btn
-              >
+              <v-btn color="green darken-1" text @click="logout">Yakin</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -182,8 +212,10 @@
       <v-toolbar-title v-on:myvent="onChangeTitle"
         ><v-list-item two-line>
           <v-list-item-content>
-            <v-list-item-title>{{sekolah}}</v-list-item-title>
-            <v-list-item-subtitle>Tahun Ajaran: {{tahunAjaran.sebutan}}</v-list-item-subtitle>
+            <v-list-item-title>{{ sekolah }}</v-list-item-title>
+            <v-list-item-subtitle
+              >Tahun Ajaran: {{ tahunAjaran.sebutan }}</v-list-item-subtitle
+            >
           </v-list-item-content>
         </v-list-item>
       </v-toolbar-title>
@@ -191,8 +223,12 @@
 
       <v-list-item two-line style="flex: none" class="text-right">
         <v-list-item-content>
-          <v-list-item-title>{{userData.detail_profile ? userData.detail_profile.nama : '' }}</v-list-item-title>
-          <v-list-item-subtitle>{{userData.detail_profile ? userData.detail_profile.jabatan : ''}}</v-list-item-subtitle>
+          <v-list-item-title>{{
+            userData.detail_profile ? userData.detail_profile.nama : ""
+          }}</v-list-item-title>
+          <v-list-item-subtitle>{{
+            userData.detail_profile ? userData.detail_profile.jabatan : ""
+          }}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
@@ -402,7 +438,7 @@ export default {
             icon: "mdi-circle-medium",
             routerName: "dataTahunAjar",
           },
-           {
+          {
             title: "Data Ekstrakurikuler",
             menuTitle: "Data Ekstrakurikuler",
             icon: "mdi-circle-medium",
@@ -445,11 +481,24 @@ export default {
             icon: "mdi-circle-medium",
             routerName: "pengaturanEkstrakurikuler",
           },
-           {
+          {
             title: "Pengaturan Ekstrakurikuler Rombel",
             menuTitle: "Ekstrakurikuler Rombel",
             icon: "mdi-circle-medium",
             routerName: "pengaturanEkstrakurikulerRombel",
+          },
+        ],
+      },
+      learningMedia: {
+        action: "mdi-ungroup",
+        title: "Learning Media",
+        menuTitle: "Learning Media",
+        items: [
+          {
+            title: "Form Bahan Ajar",
+            menuTitle: "Form Bahan Ajar",
+            icon: "mdi-circle-medium",
+            routerName: "formBahanAjar",
           },
         ],
       },
@@ -546,14 +595,14 @@ export default {
     },
   },
   created() {
-    this.tahunAjaran = JSON.parse(localStorage.getItem('tahunAjar'));
-    this.userData = JSON.parse(localStorage.getItem('user'));
-    if(this.userData.detail_profile){
+    this.tahunAjaran = JSON.parse(localStorage.getItem("tahunAjar"));
+    this.userData = JSON.parse(localStorage.getItem("user"));
+    if (this.userData.detail_profile) {
       this.profileImage = this.userData.detail_profile.foto;
-    }else {
-      this.profileImage = 'https://avatars.dicebear.com/v2/female/';
+    } else {
+      this.profileImage = "https://avatars.dicebear.com/v2/female/";
     }
-    this.sekolah = 'SMP 1 UNAAHA';
+    this.sekolah = "SMP 1 UNAAHA";
   },
   computed: {
     breadcrumb: function () {
