@@ -106,6 +106,7 @@
                 </v-col>
                 <v-col cols="12" sm="12">
                   <v-file-input
+                    v-model="editedItem.file"
                     ref="fileInput"
                     type="file"
                     show-size
@@ -172,7 +173,20 @@
               <td class="text-xs-right">{{ item.kategori.nama }}</td>
               <td class="text-xs-right">{{ item.pegawai.nama }}</td>
               <td class="text-xs-right">{{ item.keterangan }}</td>
-              <td class="text-xs-right">{{ item.file }}</td>
+              <td class="text-xs-right">
+                <v-btn
+                  :loading="loading3"
+                  :disabled="!item.file"
+                  color="blue-grey"
+                  dense
+                  x-small
+                  class="ma-2 white--text"
+                  @click="downloadFile(item.file)"
+                >
+                  download
+                  <v-icon right dark x-small> mdi-cloud-download </v-icon>
+                </v-btn>
+              </td>
               <td class="text-xs-right">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
@@ -273,7 +287,7 @@ export default {
         text: "",
         color: "",
       },
-     fileWarning: {
+      fileWarning: {
         show: false,
         text: "",
         color: "",
@@ -287,7 +301,7 @@ export default {
         {
           text: "No",
           align: "start",
-          width: "10%",
+          width: "6%",
           class: "tableHeader white--text",
           sortable: false,
           value: "name",
@@ -322,6 +336,9 @@ export default {
     };
   },
   methods: {
+    downloadFile(link){
+      window.open(link);    
+    },
     onFileSelected(event) {
       if (event) {
         const reader = new FileReader();
@@ -372,7 +389,7 @@ export default {
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
-          if (this.srcFile.file == null) {
+        if (this.srcFile.file == null) {
           this.picWarning = {
             show: true,
             text: "Input File Lebih Dulu",
@@ -380,7 +397,10 @@ export default {
           };
         } else {
           let fd = new FormData();
-          fd.append("larning_media_kategori_id", this.editedItem.larning_media_kategori_id);
+          fd.append(
+            "larning_media_kategori_id",
+            this.editedItem.larning_media_kategori_id
+          );
           fd.append("pegawai_id", this.editedItem.pegawai_id);
           fd.append("kelas_tingkatan_id", this.editedItem.kelas_tingkatan_id);
           fd.append("judul", this.editedItem.judul);
@@ -389,71 +409,110 @@ export default {
             fd.append("file", this.srcFile.file);
           }
 
-        this.$store.commit("progressFunctionOn", true);
-        this.$http
-          .post("/api/learning-media/file", fd)
-          .then((r) => {
-            this.snackbar = {
-              show: true,
-              status: r.data.status,
-              text: r.data.msg,
-              color: "success",
-            };
-            this.dialog = false;
-            this.fetchBahanAjarFile(1);
-            this.reset();
-          })
-          .catch((err) => {
-            this.snackbar = {
-              show: true,
-              status: err.data.status,
-              text: err.data.msg,
-              color: "red",
-            };
-            this.dialog = false;
-            this.fetchBahanAjarFile(1);
-            this.reset();
-          });
+          this.$store.commit("progressFunctionOn", true);
+          this.$http
+            .post("/api/learning-media/file", fd)
+            .then((r) => {
+              this.snackbar = {
+                show: true,
+                status: r.data.status,
+                text: r.data.msg,
+                color: "success",
+              };
+              this.dialog = false;
+              this.fetchBahanAjarFile(1);
+              this.reset();
+            })
+            .catch((err) => {
+              this.snackbar = {
+                show: true,
+                status: err.data.status,
+                text: err.data.msg,
+                color: "red",
+              };
+              this.dialog = false;
+              this.fetchBahanAjarFile(1);
+              this.reset();
+            });
         }
       }
     },
     editItem(item) {
-      this.editedItem = Object.assign({}, item);
+      this.editedItem.id = item.id;
+      this.editedItem.larning_media_kategori_id = item.kategori.id;
+      this.editedItem.pegawai_id = item.pegawai.id;
+      this.editedItem.kelas_tingkatan_id = item.kelas_tingkatan.id;
+      this.editedItem.judul = item.judul;
+      this.editedItem.keterangan = item.keterangan;
+
+      this.getFile(item, (res) => {
+        let reader = new FileReader();
+        reader.onload = () => {
+          this.editedItem.file = reader.result;
+          console.log(reader);
+        };
+        reader.readAsDataURL(res.data);
+      });
+
       this.dialog = true;
       this.updateProcess = true;
+    },
+    getFile(item, callbackBlob) {
+      this.$http
+        .get(item.file, {
+          responseType: "blob",
+        })
+        .then(callbackBlob);
     },
     processEdit() {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
-        let params = {
-          kode: this.editedItem.kode,
-          nama: this.editedItem.nama,
-          keterangan: this.editedItem.keterangan,
-        };
-        this.$http
-          .put(`/api/mata-pelajaran/${this.editedItem.id}`, params)
-          .then((r) => {
-            this.snackbar = {
-              show: true,
-              status: r.data.status,
-              text: r.data.msg,
-              color: "success",
-            };
-            this.fetchBahanAjarFile(1);
-            this.reset();
-            this.dialog = false;
-          })
-          .catch((err) => {
-            this.snackbar = {
-              show: true,
-              status: err.data.status,
-              text: err.data.msg,
-              color: "red",
-            };
-            this.dialog = false;
-            this.fetchBahanAjarFile(1);
-            this.reset();
-          });
+        if (this.srcFile.file == null) {
+          this.picWarning = {
+            show: true,
+            text: "Input File Lebih Dulu",
+            color: "red",
+          };
+        } else {
+          let fd = new FormData();
+          fd.append(
+            "larning_media_kategori_id",
+            this.editedItem.larning_media_kategori_id
+          );
+          fd.append("pegawai_id", this.editedItem.pegawai_id);
+          fd.append("kelas_tingkatan_id", this.editedItem.kelas_tingkatan_id);
+          fd.append("judul", this.editedItem.judul);
+          fd.append("keterangan", this.editedItem.keterangan);
+          if (this.srcFile.file != null) {
+            fd.append("file", this.srcFile.file);
+          }
+
+          this.$store.commit("progressFunctionOn", true);
+          this.$http
+            .post(`/api/learning-media/file/${this.editedItem.id}?_method=PUT`, fd)
+            .then((r) => {
+              this.snackbar = {
+                show: true,
+                status: r.data.status,
+                text: r.data.msg,
+                color: "success",
+              };
+              this.dialog = false;
+              this.fetchBahanAjarFile(1);
+              this.reset();
+            })
+            .catch((err) => {
+              this.snackbar = {
+                show: true,
+                status: err.data.status,
+                text: err.data.msg,
+                color: "red",
+              };
+              this.dialog = false;
+              this.fetchBahanAjarFile(1);
+              this.reset();
+            });
+        }
         this.updateProcess = false;
       }
     },
@@ -465,8 +524,9 @@ export default {
       this.warnDialog = true;
     },
     processingDelete(item) {
+      this.$store.commit("progressFunctionOn", true);
       this.$http
-        .delete(`/api/mata-pelajaran/${item.id}`)
+        .delete(`/api/learning-media/file/${item.id}`)
         .then((r) => {
           this.snackbar = {
             show: true,
