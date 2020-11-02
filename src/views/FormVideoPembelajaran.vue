@@ -23,7 +23,7 @@
           class="mb-5 mt-2 submitBtn black--text"
           @click="dialog = !dialog"
         >
-          <v-icon left>mdi-plus</v-icon>Tambah Bahan Ajar
+          <v-icon left>mdi-plus</v-icon>Tambah Video Pembelajaran
         </v-btn>
       </v-col>
     </v-row>
@@ -90,6 +90,8 @@
                     v-model="editedItem.kelas_tingkatan_id"
                     :items="kelasTingkatanData"
                     item-text="tingkatan"
+                    :rules="formRules"
+                    required
                     item-value="id"
                     label="Pilih Tingkatan Kelas"
                     filled
@@ -105,15 +107,13 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="12">
-                  <v-file-input
-                    v-model="editedItem.file"
-                    ref="fileInput"
-                    type="file"
-                    show-size
-                    @change="onFileSelected($event)"
-                    counter
-                    label="Unggah File"
-                  ></v-file-input>
+                  <v-text-field
+                    label="Link Video"
+                    filled
+                    :rules="formRules"
+                    v-model="editedItem.link"
+                    required
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="12">
                   <v-textarea
@@ -176,15 +176,15 @@
               <td class="text-xs-right">
                 <v-btn
                   :loading="loading3"
-                  :disabled="!item.file"
+                  :disabled="!item.link"
                   color="blue-grey"
                   dense
                   x-small
                   class="ma-2 white--text"
-                  @click="downloadFile(item.file)"
+                  @click="downloadFile(item.link)"
                 >
-                  download
-                  <v-icon right dark x-small> mdi-cloud-download </v-icon>
+                  Lihat
+                  <v-icon right dark x-small> mdi-video-outline </v-icon>
                 </v-btn>
               </td>
               <td class="text-xs-right">
@@ -273,7 +273,7 @@ export default {
         pegawai_id: null,
         kelas_tingkatan_id: null,
         judul: null,
-        file: null,
+        link: null,
         keterangan: null,
       },
       srcFile: {
@@ -323,7 +323,7 @@ export default {
           class: "tableHeader white--text",
         },
         {
-          text: "File",
+          text: "Video",
           value: "keterangan",
           class: "tableHeader white--text",
         },
@@ -368,7 +368,7 @@ export default {
         kategoriID: 1,
       };
       this.$http
-        .get("/api/learning-media/file", { params: params })
+        .get("/api/learning-media/video", { params: params })
         .then((r) => {
           console.log(r);
           this.lmData = r.data.data.data || [];
@@ -390,13 +390,6 @@ export default {
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
-        if (this.srcFile.file == null) {
-          this.picWarning = {
-            show: true,
-            text: "Input File Lebih Dulu",
-            color: "red",
-          };
-        } else {
           let fd = new FormData();
           fd.append(
             "larning_media_kategori_id",
@@ -406,13 +399,11 @@ export default {
           fd.append("kelas_tingkatan_id", this.editedItem.kelas_tingkatan_id);
           fd.append("judul", this.editedItem.judul);
           fd.append("keterangan", this.editedItem.keterangan);
-          if (this.srcFile.file != null) {
-            fd.append("file", this.srcFile.file);
-          }
+          fd.append("link", this.editedItem.link);
 
           this.$store.commit("progressFunctionOn", true);
           this.$http
-            .post("/api/learning-media/file", fd)
+            .post("/api/learning-media/video", fd)
             .then((r) => {
               this.snackbar = {
                 show: true,
@@ -435,7 +426,6 @@ export default {
               this.fetchBahanAjarFile(1);
               this.reset();
             });
-        }
       }
     },
     editItem(item) {
@@ -445,52 +435,16 @@ export default {
       this.editedItem.kelas_tingkatan_id = item.kelas_tingkatan.id;
       this.editedItem.judul = item.judul;
       this.editedItem.keterangan = item.keterangan;
-
-      this.getFile(item, (res) => {
-        let reader = new FileReader();
-        reader.onload = () => {
-          this.editedItem.file = reader.result;
-          console.log(reader);
-        };
-        reader.readAsDataURL(res.data);
-      });
-
+      this.editedItem.link = item.link;
       this.dialog = true;
       this.updateProcess = true;
-    },
-    getFile(item, callbackBlob) {
-      this.$http
-        .get(item.file, {
-          responseType: "blob",
-        })
-        .then(callbackBlob);
     },
     processEdit() {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
-        if (this.srcFile.file == null) {
-          this.picWarning = {
-            show: true,
-            text: "Input File Lebih Dulu",
-            color: "red",
-          };
-        } else {
-          let fd = new FormData();
-          fd.append(
-            "larning_media_kategori_id",
-            this.editedItem.larning_media_kategori_id
-          );
-          fd.append("pegawai_id", this.editedItem.pegawai_id);
-          fd.append("kelas_tingkatan_id", this.editedItem.kelas_tingkatan_id);
-          fd.append("judul", this.editedItem.judul);
-          fd.append("keterangan", this.editedItem.keterangan);
-          if (this.srcFile.file != null) {
-            fd.append("file", this.srcFile.file);
-          }
-
           this.$store.commit("progressFunctionOn", true);
           this.$http
-            .post(`/api/learning-media/file/${this.editedItem.id}?_method=PUT`, fd)
+            .put(`/api/learning-media/video/${this.editedItem.id}`, this.editedItem)
             .then((r) => {
               this.snackbar = {
                 show: true,
@@ -513,7 +467,6 @@ export default {
               this.fetchBahanAjarFile(1);
               this.reset();
             });
-        }
         this.updateProcess = false;
       }
     },
@@ -527,7 +480,7 @@ export default {
     processingDelete(item) {
       this.$store.commit("progressFunctionOn", true);
       this.$http
-        .delete(`/api/learning-media/file/${item.id}`)
+        .delete(`/api/learning-media/video/${item.id}`)
         .then((r) => {
           this.snackbar = {
             show: true,

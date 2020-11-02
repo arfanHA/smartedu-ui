@@ -500,6 +500,30 @@ export default {
             icon: "mdi-circle-medium",
             routerName: "formBahanAjar",
           },
+          {
+            title: "Form Video Pembelajaran",
+            menuTitle: "Form Video Pembelajaran",
+            icon: "mdi-circle-medium",
+            routerName: "formVideoPembelajaran",
+          },
+          {
+            title: "Form Artikel",
+            menuTitle: "Form Artikel",
+            icon: "mdi-circle-medium",
+            routerName: "formArtikel",
+          },
+          {
+            title: "Form Materi Praktikum",
+            menuTitle: "Form Materi Praktikum",
+            icon: "mdi-circle-medium",
+            routerName: "formMateriPraktikum",
+          },
+           {
+            title: "Form Menulis Materi",
+            menuTitle: "Form Menulis Materi",
+            icon: "mdi-circle-medium",
+            routerName: "formMenulisMateri",
+          },
         ],
       },
       logout: {

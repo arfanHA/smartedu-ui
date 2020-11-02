@@ -269,7 +269,7 @@ export default {
       lmData: [],
       kelasTingkatanData: [],
       editedItem: {
-        larning_media_kategori_id: 1,
+        larning_media_kategori_id: 3,
         pegawai_id: null,
         kelas_tingkatan_id: null,
         judul: null,
@@ -365,7 +365,7 @@ export default {
       const params = {
         per_page: this.skip.limit,
         page: myOffset,
-        kategoriID: 1,
+        kategoriID: 3,
       };
       this.$http
         .get("/api/learning-media/file", { params: params })

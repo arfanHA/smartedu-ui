@@ -21,6 +21,10 @@ import PengaturanKelasSiswa from '../views/PengaturanKelasSiswa.vue'
 import PengaturanEkstrakurikuler from '../views/PengaturanEkstrakurikuler.vue' 
 import PengaturanEkstrakRombel from '../views/PengaturanEkstrakRombel.vue' 
 import FormBahanAjar from '../views/FormBahanAjar.vue' 
+import FormVideoPembelajaran from '../views/FormVideoPembelajaran.vue' 
+import FormArtikel from '../views/FormArtikel.vue' 
+import FormMateriPraktikum from '../views/FormMateriPraktikum.vue' 
+import FormMenulisMateri from '../views/FormMenulisMateri.vue' 
 
 Vue.use(VueRouter)
 
@@ -410,6 +414,94 @@ const routes = [
               text: 'Form Bahan Ajar',
               disabled: true,
               name: 'formBahanAjar',
+            }
+          ]
+        }
+      },
+      {
+        path: '/learning-media/video-pembelejaran',
+        name: 'formVideoPembelajaran',
+        component: FormVideoPembelajaran,
+        meta: {
+          requiresAuth: true,
+          title: 'Form Video Pembelajaran',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Form Video Pembelajaran',
+              disabled: true,
+              name: 'formVideoPembelajaran',
+            }
+          ]
+        }
+      },
+      {
+        path: '/learning-media/artikel',
+        name: 'formArtikel',
+        component: FormArtikel,
+        meta: {
+          requiresAuth: true,
+          title: 'Form Artikel',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Form Artikel',
+              disabled: true,
+              name: 'formArtikel',
+            }
+          ]
+        }
+      },
+      {
+        path: '/learning-media/praktikum',
+        name: 'formMateriPraktikum',
+        component: FormMateriPraktikum,
+        meta: {
+          requiresAuth: true,
+          title: 'Form Artikel',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Form Materi Praktikum',
+              disabled: true,
+              name: 'formMateriPraktikum',
+            }
+          ]
+        }
+      },
+      {
+        path: '/learning-media/menulis-materi',
+        name: 'formMenulisMateri',
+        component: FormMenulisMateri,
+        meta: {
+          requiresAuth: true,
+          title: 'Form Menulis Materi',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Form Menulis Materi',
+              disabled: true,
+              name: 'formMenulisMateri',
             }
           ]
         }

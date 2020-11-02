@@ -53,7 +53,12 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" class="mr-2" @click="login" :loading="loading"
+                <v-btn
+                  color="primary"
+                  class="mr-2"
+                  @click="login"
+                  :loading="loading"
+                  :disabled="loading"
                   >Login</v-btn
                 >
               </v-card-actions>
@@ -100,11 +105,12 @@ export default {
         });
     },
     login() {
+      this.loading = true;
       let vm = this;
       let data = {
         username: this.userEmail,
         password: this.password,
-        tahun_ajar: this.selectedTahunAjar
+        tahun_ajar: this.selectedTahunAjar,
       };
 
       if (this.email == "root") {
@@ -120,28 +126,31 @@ export default {
           },
         })
         .then((r) => {
-          
           vm.credential = r.data;
           vm.$http.defaults.headers.common[
             "Authorization"
           ] = `Bearer ${vm.credential.token}`;
 
           localStorage.setItem("token", vm.credential.token);
-          localStorage.setItem("tahunAjar", JSON.stringify(vm.credential.tahun_ajar));
+          localStorage.setItem(
+            "tahunAjar",
+            JSON.stringify(vm.credential.tahun_ajar)
+          );
           localStorage.setItem("user", JSON.stringify(vm.credential.user));
           this.$store.commit("progressFunctionOn", false);
           vm.$router.push("home");
         })
-        .catch((error) =>{
+        .catch((error) => {
           this.$store.commit("progressFunctionOn", false);
           console.log(error);
+          this.loading = false;
         });
     },
   },
   created() {
     this.fetchTahunAjar();
   },
-   computed: {
+  computed: {
     progress: function () {
       return this.$store.state.progressStatus;
     },
@@ -161,15 +170,14 @@ export default {
 }
 
 .bg {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: url( '../assets/backgroundLogin.jpg') no-repeat center center;
-    background-size: cover;
-    background-color: red;
-    transform: scale(1.1);
-  }
-
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: url("../assets/backgroundLogin.jpg") no-repeat center center;
+  background-size: cover;
+  background-color: white;
+  transform: scale(1.1);
+}
 </style>

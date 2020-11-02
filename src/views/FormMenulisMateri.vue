@@ -105,24 +105,7 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="12">
-                  <v-file-input
-                    v-model="editedItem.file"
-                    ref="fileInput"
-                    type="file"
-                    show-size
-                    @change="onFileSelected($event)"
-                    counter
-                    label="Unggah File"
-                  ></v-file-input>
-                </v-col>
-                <v-col cols="12" sm="12">
-                  <v-textarea
-                    label="Keterangan"
-                    filled
-                    :rules="formRules"
-                    v-model="editedItem.keterangan"
-                    required
-                  ></v-textarea>
+                  <vue-editor v-model="editedItem.isi"></vue-editor>
                 </v-col>
               </v-row>
             </v-form>
@@ -172,18 +155,17 @@
               <td class="text-xs-right">{{ item.judul }}</td>
               <td class="text-xs-right">{{ item.kategori.nama }}</td>
               <td class="text-xs-right">{{ item.pegawai.nama }}</td>
-              <td class="text-xs-right">{{ item.keterangan }}</td>
               <td class="text-xs-right">
                 <v-btn
                   :loading="loading3"
-                  :disabled="!item.file"
+                  :disabled="!item.isi"
                   color="blue-grey"
                   dense
                   x-small
                   class="ma-2 white--text"
-                  @click="downloadFile(item.file)"
+                  @click="downloadFile(item.isi)"
                 >
-                  download
+                  Lihat
                   <v-icon right dark x-small> mdi-cloud-download </v-icon>
                 </v-btn>
               </td>
@@ -249,12 +231,34 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog v-model="dialogMateri" persistent>
+        <v-card>
+          <v-card-title class="headline"> </v-card-title>
+
+          <v-card-text>
+            <span v-html="rawHtml"></span>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn color="primary" text @click="dialogMateri = false">
+              Keluar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </v-container>
 </template>
 
 <script>
+import { VueEditor } from "vue2-editor";
 export default {
+  components: {
+    VueEditor,
+  },
   data() {
     return {
       search: "",
@@ -262,9 +266,12 @@ export default {
       formRules: [(v) => !!v || "Tidak boleh kosong"],
       valid: true,
       dialog: false,
+      dialogMateri: false,
+      rawHtml: null,
       warnDialog: false,
       updateProcess: false,
       totalPage: null,
+      data: "",
       pegawaiData: null,
       lmData: [],
       kelasTingkatanData: [],
@@ -273,8 +280,7 @@ export default {
         pegawai_id: null,
         kelas_tingkatan_id: null,
         judul: null,
-        file: null,
-        keterangan: null,
+        isi: null,
       },
       srcFile: {
         buff: null,
@@ -318,12 +324,7 @@ export default {
           class: "tableHeader white--text",
         },
         {
-          text: "Keterangan",
-          value: "keterangan",
-          class: "tableHeader white--text",
-        },
-        {
-          text: "File",
+          text: "Materi",
           value: "keterangan",
           class: "tableHeader white--text",
         },
@@ -336,8 +337,9 @@ export default {
     };
   },
   methods: {
-    downloadFile(link){
-      window.open(link);    
+    downloadFile(item) {
+      this.dialogMateri = true;
+      this.rawHtml = item;
     },
     onFileSelected(event) {
       if (event) {
@@ -368,7 +370,7 @@ export default {
         kategoriID: 1,
       };
       this.$http
-        .get("/api/learning-media/file", { params: params })
+        .get("/api/learning-media/tulisan", { params: params })
         .then((r) => {
           console.log(r);
           this.lmData = r.data.data.data || [];
@@ -390,52 +392,41 @@ export default {
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
-        if (this.srcFile.file == null) {
-          this.picWarning = {
-            show: true,
-            text: "Input File Lebih Dulu",
-            color: "red",
-          };
-        } else {
-          let fd = new FormData();
-          fd.append(
-            "larning_media_kategori_id",
-            this.editedItem.larning_media_kategori_id
-          );
-          fd.append("pegawai_id", this.editedItem.pegawai_id);
-          fd.append("kelas_tingkatan_id", this.editedItem.kelas_tingkatan_id);
-          fd.append("judul", this.editedItem.judul);
-          fd.append("keterangan", this.editedItem.keterangan);
-          if (this.srcFile.file != null) {
-            fd.append("file", this.srcFile.file);
-          }
+        let fd = new FormData();
+        fd.append(
+          "larning_media_kategori_id",
+          this.editedItem.larning_media_kategori_id
+        );
+        fd.append("pegawai_id", this.editedItem.pegawai_id);
+        fd.append("kelas_tingkatan_id", this.editedItem.kelas_tingkatan_id);
+        fd.append("judul", this.editedItem.judul);
+        fd.append("isi", this.editedItem.isi);
 
-          this.$store.commit("progressFunctionOn", true);
-          this.$http
-            .post("/api/learning-media/file", fd)
-            .then((r) => {
-              this.snackbar = {
-                show: true,
-                status: r.data.status,
-                text: r.data.msg,
-                color: "success",
-              };
-              this.dialog = false;
-              this.fetchBahanAjarFile(1);
-              this.reset();
-            })
-            .catch((err) => {
-              this.snackbar = {
-                show: true,
-                status: err.data.status,
-                text: err.data.msg,
-                color: "red",
-              };
-              this.dialog = false;
-              this.fetchBahanAjarFile(1);
-              this.reset();
-            });
-        }
+        this.$store.commit("progressFunctionOn", true);
+        this.$http
+          .post("/api/learning-media/tulisan", fd)
+          .then((r) => {
+            this.snackbar = {
+              show: true,
+              status: r.data.status,
+              text: r.data.msg,
+              color: "success",
+            };
+            this.dialog = false;
+            this.fetchBahanAjarFile(1);
+            this.reset();
+          })
+          .catch((err) => {
+            this.snackbar = {
+              show: true,
+              status: err.data.status,
+              text: err.data.msg,
+              color: "red",
+            };
+            this.dialog = false;
+            this.fetchBahanAjarFile(1);
+            this.reset();
+          });
       }
     },
     editItem(item) {
@@ -444,37 +435,14 @@ export default {
       this.editedItem.pegawai_id = item.pegawai.id;
       this.editedItem.kelas_tingkatan_id = item.kelas_tingkatan.id;
       this.editedItem.judul = item.judul;
-      this.editedItem.keterangan = item.keterangan;
-
-      this.getFile(item, (res) => {
-        let reader = new FileReader();
-        reader.onload = () => {
-          this.editedItem.file = reader.result;
-          console.log(reader);
-        };
-        reader.readAsDataURL(res.data);
-      });
+      this.editedItem.isi = item.isi;
 
       this.dialog = true;
       this.updateProcess = true;
     },
-    getFile(item, callbackBlob) {
-      this.$http
-        .get(item.file, {
-          responseType: "blob",
-        })
-        .then(callbackBlob);
-    },
     processEdit() {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
-        if (this.srcFile.file == null) {
-          this.picWarning = {
-            show: true,
-            text: "Input File Lebih Dulu",
-            color: "red",
-          };
-        } else {
           let fd = new FormData();
           fd.append(
             "larning_media_kategori_id",
@@ -483,14 +451,14 @@ export default {
           fd.append("pegawai_id", this.editedItem.pegawai_id);
           fd.append("kelas_tingkatan_id", this.editedItem.kelas_tingkatan_id);
           fd.append("judul", this.editedItem.judul);
-          fd.append("keterangan", this.editedItem.keterangan);
-          if (this.srcFile.file != null) {
-            fd.append("file", this.srcFile.file);
-          }
+          fd.append("isi", this.editedItem.isi);
 
           this.$store.commit("progressFunctionOn", true);
           this.$http
-            .post(`/api/learning-media/file/${this.editedItem.id}?_method=PUT`, fd)
+            .post(
+              `/api/learning-media/tulisan/${this.editedItem.id}?_method=PUT`,
+              fd
+            )
             .then((r) => {
               this.snackbar = {
                 show: true,
@@ -513,7 +481,6 @@ export default {
               this.fetchBahanAjarFile(1);
               this.reset();
             });
-        }
         this.updateProcess = false;
       }
     },
@@ -527,7 +494,7 @@ export default {
     processingDelete(item) {
       this.$store.commit("progressFunctionOn", true);
       this.$http
-        .delete(`/api/learning-media/file/${item.id}`)
+        .delete(`/api/learning-media/tulisan/${item.id}`)
         .then((r) => {
           this.snackbar = {
             show: true,
