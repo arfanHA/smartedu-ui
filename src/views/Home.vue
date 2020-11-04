@@ -155,6 +155,41 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
+        <v-list-group
+          color="#616161"
+          :prepend-icon="menu.penilaian.action"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title
+                v-text="menu.penilaian.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            color="primary"
+            v-for="subItem in menu.penilaian.items"
+            :key="subItem.menuTitle"
+            @click="routerPush(subItem)"
+            :class="
+              subItem.routerName === menuSelected
+                ? 'v-list-item--active body-2'
+                : ''
+            "
+          >
+            <v-list-item-icon>
+              <v-icon v-text="subItem.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title
+                class="caption"
+                v-text="subItem.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
       </v-list>
 
       <template v-slot:append>
@@ -518,11 +553,42 @@ export default {
             icon: "mdi-circle-medium",
             routerName: "formMateriPraktikum",
           },
-           {
+          {
             title: "Form Menulis Materi",
             menuTitle: "Form Menulis Materi",
             icon: "mdi-circle-medium",
             routerName: "formMenulisMateri",
+          },
+        ],
+      },
+      penilaian: {
+        action: "mdi-ungroup",
+        title: "Penilaian",
+        menuTitle: "Penilaian",
+        items: [
+          {
+            title: "Pengaturan Penilaian",
+            menuTitle: "Pengaturan Penilaian",
+            icon: "mdi-circle-medium",
+            routerName: "pengaturanPenilaian",
+          },
+          {
+            title: "Penilaian Keterampilan",
+            menuTitle: "Penilaian Keterampilan",
+            icon: "mdi-circle-medium",
+            routerName: "penilaianKeterampilan",
+          },
+          {
+            title: "Penilaian Sikap",
+            menuTitle: "Penilaian Sikap",
+            icon: "mdi-circle-medium",
+            routerName: "penilaianSikap",
+          },
+          {
+            title: "Penilaian Deskripsi",
+            menuTitle: "Penilaian Deskripsi",
+            icon: "mdi-circle-medium",
+            routerName: "penilaianDeskripsi",
           },
         ],
       },

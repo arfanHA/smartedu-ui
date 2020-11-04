@@ -25,6 +25,10 @@ import FormVideoPembelajaran from '../views/FormVideoPembelajaran.vue'
 import FormArtikel from '../views/FormArtikel.vue' 
 import FormMateriPraktikum from '../views/FormMateriPraktikum.vue' 
 import FormMenulisMateri from '../views/FormMenulisMateri.vue' 
+import PengaturanPenilaian from '../views/PengaturanPenilaian.vue' 
+import PenilaianKeterampilan from '../views/PenilaianKeterampilan.vue' 
+import PenilaianSikap from '../views/PenilaianSikap.vue' 
+import PenilaianDeskripsi from '../views/PenilaianDeskripsi.vue' 
 
 Vue.use(VueRouter)
 
@@ -502,6 +506,94 @@ const routes = [
               text: 'Form Menulis Materi',
               disabled: true,
               name: 'formMenulisMateri',
+            }
+          ]
+        }
+      },
+      {
+        path: '/pengaturan/penilaian',
+        name: 'pengaturanPenilaian',
+        component: PengaturanPenilaian,
+        meta: {
+          requiresAuth: true,
+          title: 'Pengaturan Penilaian',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Pengaturan Penilaian',
+              disabled: true,
+              name: 'pengaturanPenilaian',
+            }
+          ]
+        }
+      },
+      {
+        path: '/penilaian/keterampilan',
+        name: 'penilaianKeterampilan',
+        component: PenilaianKeterampilan,
+        meta: {
+          requiresAuth: true,
+          title: 'Penilaian Keterampilan',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Penilaian Keterampilan',
+              disabled: true,
+              name: 'penilaianKeterampilan',
+            }
+          ]
+        }
+      },
+      {
+        path: '/penilaian/sikap',
+        name: 'penilaianSikap',
+        component: PenilaianSikap,
+        meta: {
+          requiresAuth: true,
+          title: 'Penilaian Sikap',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Penilaian Sikap',
+              disabled: true,
+              name: 'penilaianSikap',
+            }
+          ]
+        }
+      },
+      {
+        path: '/penilaian/deskripsi',
+        name: 'penilaianDeskripsi',
+        component: PenilaianDeskripsi,
+        meta: {
+          requiresAuth: true,
+          title: 'Penilaian Deskripsi',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Penilaian Deskripsi',
+              disabled: true,
+              name: 'penilaianDeskripsi',
             }
           ]
         }
