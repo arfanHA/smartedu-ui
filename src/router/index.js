@@ -64,6 +64,23 @@ const routes = [
         path: '/user/list',
         name: 'dataUser',
         component: DataUser,
+        meta: {
+          requiresAuth: true,
+          title: 'Penilaian Deskripsi',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Data User',
+              disabled: true,
+              name: 'dataUser',
+            }
+          ]
+        }
       },
       {
         path: '/data/mapel',

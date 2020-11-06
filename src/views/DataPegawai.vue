@@ -103,7 +103,7 @@
                     v-model="editedItem.user_id"
                     :items="userData"
                     item-value="id"
-                    item-text="nama"
+                    item-text="username"
                     filled
                     :rules="formRules"
                     label="Pengguna"
@@ -340,10 +340,6 @@ export default {
         { nama: "Laki-Laki", value: "L" },
         { nama: "Perempuan", value: "P" },
       ],
-      userData: [
-        { nama: "User 1", id: 1 },
-        { nama: "User 2", id: 2 },
-      ],
       formRules: [(v) => !!v || "Tidak boleh kosong"],
       valid: true,
       host: process.env.VUE_APP_HOST,
@@ -457,9 +453,24 @@ export default {
     selectPage($event) {
       this.fetchPegawai($event);
     },
+    fetchUser() {
+      const params = {
+        per_page: 999,
+        page: 1,
+      };
+      this.$http
+        .get("/api/user", { params: params })
+        .then((r) => {
+          this.userData = r.data.data.data || [];
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
+        this.$store.commit("progressFunctionOn", true);
         if (this.srcImg.file == null) {
           this.picWarning = {
             show: true,
@@ -607,6 +618,7 @@ export default {
     },
     reset() {
       this.updateProcess = false;
+      this.$store.commit("progressFunctionOn", false);
       this.$refs.form.reset();
       this.srcImg = {
         bufImg: null,
@@ -648,6 +660,7 @@ export default {
   created() {
     this.fetchPegawai(1);
     this.fetchJabatan();
+    this.fetchUser();
   },
 };
 </script>
