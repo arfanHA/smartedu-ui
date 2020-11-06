@@ -86,7 +86,7 @@
             </v-snackbar>
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-row>
-                <v-col md="6" sm="12">
+                <v-col md="12" sm="12">
                   <v-select
                     v-model="editedItem.master_jabatan_id"
                     item-value="id"
@@ -95,18 +95,6 @@
                     filled
                     :rules="formRules"
                     label="Jabatan"
-                    required
-                  ></v-select>
-                </v-col>
-                <v-col md="6" sm="12">
-                  <v-select
-                    v-model="editedItem.user_id"
-                    :items="userData"
-                    item-value="id"
-                    item-text="username"
-                    filled
-                    :rules="formRules"
-                    label="Pengguna"
                     required
                   ></v-select>
                 </v-col>

@@ -256,7 +256,7 @@
       <template v-slot:append>
         <v-row>
           <v-col align="start">
-            <v-list-item color="primary" @click="switchMenu">
+            <v-list-item color="primary" @click="switchMenu" v-if="switchButton">
               <v-list-item-icon>
                 <v-icon v-text="menu.switchBtn.icon"></v-icon>
               </v-list-item-icon>
@@ -433,6 +433,7 @@ export default {
     userData: null,
     sekolah: null,
     alert: false,
+    rootLevel: null,
     switchButton: false,
     navbarMenuSelected: "", //selected item
     warningDialog: false,
@@ -725,9 +726,11 @@ export default {
   }),
   methods: {
     switchMenu() {
+      this.$store.commit("progressFunctionOn", true);
       let dataUserLocal = JSON.parse(localStorage.getItem("user"));
       if (dataUserLocal.level == "guru") {
         dataUserLocal.level = "wali kelas";
+        localStorage.removeItem('rootLevel');
         localStorage.setItem("user", JSON.stringify(dataUserLocal));
         location.reload();
       } else {
@@ -754,7 +757,7 @@ export default {
         .then((r) => {
           console.log(r);
           this.$router.replace({ name: "login" });
-          localStorage.removeItem("token");
+          localStorage.clear();
           this.$store.commit("progressFunctionOn", false);
         })
         .catch(function (error) {
@@ -871,6 +874,9 @@ export default {
         },
       };
     } else if (this.userData.level == "guru") {
+      if(localStorage.getItem('rootLevel')){
+        this.switchButton = true;
+      }
       this.menu = {
         dashboard: {
           action: "mdi-view-dashboard",
@@ -978,6 +984,8 @@ export default {
         },
       };
     } else if (this.userData.level == "wali kelas") {
+      localStorage.setItem('rootLevel', this.userData.level);
+      this.switchButton = true;
       this.menu = {
         dashboard: {
           action: "mdi-view-dashboard",
