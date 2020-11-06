@@ -12,6 +12,7 @@
     >
       <v-list :flat="flat" :nav="nav" dense>
         <v-list-item
+          v-if="menu.dashboard"
           color="primary"
           @click="routerPush(menu.dashboard)"
           :class="
@@ -30,6 +31,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
+          v-if="menu.dataUser"
           color="primary"
           @click="routerPush(menu.dataUser)"
           :class="
@@ -48,6 +50,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-group
+          v-if="menu.dataReferensi"
           color="#616161"
           :prepend-icon="menu.dataReferensi.action"
           no-action
@@ -86,6 +89,7 @@
           </v-list-item>
         </v-list-group>
         <v-list-group
+          v-if="menu.pengaturanKelas"
           color="#616161"
           :prepend-icon="menu.pengaturanKelas.action"
           no-action
@@ -121,6 +125,7 @@
           </v-list-item>
         </v-list-group>
         <v-list-group
+          v-if="menu.learningMedia"
           color="#616161"
           :prepend-icon="menu.learningMedia.action"
           no-action
@@ -156,6 +161,43 @@
           </v-list-item>
         </v-list-group>
         <v-list-group
+          v-if="menu.learningModule"
+          color="#616161"
+          :prepend-icon="menu.learningModule.action"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title
+                v-text="menu.learningModule.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            color="primary"
+            v-for="subItem in menu.learningModule.items"
+            :key="subItem.menuTitle"
+            @click="routerPush(subItem)"
+            :class="
+              subItem.routerName === menuSelected
+                ? 'v-list-item--active body-2'
+                : ''
+            "
+          >
+            <v-list-item-icon>
+              <v-icon v-text="subItem.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title
+                class="caption"
+                v-text="subItem.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+        <v-list-group
+          v-if="menu.penilaian"
           color="#616161"
           :prepend-icon="menu.penilaian.action"
           no-action
@@ -190,12 +232,45 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
+        <v-list-item
+          v-if="menu.kalenderPendidikan"
+          color="primary"
+          @click="routerPush(menu.kalenderPendidikan)"
+          :class="
+            menu.kalenderPendidikan.routerName === menuSelected
+              ? 'v-list-item--active'
+              : ''
+          "
+        >
+          <v-list-item-icon>
+            <v-icon v-text="menu.kalenderPendidikan.action"></v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="menu.kalenderPendidikan.menuTitle"
+            ></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
 
       <template v-slot:append>
+        <v-row>
+          <v-col align="start">
+            <v-list-item color="primary" @click="switchMenu">
+              <v-list-item-icon>
+                <v-icon v-text="menu.switchBtn.icon"></v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title
+                  v-text="menu.switchBtn.menuTitle"
+                ></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-col>
+        </v-row>
         <v-divider></v-divider>
         <v-row>
-          <v-col cols="9" align="start">
+          <v-col align="start">
             <v-list-item
               color="primary"
               @click="warningDialog = true"
@@ -358,6 +433,7 @@ export default {
     userData: null,
     sekolah: null,
     alert: false,
+    switchButton: false,
     navbarMenuSelected: "", //selected item
     warningDialog: false,
     avatar: "https://avatars.dicebear.com/api/male/john.svg?mood[]=happy",
@@ -561,6 +637,25 @@ export default {
           },
         ],
       },
+      learningModule: {
+        action: "mdi-ungroup",
+        title: "Learning Modul",
+        menuTitle: "Learning Modul",
+        items: [
+          {
+            title: "Form Silabus",
+            menuTitle: "Form Silabus",
+            icon: "mdi-circle-medium",
+            routerName: "formSilabus",
+          },
+          {
+            title: "Form RPP",
+            menuTitle: "Form RPP",
+            icon: "mdi-circle-medium",
+            routerName: "formRpp",
+          },
+        ],
+      },
       penilaian: {
         action: "mdi-ungroup",
         title: "Penilaian",
@@ -592,9 +687,12 @@ export default {
           },
         ],
       },
+      switchBtn: {
+        icon: "mdi-account-switch",
+        menuTitle: "Menu Wali Kelas",
+      },
       logout: {
         icon: "mdi-logout",
-        // toolbarTitle: "Loading",
         menuTitle: "Logout",
         name: "Login",
       },
@@ -626,6 +724,18 @@ export default {
     ],
   }),
   methods: {
+    switchMenu() {
+      let dataUserLocal = JSON.parse(localStorage.getItem("user"));
+      if (dataUserLocal.level == "guru") {
+        dataUserLocal.level = "wali kelas";
+        localStorage.setItem("user", JSON.stringify(dataUserLocal));
+        location.reload();
+      } else {
+        dataUserLocal.level = "guru";
+        localStorage.setItem("user", JSON.stringify(dataUserLocal));
+        location.reload();
+      }
+    },
     onChangeTitle(title) {
       this.toolbarTitle = title;
     },
@@ -693,6 +803,232 @@ export default {
       this.profileImage = "https://avatars.dicebear.com/v2/female/";
     }
     this.sekolah = "SMP 1 UNAAHA";
+
+    if (this.userData.level == "kurikulum") {
+      this.menu = {
+        dashboard: {
+          action: "mdi-view-dashboard",
+          title: "SmartEDU",
+          menuTitle: "Dashboard",
+          routerName: "dashboard",
+          active: true,
+        },
+        pengaturanKelas: {
+          action: "mdi-settings",
+          title: "Pengaturan Kelas",
+          menuTitle: "Pengaturan",
+          items: [
+            {
+              title: "Pengaturan Kelas Semester",
+              menuTitle: "Kelas Semester",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanKelasSemester",
+            },
+            {
+              title: "Pengaturan Mata Pelajaran Kelas",
+              menuTitle: "Mata Pelajaran Kelas",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanMapelKelas",
+            },
+            {
+              title: "Pengaturan Kelas Siswa",
+              menuTitle: "Kelas Siswa",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanKelasSiswa",
+            },
+            {
+              title: "Pengaturan Tugas Mengajar Kelas",
+              menuTitle: "Tugas Mengajar Kelas",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanTugasMengajarKelas",
+            },
+            {
+              title: "Pengaturan Ekstrakurikuler",
+              menuTitle: "Ekstrakurikuler",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanEkstrakurikuler",
+            },
+            {
+              title: "Pengaturan Ekstrakurikuler Rombel",
+              menuTitle: "Ekstrakurikuler Rombel",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanEkstrakurikulerRombel",
+            },
+          ],
+        },
+        kalenderPendidikan: {
+          action: "mdi-calendar",
+          title: "Kalender Pendidikan",
+          menuTitle: "Kalender Pendidikan",
+          routerName: "dashboard",
+          active: true,
+        },
+        logout: {
+          icon: "mdi-logout",
+          // toolbarTitle: "Loading",
+          menuTitle: "Logout",
+          name: "Login",
+        },
+      };
+    } else if (this.userData.level == "guru") {
+      this.menu = {
+        dashboard: {
+          action: "mdi-view-dashboard",
+          title: "SmartEDU",
+          menuTitle: "Dashboard",
+          routerName: "dashboard",
+          active: true,
+        },
+        learningMedia: {
+          action: "mdi-ungroup",
+          title: "Learning Media",
+          menuTitle: "Learning Media",
+          items: [
+            {
+              title: "Form Bahan Ajar",
+              menuTitle: "Form Bahan Ajar",
+              icon: "mdi-circle-medium",
+              routerName: "formBahanAjar",
+            },
+            {
+              title: "Form Video Pembelajaran",
+              menuTitle: "Form Video Pembelajaran",
+              icon: "mdi-circle-medium",
+              routerName: "formVideoPembelajaran",
+            },
+            {
+              title: "Form Artikel",
+              menuTitle: "Form Artikel",
+              icon: "mdi-circle-medium",
+              routerName: "formArtikel",
+            },
+            {
+              title: "Form Materi Praktikum",
+              menuTitle: "Form Materi Praktikum",
+              icon: "mdi-circle-medium",
+              routerName: "formMateriPraktikum",
+            },
+            {
+              title: "Form Menulis Materi",
+              menuTitle: "Form Menulis Materi",
+              icon: "mdi-circle-medium",
+              routerName: "formMenulisMateri",
+            },
+          ],
+        },
+        learningModule: {
+          action: "mdi-ungroup",
+          title: "Learning Modul",
+          menuTitle: "Learning Module",
+          items: [
+            {
+              title: "Form Silabus",
+              menuTitle: "Form Silabus",
+              icon: "mdi-circle-medium",
+              routerName: "formSilabus",
+            },
+            {
+              title: "Form RPP",
+              menuTitle: "Form RPP",
+              icon: "mdi-circle-medium",
+              routerName: "formRpp",
+            },
+          ],
+        },
+        penilaian: {
+          action: "mdi-ungroup",
+          title: "Penilaian",
+          menuTitle: "Penilaian",
+          items: [
+            {
+              title: "Pengaturan Penilaian",
+              menuTitle: "Pengaturan Penilaian",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanPenilaian",
+            },
+            {
+              title: "Penilaian Keterampilan",
+              menuTitle: "Penilaian Keterampilan",
+              icon: "mdi-circle-medium",
+              routerName: "penilaianKeterampilan",
+            },
+            {
+              title: "Penilaian Sikap",
+              menuTitle: "Penilaian Sikap",
+              icon: "mdi-circle-medium",
+              routerName: "penilaianSikap",
+            },
+            {
+              title: "Penilaian Deskripsi",
+              menuTitle: "Penilaian Deskripsi",
+              icon: "mdi-circle-medium",
+              routerName: "penilaianDeskripsi",
+            },
+          ],
+        },
+        switchBtn: {
+          icon: "mdi-account-switch",
+          menuTitle: "Menu Wali Kelas",
+        },
+        logout: {
+          icon: "mdi-logout",
+          // toolbarTitle: "Loading",
+          menuTitle: "Logout",
+          name: "Login",
+        },
+      };
+    } else if (this.userData.level == "wali kelas") {
+      this.menu = {
+        dashboard: {
+          action: "mdi-view-dashboard",
+          title: "SmartEDU",
+          menuTitle: "Dashboard",
+          routerName: "dashboard",
+          active: true,
+        },
+        penilaian: {
+          action: "mdi-ungroup",
+          title: "Penilaian",
+          menuTitle: "Penilaian",
+          items: [
+            {
+              title: "Pengaturan Penilaian",
+              menuTitle: "Pengaturan Penilaian",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanPenilaian",
+            },
+            {
+              title: "Penilaian Keterampilan",
+              menuTitle: "Penilaian Keterampilan",
+              icon: "mdi-circle-medium",
+              routerName: "penilaianKeterampilan",
+            },
+            {
+              title: "Penilaian Sikap",
+              menuTitle: "Penilaian Sikap",
+              icon: "mdi-circle-medium",
+              routerName: "penilaianSikap",
+            },
+            {
+              title: "Penilaian Deskripsi",
+              menuTitle: "Penilaian Deskripsi",
+              icon: "mdi-circle-medium",
+              routerName: "penilaianDeskripsi",
+            },
+          ],
+        },
+        switchBtn: {
+          icon: "mdi-account-switch",
+          menuTitle: "Menu Guru",
+        },
+        logout: {
+          icon: "mdi-logout",
+          // toolbarTitle: "Loading",
+          menuTitle: "Logout",
+          name: "Login",
+        },
+      };
+    }
   },
   computed: {
     breadcrumb: function () {

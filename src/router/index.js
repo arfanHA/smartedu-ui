@@ -25,6 +25,8 @@ import FormVideoPembelajaran from '../views/FormVideoPembelajaran.vue'
 import FormArtikel from '../views/FormArtikel.vue' 
 import FormMateriPraktikum from '../views/FormMateriPraktikum.vue' 
 import FormMenulisMateri from '../views/FormMenulisMateri.vue' 
+import FormSilabus from '../views/FormSilabus.vue' 
+import FormRpp from '../views/FormRPP.vue' 
 import PengaturanPenilaian from '../views/PengaturanPenilaian.vue' 
 import PenilaianKeterampilan from '../views/PenilaianKeterampilan.vue' 
 import PenilaianSikap from '../views/PenilaianSikap.vue' 
@@ -523,6 +525,50 @@ const routes = [
               text: 'Form Menulis Materi',
               disabled: true,
               name: 'formMenulisMateri',
+            }
+          ]
+        }
+      },
+      {
+        path: '/learning-module/silabus',
+        name: 'formSilabus',
+        component: FormSilabus,
+        meta: {
+          requiresAuth: true,
+          title: 'Form Silabus',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Form Silabus',
+              disabled: true,
+              name: 'formSilabus',
+            }
+          ]
+        }
+      },
+      {
+        path: '/learning-module/rpp',
+        name: 'formRpp',
+        component: FormRpp,
+        meta: {
+          requiresAuth: true,
+          title: 'Form Silabus',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Form RPP',
+              disabled: true,
+              name: 'formRpp',
             }
           ]
         }
