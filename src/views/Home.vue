@@ -49,6 +49,7 @@
             ></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-subheader v-if="menu.dataReferensi"> DATA </v-subheader>
         <v-list-group
           v-if="menu.dataReferensi"
           color="#616161"
@@ -88,6 +89,7 @@
             <v-chip v-if="subItem.menuTitle=='Credit Limit'">2</v-chip>-->
           </v-list-item>
         </v-list-group>
+        <v-subheader v-if="menu.dataReferensi"> PENGATURAN SEMESTER </v-subheader>
         <v-list-group
           v-if="menu.pengaturanKelas"
           color="#616161"
@@ -256,7 +258,11 @@
       <template v-slot:append>
         <v-row>
           <v-col align="start">
-            <v-list-item color="primary" @click="switchMenu" v-if="switchButton">
+            <v-list-item
+              color="primary"
+              @click="switchMenu"
+              v-if="switchButton"
+            >
               <v-list-item-icon>
                 <v-icon v-text="menu.switchBtn.icon"></v-icon>
               </v-list-item-icon>
@@ -730,7 +736,7 @@ export default {
       let dataUserLocal = JSON.parse(localStorage.getItem("user"));
       if (dataUserLocal.level == "guru") {
         dataUserLocal.level = "wali kelas";
-        localStorage.removeItem('rootLevel');
+        localStorage.removeItem("rootLevel");
         localStorage.setItem("user", JSON.stringify(dataUserLocal));
         location.reload();
       } else {
@@ -798,6 +804,10 @@ export default {
     },
   },
   created() {
+    let firstView = localStorage.getItem('isThisFirst');
+    if(!firstView){
+      localStorage.setItem("isThisFirst", true);
+    } 
     this.tahunAjaran = JSON.parse(localStorage.getItem("tahunAjar"));
     this.userData = JSON.parse(localStorage.getItem("user"));
     if (this.userData.detail_profile) {
@@ -874,7 +884,7 @@ export default {
         },
       };
     } else if (this.userData.level == "guru") {
-      if(localStorage.getItem('rootLevel')){
+      if (localStorage.getItem("rootLevel")) {
         this.switchButton = true;
       }
       this.menu = {
@@ -984,7 +994,12 @@ export default {
         },
       };
     } else if (this.userData.level == "wali kelas") {
-      localStorage.setItem('rootLevel', this.userData.level);
+      localStorage.setItem("rootLevel", this.userData.level);
+      let firstView = localStorage.getItem('isThisFirst');
+      if(firstView == 'true'){
+        localStorage.setItem("isThisFirst", false);
+        this.switchMenu();
+      }
       this.switchButton = true;
       this.menu = {
         dashboard: {

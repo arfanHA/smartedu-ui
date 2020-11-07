@@ -329,6 +329,7 @@ export default {
       this.fetchMapel($event);
     },
     save() {
+      this.$store.commit("progressFunctionOn", true);
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         this.$http
@@ -363,6 +364,7 @@ export default {
       this.updateProcess = true;
     },
     processEdit() {
+      this.$store.commit("progressFunctionOn", true);
       this.$refs.form.validate();
       if (this.$refs.form.validate() === true) {
         let params = {
@@ -405,6 +407,7 @@ export default {
       this.warnDialog = true;
     },
     processingDelete(item) {
+      this.$store.commit("progressFunctionOn", true);
       this.$http
         .delete(`/api/user/${item.id}`)
         .then((r) => {
@@ -420,10 +423,12 @@ export default {
           this.reset();
         })
         .catch((err) => {
+          this.warnDialog = false;
+           this.$store.commit("progressFunctionOn", false);
           this.snackbar = {
             show: true,
-            status: err.data.status,
-            text: err.data.msg,
+            status: err.response.data.status,
+            text: err.response.data.msg,
             color: "red",
           };
           this.dialog = false;
@@ -438,6 +443,8 @@ export default {
     reset() {
       this.updateProcess = false;
       this.$refs.form.reset();
+      this.warnDialog = false;
+      this.$store.commit("progressFunctionOn", false);
     },
     setRowPerPage(event) {
       this.skip.limit = event;

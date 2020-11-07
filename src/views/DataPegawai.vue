@@ -167,6 +167,52 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog v-model="dialogPassword" persistent max-width="500">
+      <v-card>
+        <v-card-title class="headline"> Form Ganti Password </v-card-title>
+        <v-card-text>
+          <v-form ref="form" v-model="valid2" lazy-validation>
+            <v-row>
+              <v-col cols="12" sm="12">
+                <v-text-field
+                  :append-icon="showPasswd ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="showPasswd ? 'text' : 'password'"
+                  label="Password"
+                  :rules="[rules.required]"
+                  persistent-hint
+                  v-model="password"
+                  @click:append="showPasswd = !showPasswd"
+                  outlined
+                  dense
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="12">
+                <v-text-field
+                  :append-icon="showRepeatPasswd ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="showRepeatPasswd ? 'text' : 'password'"
+                  :rules="[rules.required, rules.passMatch]"
+                  label="Ulangi Password"
+                  v-model="konfirmasiPassword"
+                  @click:append="showRepeatPasswd = !showRepeatPasswd"
+                  outlined
+                  dense
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="onCancelUpdatePassword">
+            Batal
+          </v-btn>
+          <v-btn color="green darken-1" text @click="updatePassword">
+            Simpan
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-card>
       <v-card-title>
         <v-row class="ma-1">
@@ -277,6 +323,18 @@
                   </template>
                   <span>Delete</span>
                 </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      medium
+                      class="ml-1"
+                      v-on="on"
+                      @click="passDialog(item)"
+                      >mdi-lock</v-icon
+                    >
+                  </template>
+                  <span>Ubah Password User</span>
+                </v-tooltip>
               </td>
             </tr>
           </tbody>
@@ -322,23 +380,38 @@
 export default {
   data() {
     return {
+          showPasswd: false,
+      showRepeatPasswd: false,
       search: "",
       itemsPerPage: [5, 10, 20, 30],
       jk: [
         { nama: "Laki-Laki", value: "L" },
         { nama: "Perempuan", value: "P" },
       ],
-      formRules: [(v) => !!v || "Tidak boleh kosong"],
+      rules: {
+        required: (value) => !!value || "Required.",
+        noSpace: (v) => (v || "").indexOf(" ") < 0 || "No spaces are allowed",
+        min: (v) => v.length >= 8 || "Min 8 characters",
+        passMatch: (v) =>
+          v === this.password ||
+          "The password you entered don't match",
+      },
       valid: true,
+      valid2: true,
+      formRules: [(v) => !!v || "Tidak boleh kosong"],
       host: process.env.VUE_APP_HOST,
       dialog: false,
       itemWarning: false,
       warnDialog: false,
       updateProcess: false,
       dialogImageDesc: false,
+      dialogPassword: false,
+      passwordProperty: null,
       totalPage: null,
       pegawaiData: [],
       jabatanData: [],
+      password: null,
+      konfirmasiPassword: null,
       editedItem: {
         master_jabatan_id: null,
         user_id: null,
@@ -415,7 +488,8 @@ export default {
         .then((r) => {
           this.pegawaiData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
-          this.skip.offset = (r.data.data.current_page - 1) * r.data.data.per_page;
+          this.skip.offset =
+            (r.data.data.current_page - 1) * r.data.data.per_page;
           this.$store.commit("progressFunctionOn", false);
         })
         .catch((err) => {
@@ -516,6 +590,47 @@ export default {
       });
       this.dialog = true;
       this.updateProcess = true;
+    },
+    passDialog(item) {
+      this.passwordProperty = item;
+      this.dialogPassword = true;
+    },
+    onCancelUpdatePassword() {
+      this.konfirmasiPassword = null;
+      this.password = null;
+      this.dialogPassword = false;
+    },
+    updatePassword() {
+      this.$store.commit("progressFunctionOn", false);
+      let id = this.passwordProperty.user_id.id;
+      let prop = {
+        password: this.password,
+        konfirmation_password: this.konfirmasiPassword,
+      };
+      this.$http
+        .put(`/api/user/update-password/${id}`, prop)
+        .then((r) => {
+          this.snackbar = {
+            show: true,
+            status: r.data.status,
+            text: r.data.msg,
+            color: "success",
+          };
+          this.dialogPassword = false;
+          this.fetchPegawai(1);
+          this.reset();
+        })
+        .catch((err) => {
+          this.snackbar = {
+            show: true,
+            status: err.response.data.status,
+            text: err.response.data.msg,
+            color: "red",
+          };
+          this.dialogPassword = false;
+          this.fetchPegawai(1);
+          this.reset();
+        });
     },
     getImage(item, callbackBlob) {
       this.$http
