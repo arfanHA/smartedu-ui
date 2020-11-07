@@ -31,6 +31,25 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
+          v-if="menu.verifikasi"
+          color="primary"
+          @click="routerPush(menu.verifikasi)"
+          :class="
+            menu.verifikasi.routerName === menuSelected
+              ? 'v-list-item--active'
+              : ''
+          "
+        >
+          <v-list-item-icon>
+            <v-icon v-text="menu.verifikasi.action"></v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="menu.verifikasi.menuTitle"
+            ></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
           v-if="menu.dataUser"
           color="primary"
           @click="routerPush(menu.dataUser)"
@@ -89,24 +108,24 @@
             <v-chip v-if="subItem.menuTitle=='Credit Limit'">2</v-chip>-->
           </v-list-item>
         </v-list-group>
-        <v-subheader v-if="menu.dataReferensi"> PENGATURAN SEMESTER </v-subheader>
+        <v-subheader v-if="menu.kelas"> PENGATURAN SEMESTER </v-subheader>
         <v-list-group
-          v-if="menu.pengaturanKelas"
+          v-if="menu.kelas"
           color="#616161"
-          :prepend-icon="menu.pengaturanKelas.action"
+          :prepend-icon="menu.kelas.action"
           no-action
         >
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title
-                v-text="menu.pengaturanKelas.menuTitle"
+                v-text="menu.kelas.menuTitle"
               ></v-list-item-title>
             </v-list-item-content>
           </template>
 
           <v-list-item
             color="primary"
-            v-for="subItem in menu.pengaturanKelas.items"
+            v-for="subItem in menu.kelas.items"
             :key="subItem.menuTitle"
             @click="routerPush(subItem)"
             :class="
@@ -126,6 +145,152 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
+        <v-list-group
+          v-if="menu.mataPelajaran"
+          color="#616161"
+          :prepend-icon="menu.mataPelajaran.action"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title
+                v-text="menu.mataPelajaran.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            color="primary"
+            v-for="subItem in menu.mataPelajaran.items"
+            :key="subItem.menuTitle"
+            @click="routerPush(subItem)"
+            :class="
+              subItem.routerName === menuSelected
+                ? 'v-list-item--active body-2'
+                : ''
+            "
+          >
+            <v-list-item-icon>
+              <v-icon v-text="subItem.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title
+                class="caption"
+                v-text="subItem.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+        <v-list-group
+          v-if="menu.ekstrakurikuler"
+          color="#616161"
+          :prepend-icon="menu.ekstrakurikuler.action"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title
+                v-text="menu.ekstrakurikuler.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            color="primary"
+            v-for="subItem in menu.ekstrakurikuler.items"
+            :key="subItem.menuTitle"
+            @click="routerPush(subItem)"
+            :class="
+              subItem.routerName === menuSelected
+                ? 'v-list-item--active body-2'
+                : ''
+            "
+          >
+            <v-list-item-icon>
+              <v-icon v-text="subItem.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title
+                class="caption"
+                v-text="subItem.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+        <v-subheader v-if="menu.penilaian"> PROSES PEMBELAJARAN </v-subheader>
+        <v-list-group
+          v-if="menu.aturPembelajaran"
+          color="#616161"
+          :prepend-icon="menu.aturPembelajaran.action"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title
+                v-text="menu.aturPembelajaran.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            color="primary"
+            v-for="subItem in menu.aturPembelajaran.items"
+            :key="subItem.menuTitle"
+            @click="routerPush(subItem)"
+            :class="
+              subItem.routerName === menuSelected
+                ? 'v-list-item--active body-2'
+                : ''
+            "
+          >
+            <v-list-item-icon>
+              <v-icon v-text="subItem.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title
+                class="caption"
+                v-text="subItem.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+        <v-list-group
+          v-if="menu.penilaian"
+          color="#616161"
+          :prepend-icon="menu.penilaian.action"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title
+                v-text="menu.penilaian.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            color="primary"
+            v-for="subItem in menu.penilaian.items"
+            :key="subItem.menuTitle"
+            @click="routerPush(subItem)"
+            :class="
+              subItem.routerName === menuSelected
+                ? 'v-list-item--active body-2'
+                : ''
+            "
+          >
+            <v-list-item-icon>
+              <v-icon v-text="subItem.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title
+                class="caption"
+                v-text="subItem.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+        <v-subheader v-if="menu.learningMedia"> MEDIA GURU </v-subheader>
         <v-list-group
           v-if="menu.learningMedia"
           color="#616161"
@@ -198,42 +363,7 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
-        <v-list-group
-          v-if="menu.penilaian"
-          color="#616161"
-          :prepend-icon="menu.penilaian.action"
-          no-action
-        >
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title
-                v-text="menu.penilaian.menuTitle"
-              ></v-list-item-title>
-            </v-list-item-content>
-          </template>
-
-          <v-list-item
-            color="primary"
-            v-for="subItem in menu.penilaian.items"
-            :key="subItem.menuTitle"
-            @click="routerPush(subItem)"
-            :class="
-              subItem.routerName === menuSelected
-                ? 'v-list-item--active body-2'
-                : ''
-            "
-          >
-            <v-list-item-icon>
-              <v-icon v-text="subItem.icon"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title
-                class="caption"
-                v-text="subItem.menuTitle"
-              ></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
+        <v-subheader v-if="menu.kalenderPendidikan"> LAINNYA </v-subheader>
         <v-list-item
           v-if="menu.kalenderPendidikan"
           color="primary"
@@ -564,10 +694,10 @@ export default {
           },
         ],
       },
-      pengaturanKelas: {
+      kelas: {
         action: "mdi-settings",
         title: "Pengaturan Kelas",
-        menuTitle: "Pengaturan",
+        menuTitle: "Kelas",
         items: [
           {
             title: "Pengaturan Kelas Semester",
@@ -576,16 +706,23 @@ export default {
             routerName: "pengaturanKelasSemester",
           },
           {
+            title: "Rombongan Belajar",
+            menuTitle: "Rombongan Belajar",
+            icon: "mdi-circle-medium",
+            routerName: "pengaturanKelasSiswa",
+          },
+        ],
+      },
+      mataPelajaran: {
+        action: "mdi-settings",
+        title: "Mata Pelajaran",
+        menuTitle: "Mata Pelajaran",
+        items: [
+          {
             title: "Pengaturan Mata Pelajaran Kelas",
             menuTitle: "Mata Pelajaran Kelas",
             icon: "mdi-circle-medium",
             routerName: "pengaturanMapelKelas",
-          },
-          {
-            title: "Pengaturan Kelas Siswa",
-            menuTitle: "Kelas Siswa",
-            icon: "mdi-circle-medium",
-            routerName: "pengaturanKelasSiswa",
           },
           {
             title: "Pengaturan Tugas Mengajar Kelas",
@@ -594,14 +731,33 @@ export default {
             routerName: "pengaturanTugasMengajarKelas",
           },
           {
+            title: "Pengaturan Tugas Mengajar Kelas",
+            menuTitle: "KKM",
+            icon: "mdi-circle-medium",
+            routerName: "pengaturanTugasMengajarKelas",
+          },
+          {
+            title: "Pengaturan Tugas Mengajar Kelas",
+            menuTitle: "Predikat",
+            icon: "mdi-circle-medium",
+            routerName: "pengaturanTugasMengajarKelas",
+          },
+        ],
+      },
+      ekstrakurikuler: {
+        action: "mdi-settings",
+        title: "Ekstrakurikuler",
+        menuTitle: "Ekstrakurikuler",
+        items: [
+          {
             title: "Pengaturan Ekstrakurikuler",
-            menuTitle: "Ekstrakurikuler",
+            menuTitle: "Atur Ekstrakurikuler",
             icon: "mdi-circle-medium",
             routerName: "pengaturanEkstrakurikuler",
           },
           {
             title: "Pengaturan Ekstrakurikuler Rombel",
-            menuTitle: "Ekstrakurikuler Rombel",
+            menuTitle: "Rombel Ekstrakurikuler",
             icon: "mdi-circle-medium",
             routerName: "pengaturanEkstrakurikulerRombel",
           },
@@ -610,35 +766,35 @@ export default {
       learningMedia: {
         action: "mdi-ungroup",
         title: "Learning Media",
-        menuTitle: "Learning Media",
+        menuTitle: "E-Learning Media",
         items: [
           {
             title: "Form Bahan Ajar",
-            menuTitle: "Form Bahan Ajar",
+            menuTitle: "Bahan Ajar",
             icon: "mdi-circle-medium",
             routerName: "formBahanAjar",
           },
           {
             title: "Form Video Pembelajaran",
-            menuTitle: "Form Video Pembelajaran",
+            menuTitle: "Video",
             icon: "mdi-circle-medium",
             routerName: "formVideoPembelajaran",
           },
           {
             title: "Form Artikel",
-            menuTitle: "Form Artikel",
+            menuTitle: "Artikel",
             icon: "mdi-circle-medium",
             routerName: "formArtikel",
           },
           {
             title: "Form Materi Praktikum",
-            menuTitle: "Form Materi Praktikum",
+            menuTitle: "Materi Praktikum",
             icon: "mdi-circle-medium",
             routerName: "formMateriPraktikum",
           },
           {
             title: "Form Menulis Materi",
-            menuTitle: "Form Menulis Materi",
+            menuTitle: "Menulis Materi",
             icon: "mdi-circle-medium",
             routerName: "formMenulisMateri",
           },
@@ -647,7 +803,7 @@ export default {
       learningModule: {
         action: "mdi-ungroup",
         title: "Learning Modul",
-        menuTitle: "Learning Modul",
+        menuTitle: "E-Learning Modules",
         items: [
           {
             title: "Form Silabus",
@@ -663,17 +819,24 @@ export default {
           },
         ],
       },
+      aturPembelajaran: {
+        action: "mdi-ungroup",
+        title: "Atur Pembelajaran",
+        menuTitle: "Atur Pembelajaran",
+        items: [
+          {
+            title: "Pengaturan Penilaian",
+            menuTitle: "Atur Bobot & Penilaian",
+            icon: "mdi-circle-medium",
+            routerName: "pengaturanPenilaian",
+          },
+        ],
+      },
       penilaian: {
         action: "mdi-ungroup",
         title: "Penilaian",
         menuTitle: "Penilaian",
         items: [
-          {
-            title: "Pengaturan Penilaian",
-            menuTitle: "Pengaturan Penilaian",
-            icon: "mdi-circle-medium",
-            routerName: "pengaturanPenilaian",
-          },
           {
             title: "Penilaian Keterampilan",
             menuTitle: "Penilaian Keterampilan",
@@ -693,6 +856,13 @@ export default {
             routerName: "penilaianDeskripsi",
           },
         ],
+      },
+      kalenderPendidikan: {
+        action: "mdi-calendar",
+        title: "Kalender Pendidikan",
+        menuTitle: "Kalender Pendidikan",
+        routerName: "kalenderPendidikan",
+        active: true,
       },
       switchBtn: {
         icon: "mdi-account-switch",
@@ -804,10 +974,10 @@ export default {
     },
   },
   created() {
-    let firstView = localStorage.getItem('isThisFirst');
-    if(!firstView){
+    let firstView = localStorage.getItem("isThisFirst");
+    if (!firstView) {
       localStorage.setItem("isThisFirst", true);
-    } 
+    }
     this.tahunAjaran = JSON.parse(localStorage.getItem("tahunAjar"));
     this.userData = JSON.parse(localStorage.getItem("user"));
     if (this.userData.detail_profile) {
@@ -826,10 +996,10 @@ export default {
           routerName: "dashboard",
           active: true,
         },
-        pengaturanKelas: {
+        kelas: {
           action: "mdi-settings",
           title: "Pengaturan Kelas",
-          menuTitle: "Pengaturan",
+          menuTitle: "Kelas",
           items: [
             {
               title: "Pengaturan Kelas Semester",
@@ -838,16 +1008,23 @@ export default {
               routerName: "pengaturanKelasSemester",
             },
             {
+              title: "Rombongan Belajar",
+              menuTitle: "Rombongan Belajar",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanKelasSiswa",
+            },
+          ],
+        },
+        mataPelajaran: {
+          action: "mdi-settings",
+          title: "Mata Pelajaran",
+          menuTitle: "Mata Pelajaran",
+          items: [
+            {
               title: "Pengaturan Mata Pelajaran Kelas",
               menuTitle: "Mata Pelajaran Kelas",
               icon: "mdi-circle-medium",
               routerName: "pengaturanMapelKelas",
-            },
-            {
-              title: "Pengaturan Kelas Siswa",
-              menuTitle: "Kelas Siswa",
-              icon: "mdi-circle-medium",
-              routerName: "pengaturanKelasSiswa",
             },
             {
               title: "Pengaturan Tugas Mengajar Kelas",
@@ -856,14 +1033,33 @@ export default {
               routerName: "pengaturanTugasMengajarKelas",
             },
             {
+              title: "Pengaturan Tugas Mengajar Kelas",
+              menuTitle: "KKM",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanTugasMengajarKelas",
+            },
+            {
+              title: "Pengaturan Tugas Mengajar Kelas",
+              menuTitle: "Predikat",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanTugasMengajarKelas",
+            },
+          ],
+        },
+        ekstrakurikuler: {
+          action: "mdi-settings",
+          title: "Ekstrakurikuler",
+          menuTitle: "Ekstrakurikuler",
+          items: [
+            {
               title: "Pengaturan Ekstrakurikuler",
-              menuTitle: "Ekstrakurikuler",
+              menuTitle: "Atur Ekstrakurikuler",
               icon: "mdi-circle-medium",
               routerName: "pengaturanEkstrakurikuler",
             },
             {
               title: "Pengaturan Ekstrakurikuler Rombel",
-              menuTitle: "Ekstrakurikuler Rombel",
+              menuTitle: "Rombel Ekstrakurikuler",
               icon: "mdi-circle-medium",
               routerName: "pengaturanEkstrakurikulerRombel",
             },
@@ -895,59 +1091,16 @@ export default {
           routerName: "dashboard",
           active: true,
         },
-        learningMedia: {
+        aturPembelajaran: {
           action: "mdi-ungroup",
-          title: "Learning Media",
-          menuTitle: "Learning Media",
+          title: "Atur Pembelajaran",
+          menuTitle: "Atur Pembelajaran",
           items: [
             {
-              title: "Form Bahan Ajar",
-              menuTitle: "Form Bahan Ajar",
+              title: "Pengaturan Penilaian",
+              menuTitle: "Atur Bobot & Penilaian",
               icon: "mdi-circle-medium",
-              routerName: "formBahanAjar",
-            },
-            {
-              title: "Form Video Pembelajaran",
-              menuTitle: "Form Video Pembelajaran",
-              icon: "mdi-circle-medium",
-              routerName: "formVideoPembelajaran",
-            },
-            {
-              title: "Form Artikel",
-              menuTitle: "Form Artikel",
-              icon: "mdi-circle-medium",
-              routerName: "formArtikel",
-            },
-            {
-              title: "Form Materi Praktikum",
-              menuTitle: "Form Materi Praktikum",
-              icon: "mdi-circle-medium",
-              routerName: "formMateriPraktikum",
-            },
-            {
-              title: "Form Menulis Materi",
-              menuTitle: "Form Menulis Materi",
-              icon: "mdi-circle-medium",
-              routerName: "formMenulisMateri",
-            },
-          ],
-        },
-        learningModule: {
-          action: "mdi-ungroup",
-          title: "Learning Modul",
-          menuTitle: "Learning Module",
-          items: [
-            {
-              title: "Form Silabus",
-              menuTitle: "Form Silabus",
-              icon: "mdi-circle-medium",
-              routerName: "formSilabus",
-            },
-            {
-              title: "Form RPP",
-              menuTitle: "Form RPP",
-              icon: "mdi-circle-medium",
-              routerName: "formRpp",
+              routerName: "pengaturanPenilaian",
             },
           ],
         },
@@ -956,12 +1109,6 @@ export default {
           title: "Penilaian",
           menuTitle: "Penilaian",
           items: [
-            {
-              title: "Pengaturan Penilaian",
-              menuTitle: "Pengaturan Penilaian",
-              icon: "mdi-circle-medium",
-              routerName: "pengaturanPenilaian",
-            },
             {
               title: "Penilaian Keterampilan",
               menuTitle: "Penilaian Keterampilan",
@@ -979,6 +1126,62 @@ export default {
               menuTitle: "Penilaian Deskripsi",
               icon: "mdi-circle-medium",
               routerName: "penilaianDeskripsi",
+            },
+          ],
+        },
+        learningMedia: {
+          action: "mdi-ungroup",
+          title: "Learning Media",
+          menuTitle: "E-Learning Media",
+          items: [
+            {
+              title: "Form Bahan Ajar",
+              menuTitle: "Bahan Ajar",
+              icon: "mdi-circle-medium",
+              routerName: "formBahanAjar",
+            },
+            {
+              title: "Form Video Pembelajaran",
+              menuTitle: "Video",
+              icon: "mdi-circle-medium",
+              routerName: "formVideoPembelajaran",
+            },
+            {
+              title: "Form Artikel",
+              menuTitle: "Artikel",
+              icon: "mdi-circle-medium",
+              routerName: "formArtikel",
+            },
+            {
+              title: "Form Materi Praktikum",
+              menuTitle: "Materi Praktikum",
+              icon: "mdi-circle-medium",
+              routerName: "formMateriPraktikum",
+            },
+            {
+              title: "Form Menulis Materi",
+              menuTitle: "Menulis Materi",
+              icon: "mdi-circle-medium",
+              routerName: "formMenulisMateri",
+            },
+          ],
+        },
+        learningModule: {
+          action: "mdi-ungroup",
+          title: "Learning Modul",
+          menuTitle: "E-Learning Modules",
+          items: [
+            {
+              title: "Form Silabus",
+              menuTitle: "Form Silabus",
+              icon: "mdi-circle-medium",
+              routerName: "formSilabus",
+            },
+            {
+              title: "Form RPP",
+              menuTitle: "Form RPP",
+              icon: "mdi-circle-medium",
+              routerName: "formRpp",
             },
           ],
         },
@@ -995,8 +1198,8 @@ export default {
       };
     } else if (this.userData.level == "wali kelas") {
       localStorage.setItem("rootLevel", this.userData.level);
-      let firstView = localStorage.getItem('isThisFirst');
-      if(firstView == 'true'){
+      let firstView = localStorage.getItem("isThisFirst");
+      if (firstView == "true") {
         localStorage.setItem("isThisFirst", false);
         this.switchMenu();
       }
@@ -1009,34 +1212,29 @@ export default {
           routerName: "dashboard",
           active: true,
         },
-        penilaian: {
+        verifikasi: {
+          action: "mdi-view-dashboard",
+          title: "Verivikasi",
+          menuTitle: "Verifikasi",
+          routerName: "dashboard",
+          active: true,
+        },
+        inputNilai: {
           action: "mdi-ungroup",
           title: "Penilaian",
           menuTitle: "Penilaian",
           items: [
             {
-              title: "Pengaturan Penilaian",
-              menuTitle: "Pengaturan Penilaian",
+              title: "Absensi",
+              menuTitle: "Absensi",
               icon: "mdi-circle-medium",
-              routerName: "pengaturanPenilaian",
+              routerName: "dashboard",
             },
             {
-              title: "Penilaian Keterampilan",
-              menuTitle: "Penilaian Keterampilan",
+              title: "Ekstrakurikuler",
+              menuTitle: "Ekstrakurikuler",
               icon: "mdi-circle-medium",
-              routerName: "penilaianKeterampilan",
-            },
-            {
-              title: "Penilaian Sikap",
-              menuTitle: "Penilaian Sikap",
-              icon: "mdi-circle-medium",
-              routerName: "penilaianSikap",
-            },
-            {
-              title: "Penilaian Deskripsi",
-              menuTitle: "Penilaian Deskripsi",
-              icon: "mdi-circle-medium",
-              routerName: "penilaianDeskripsi",
+              routerName: "dashboard",
             },
           ],
         },

@@ -31,6 +31,7 @@ import PengaturanPenilaian from '../views/PengaturanPenilaian.vue'
 import PenilaianKeterampilan from '../views/PenilaianKeterampilan.vue' 
 import PenilaianSikap from '../views/PenilaianSikap.vue' 
 import PenilaianDeskripsi from '../views/PenilaianDeskripsi.vue' 
+import KalenderPendidikan from '../views/KalenderPendidikan.vue' 
 
 Vue.use(VueRouter)
 
@@ -657,6 +658,28 @@ const routes = [
               text: 'Penilaian Deskripsi',
               disabled: true,
               name: 'penilaianDeskripsi',
+            }
+          ]
+        }
+      },
+      {
+        path: '/kalender-pendidikan',
+        name: 'kalenderPendidikan',
+        component: KalenderPendidikan,
+        meta: {
+          requiresAuth: true,
+          title: 'Kalender Pendidikan',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Kalender Pendidikan',
+              disabled: true,
+              name: 'kalenderPendidikan',
             }
           ]
         }
