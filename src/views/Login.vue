@@ -54,6 +54,12 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
+                  color="secondary"
+                  class="mr-2"
+                  @click="routerPush"
+                  >Kembali </v-btn
+                >
+                <v-btn
                   color="primary"
                   class="mr-2"
                   @click="login"
@@ -103,6 +109,9 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    routerPush() {
+      this.$router.replace({ name: 'landingPage' });
     },
     login() {
       this.loading = true;
