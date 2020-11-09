@@ -5,7 +5,6 @@ import Login from '../views/Login.vue'
 import LandingPage from '../views/LandingPage.vue'
 import Dashboard from '../views/Dashboard.vue'
 import DataUser from '../views/DataUser.vue'
-import DataGuru from '../views/DataGuru.vue'
 import DataSiswa from '../views/DataSiswa.vue'
 import DataTingkatanKelas from '../views/DataTingkatanKelas.vue'
 import DataKelas from '../views/DataKelas.vue'
@@ -134,11 +133,6 @@ const routes = [
             }
           ]
         }
-      },
-      {
-        path: '/data/guru',
-        name: 'dataGuru',
-        component: DataGuru,
       },
       {
         path: '/data/siswa',

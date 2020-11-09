@@ -651,8 +651,8 @@ export default {
           this.$store.commit("progressFunctionOn", false);
           this.snackbar = {
             show: true,
-            status: 200,
-            text: err.data.msg,
+            status: 400,
+            text: err.response.data.msg,
             color: "red",
           };
           // this.dialog = false;
@@ -683,8 +683,8 @@ export default {
         .catch((err) => {
           this.snackbar = {
             show: true,
-            status: err.data.status,
-            text: err.data.msg,
+            status: err.response.data.status,
+            text: err.response.data.msg,
             color: "red",
           };
           this.dialog = false;

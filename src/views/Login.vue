@@ -3,6 +3,27 @@
     <v-content>
       <v-container fluid fill-height class="bg">
         <v-layout align-center justify-center>
+          <v-snackbar
+            class="pt-8"
+            v-model="snackbar.show"
+            :timeout="2000"
+            centered
+            absolute
+            top
+            :color="snackbar.color"
+          >
+            {{ snackbar.text }}
+            <template v-slot:action="{ attrs }">
+              <v-btn
+                color="white"
+                icon
+                v-bind="attrs"
+                @click="snackbar.show = false"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </template>
+          </v-snackbar>
           <v-flex xs12 sm8 md4 lg4>
             <v-card class="elevation-24 pa-3">
               <v-card-text>
@@ -22,7 +43,8 @@
                     label="Login"
                     type="text"
                     v-model="userEmail"
-                    :error="error"
+                    :error="err1"
+                    :error-messages="err1msg"
                     outlined
                     dense
                     :rules="[rules.required]"
@@ -37,7 +59,8 @@
                     dense
                     :rules="[rules.required]"
                     v-model="password"
-                    :error="error"
+                    :error="err2"
+                    :error-messages="err2msg"
                     @click:append="hidePassword = !hidePassword"
                   />
                   <v-select
@@ -53,12 +76,9 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                  color="secondary"
-                  class="mr-2"
-                  @click="routerPush"
-                  >Kembali </v-btn
-                >
+                <v-btn color="secondary" class="mr-2" @click="routerPush"
+                  >Kembali
+                </v-btn>
                 <v-btn
                   color="primary"
                   class="mr-2"
@@ -83,6 +103,10 @@
 export default {
   data() {
     return {
+      err1: false,
+      err2: false,
+      err1msg: "",
+      err2msg: "",
       loading: false,
       userEmail: "",
       password: "",
@@ -95,6 +119,12 @@ export default {
       selectedTahunAjar: null,
       rules: {
         required: (value) => !!value || "Required.",
+      },
+      snackbar: {
+        show: false,
+        status: null,
+        text: "",
+        color: "",
       },
     };
   },
@@ -111,7 +141,7 @@ export default {
         });
     },
     routerPush() {
-      this.$router.replace({ name: 'landingPage' });
+      this.$router.replace({ name: "landingPage" });
     },
     login() {
       this.loading = true;
@@ -149,9 +179,26 @@ export default {
           this.$store.commit("progressFunctionOn", false);
           vm.$router.push("home");
         })
-        .catch((error) => {
+        .catch((err) => {
+          console.log(err.response);
           this.$store.commit("progressFunctionOn", false);
-          console.log(error);
+          this.snackbar = {
+            show: true,
+            status: err.response.data.status,
+            text: err.response.data.msg,
+            color: "red",
+          };
+          if (err.response.data.status == 403) {
+            vm.err1 = true;
+            vm.err2 = true;
+            vm.err1msg = "Forbidden access to this resource";
+            vm.err2msg = "Forbidden access to this resource";
+          } else {
+            vm.err1 = true;
+            vm.err2 = true;
+            vm.err1msg = "Invalid credential";
+            vm.err2msg = "Invalid credential";
+          }
           this.loading = false;
         });
     },
@@ -164,6 +211,16 @@ export default {
       return this.$store.state.progressStatus;
     },
   },
+   watch: {
+    userEmail: function() {
+      this.err1msg = "";
+      this.err1 = false;
+    },
+    password: function() {
+      this.err2msg = "";
+      this.err2 = false;
+    }
+  }
 };
 </script>
 

@@ -645,12 +645,6 @@ export default {
             routerName: "dataKategoriMapel",
           },
           {
-            title: "Data Guru",
-            menuTitle: "Guru",
-            icon: "mdi-circle-medium",
-            routerName: "dataGuru",
-          },
-          {
             title: "Data Siswa",
             menuTitle: "Data Siswa",
             icon: "mdi-circle-medium",
