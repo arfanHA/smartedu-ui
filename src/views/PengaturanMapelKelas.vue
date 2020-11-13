@@ -72,7 +72,8 @@
                 <v-col class="showTable" md="1" sm="12"> No </v-col>
                 <v-col class="showTable" md="3" sm="12">Mata Pelajaran</v-col>
                 <v-col class="showTable" md="3" sm="12">Kelompok</v-col>
-                <v-col class="showTable" md="3" sm="12">Urutan Rapor</v-col>
+                <v-col class="showTable" md="1" sm="12">KKM</v-col>
+                <v-col class="showTable" md="2" sm="12">Urutan Rapor</v-col>
                 <v-col class="showTable" md="2" sm="12">Status</v-col>
               </v-row>
               <v-divider></v-divider>
@@ -96,7 +97,15 @@
                     ></v-combobox>
                   </div>
                 </v-col>
-                <v-col class="showTable pt-1" md="3" sm="12">
+                 <v-col class="showTable pt-1" md="1" sm="12">
+                  <v-text-field
+                    label="KKM"
+                    v-model="kkmArray[index]"
+                    outlined
+                    dense
+                  ></v-text-field>
+                </v-col>
+                <v-col class="showTable pt-1" md="2" sm="12">
                   <v-text-field
                     label="Urutan Rapor"
                     v-model="urutanArray[index]"
@@ -140,6 +149,7 @@
               <td class="text-xs-right">
                 {{ item.master_mata_pelajaran_kategori_id.nama }}
               </td>
+              <td class="text-xs-right">{{ item.kkm }}</td>
               <td class="text-xs-right">{{ item.urutan }}</td>
               <td class="text-xs-right">
                  <v-chip
@@ -176,6 +186,7 @@ export default {
       mapelSelected: [],
       kategoriArray: [],
       urutanArray: [],
+      kkmArray: [],
       dataToFilter: [],
       mapelKelasData: [],
       checkbox: [],
@@ -220,6 +231,7 @@ export default {
         },
         { text: "Mata Pelajaran" },
         { text: "Kelompok" },
+        { text: "KKM" },
         { text: "Urutan Rapor" },
         { text: "Status" },
       ],

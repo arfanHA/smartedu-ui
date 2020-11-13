@@ -108,7 +108,7 @@
             <v-chip v-if="subItem.menuTitle=='Credit Limit'">2</v-chip>-->
           </v-list-item>
         </v-list-group>
-        <v-subheader v-if="menu.kelas"> PENGATURAN SEMESTER </v-subheader>
+        <v-subheader v-if="menu.kelas || menu.ekstrakurikuler"> PENGATURAN SEMESTER </v-subheader>
         <v-list-group
           v-if="menu.kelas"
           color="#616161"
@@ -1212,6 +1212,19 @@ export default {
           menuTitle: "Verifikasi",
           routerName: "dashboard",
           active: true,
+        },
+        ekstrakurikuler: {
+          action: "mdi-settings",
+          title: "Ekstrakurikuler",
+          menuTitle: "Ekstrakurikuler",
+          items: [
+            {
+              title: "Pengaturan Ekstrakurikuler Rombel",
+              menuTitle: "Rombel Ekstrakurikuler",
+              icon: "mdi-circle-medium",
+              routerName: "pengaturanEkstrakurikulerRombel",
+            },
+          ],
         },
         inputNilai: {
           action: "mdi-ungroup",

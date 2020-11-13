@@ -185,7 +185,7 @@
                             </template>
                             <span>Hapus Siswa Dari Rombel Ekstrakurikuler</span>
                           </v-tooltip>
-                          <v-tooltip bottom>
+                          <v-tooltip bottom v-if="isWaliKelas">
                             <template v-slot:activator="{ on }">
                               <v-icon
                                 medium
@@ -384,6 +384,9 @@ export default {
       tahunAjarData: [],
       siswaData: [],
       rombelData: [],
+      userData: [],
+      waliTemp: null,
+      isWaliKelas: false,
       rombelEdited: null,
       pengaturanEkstrakSelected: null,
       editedItem: {
@@ -480,9 +483,25 @@ export default {
     };
   },
   methods: {
+    searchEvent(id) {
+      var searchRegex = new RegExp(id, "i");
+      return this.rombelData.filter(
+        (event) =>
+          !id || searchRegex.test(event.id) || searchRegex.test(event.nomor_induk)
+      );
+    },
     pushToSelection(item) {
-      this.rombelData.push(item);
-      this.save();
+      if (this.searchEvent(item.id).length > 0) {
+        this.snackbar = {
+          show: true,
+          status: 200,
+          text: "Siswa Sudah Ada Dalam Daftar Rombel",
+          color: "error",
+        };
+      } else {
+        this.rombelData.push(item);
+        this.save();
+      }
     },
     deleteSiswa(index) {
       if (this.rombelData.length < 2) {
@@ -598,7 +617,7 @@ export default {
         page: myOffset,
       };
       this.$http
-        .get("/api/option/siswa-ekstrakurikuler", { params: params })
+        .get("/api/siswa", { params: params })
         .then((r) => {
           this.siswaData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
@@ -711,6 +730,12 @@ export default {
     this.fetchSiswa(1);
     this.tahunAjarData = JSON.parse(localStorage.getItem("tahunAjar"));
     this.editedItem.master_tahun_ajar_id = this.tahunAjarData.id;
+    this.userData = JSON.parse(localStorage.getItem("user"));
+    this.waliTemp = localStorage.getItem("rootLevel");
+
+    if(this.waliTemp != null || this.userData.level == 'wali kelas' || this.userData.level == 'administrator'){
+      this.isWaliKelas = true;
+    }
   },
 };
 </script>

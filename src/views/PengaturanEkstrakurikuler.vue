@@ -40,7 +40,7 @@
           <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Tambah Mata Pelajaran</v-toolbar-title>
+          <v-toolbar-title>Atur Ekstrakurikuler</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
@@ -70,6 +70,7 @@
                     v-model="editedItem.master_ekstrakurikuler_id"
                     :items="masterEkstrakurikuler"
                     item-value="id"
+                    :disabled=updateProcess
                     :item-text="
                       (item) =>
                         `${
