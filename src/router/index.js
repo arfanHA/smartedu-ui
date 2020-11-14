@@ -32,6 +32,9 @@ import PenilaianKeterampilan from '../views/PenilaianKeterampilan.vue'
 import PenilaianSikap from '../views/PenilaianSikap.vue' 
 import PenilaianDeskripsi from '../views/PenilaianDeskripsi.vue' 
 import KalenderPendidikan from '../views/KalenderPendidikan.vue' 
+import PengaturanUjian from '../views/PengaturanUjian.vue' 
+import SoalEssay from '../views/SoalEssay.vue' 
+import SoalPilihan from '../views/SoalPilihan.vue' 
 
 Vue.use(VueRouter)
 
@@ -658,6 +661,72 @@ const routes = [
               text: 'Penilaian Deskripsi',
               disabled: true,
               name: 'penilaianDeskripsi',
+            }
+          ]
+        }
+      },
+      {
+        path: '/pengaturan/ujian',
+        name: 'pengaturanUjian',
+        component: PengaturanUjian,
+        meta: {
+          requiresAuth: true,
+          title: 'Pengaturan Ujian',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Pengaturan Ujian',
+              disabled: true,
+              name: 'pengaturanUjian',
+            }
+          ]
+        }
+      },
+      {
+        path: '/soal/essay',
+        name: 'soalEssay',
+        component: SoalEssay,
+        meta: {
+          requiresAuth: true,
+          title: 'Soal Essay',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Soal Essay',
+              disabled: true,
+              name: 'soalEssay',
+            }
+          ]
+        }
+      },
+      {
+        path: '/soal/pilihan',
+        name: 'soalPilihan',
+        component: SoalPilihan,
+        meta: {
+          requiresAuth: true,
+          title: 'Soal Pilihan',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Soal Pilihan',
+              disabled: true,
+              name: 'soalPilihan',
             }
           ]
         }

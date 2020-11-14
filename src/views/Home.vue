@@ -363,6 +363,42 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
+        <v-list-group
+          v-if="menu.ujian"
+          color="#616161"
+          :prepend-icon="menu.ujian.action"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title
+                v-text="menu.ujian.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            color="primary"
+            v-for="subItem in menu.ujian.items"
+            :key="subItem.menuTitle"
+            @click="routerPush(subItem)"
+            :class="
+              subItem.routerName === menuSelected
+                ? 'v-list-item--active body-2'
+                : ''
+            "
+          >
+            <v-list-item-icon>
+              <v-icon v-text="subItem.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title
+                class="caption"
+                v-text="subItem.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
         <v-subheader v-if="menu.kalenderPendidikan"> LAINNYA </v-subheader>
         <v-list-item
           v-if="menu.kalenderPendidikan"
@@ -689,7 +725,7 @@ export default {
         ],
       },
       kelas: {
-        action: "mdi-settings",
+        action: "mdi-home-floor-a",
         title: "Pengaturan Kelas",
         menuTitle: "Kelas",
         items: [
@@ -708,7 +744,7 @@ export default {
         ],
       },
       mataPelajaran: {
-        action: "mdi-settings",
+        action: "mdi-notebook",
         title: "Mata Pelajaran",
         menuTitle: "Mata Pelajaran",
         items: [
@@ -810,6 +846,31 @@ export default {
             menuTitle: "Form RPP",
             icon: "mdi-circle-medium",
             routerName: "formRpp",
+          },
+        ],
+      },
+      ujian: {
+        action: "mdi-ungroup",
+        title: "Ujian/Latihan",
+        menuTitle: "Ujian/Latihan",
+        items: [
+          {
+            title: "Pengaturan Ujian",
+            menuTitle: "Pengaturan Ujian",
+            icon: "mdi-circle-medium",
+            routerName: "pengaturanUjian",
+          },
+          {
+            title: "Soal Essay",
+            menuTitle: "Soal Essay",
+            icon: "mdi-circle-medium",
+            routerName: "soalEssay",
+          },
+           {
+            title: "Soal Pilihan",
+            menuTitle: "Soal Pilihan",
+            icon: "mdi-circle-medium",
+            routerName: "soalPilihan",
           },
         ],
       },
@@ -1027,16 +1088,16 @@ export default {
               routerName: "pengaturanTugasMengajarKelas",
             },
             {
-              title: "Pengaturan Tugas Mengajar Kelas",
+              title: "KKM",
               menuTitle: "KKM",
               icon: "mdi-circle-medium",
-              routerName: "pengaturanTugasMengajarKelas",
+              routerName: "pengaturanKkm",
             },
             {
-              title: "Pengaturan Tugas Mengajar Kelas",
+              title: "Predikat",
               menuTitle: "Predikat",
               icon: "mdi-circle-medium",
-              routerName: "pengaturanTugasMengajarKelas",
+              routerName: "pengaturanPredikat",
             },
           ],
         },
