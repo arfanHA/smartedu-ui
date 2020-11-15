@@ -50,6 +50,25 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
+          v-if="menu.tanggalRapor"
+          color="primary"
+          @click="routerPush(menu.tanggalRapor)"
+          :class="
+            menu.tanggalRapor.routerName === menuSelected
+              ? 'v-list-item--active'
+              : ''
+          "
+        >
+          <v-list-item-icon>
+            <v-icon v-text="menu.tanggalRapor.action"></v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="menu.tanggalRapor.menuTitle"
+            ></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
           v-if="menu.dataUser"
           color="primary"
           @click="routerPush(menu.dataUser)"
@@ -69,6 +88,83 @@
           </v-list-item-content>
         </v-list-item>
         <v-subheader v-if="menu.dataReferensi"> DATA </v-subheader>
+        <v-list-item
+          v-if="menu.dataPesertaDidik"
+          color="primary"
+          @click="routerPush(menu.dataPesertaDidik)"
+          :class="
+            menu.dataPesertaDidik.routerName === menuSelected
+              ? 'v-list-item--active body-2'
+              : ''
+          "
+        >
+          <v-list-item-icon>
+            <v-icon v-text="menu.dataPesertaDidik.action"></v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="menu.dataPesertaDidik.menuTitle"
+            ></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-group
+          v-if="menu.inputDataNilai"
+          color="#616161"
+          :prepend-icon="menu.inputDataNilai.action"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title
+                v-text="menu.inputDataNilai.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+            <!-- <v-chip>25</v-chip> -->
+          </template>
+
+          <v-list-item
+            color="primary"
+            v-for="subItem in menu.inputDataNilai.items"
+            :key="subItem.menuTitle"
+            @click="routerPush(subItem)"
+            :class="
+              subItem.routerName === menuSelected
+                ? 'v-list-item--active body-2'
+                : ''
+            "
+          >
+            <v-list-item-icon>
+              <v-icon v-text="subItem.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title
+                class="caption"
+                v-text="subItem.menuTitle"
+              ></v-list-item-title>
+            </v-list-item-content>
+            <!-- <v-chip v-if="subItem.menuTitle=='Contact'">+23</v-chip>
+            <v-chip v-if="subItem.menuTitle=='Credit Limit'">2</v-chip>-->
+          </v-list-item>
+        </v-list-group>
+        <v-list-item
+          v-if="menu.hasilPengolahanNilai"
+          color="primary"
+          @click="routerPush(menu.hasilPengolahanNilai)"
+          :class="
+            menu.hasilPengolahanNilai.routerName === menuSelected
+              ? 'v-list-item--active body-2'
+              : ''
+          "
+        >
+          <v-list-item-icon>
+            <v-icon v-text="menu.hasilPengolahanNilai.action"></v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="menu.hasilPengolahanNilai.menuTitle"
+            ></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-group
           v-if="menu.dataReferensi"
           color="#616161"
@@ -108,7 +204,9 @@
             <v-chip v-if="subItem.menuTitle=='Credit Limit'">2</v-chip>-->
           </v-list-item>
         </v-list-group>
-        <v-subheader v-if="menu.kelas || menu.ekstrakurikuler"> PENGATURAN SEMESTER </v-subheader>
+        <v-subheader v-if="menu.kelas || menu.ekstrakurikuler">
+          PENGATURAN SEMESTER
+        </v-subheader>
         <v-list-group
           v-if="menu.kelas"
           color="#616161"
@@ -290,6 +388,44 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
+        <v-list-item
+          v-if="menu.deskripsi"
+          color="primary"
+          @click="routerPush(menu.deskripsi)"
+          :class="
+            menu.deskripsi.routerName === menuSelected
+              ? 'v-list-item--active body-2'
+              : ''
+          "
+        >
+          <v-list-item-icon>
+            <v-icon v-text="menu.deskripsi.action"></v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="menu.deskripsi.menuTitle"
+            ></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          v-if="menu.kirimNilai"
+          color="primary"
+          @click="routerPush(menu.kirimNilai)"
+          :class="
+            menu.kirimNilai.routerName === menuSelected
+              ? 'v-list-item--active body-2'
+              : ''
+          "
+        >
+          <v-list-item-icon>
+            <v-icon v-text="menu.kirimNilai.action"></v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="menu.kirimNilai.menuTitle"
+            ></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-subheader v-if="menu.learningMedia"> MEDIA GURU </v-subheader>
         <v-list-group
           v-if="menu.learningMedia"
@@ -657,6 +793,13 @@ export default {
         routerName: "dashboard",
         active: true,
       },
+      tanggalRapor: {
+        action: "mdi-view-dashboard",
+        title: "Tanggal Rapor",
+        menuTitle: "Tanggal Rapor",
+        routerName: "tanggalRapor",
+        active: true,
+      },
       dataUser: {
         action: "mdi-account-group",
         title: "Data User",
@@ -724,6 +867,12 @@ export default {
           },
         ],
       },
+      dataPesertaDidik: {
+        action: "mdi-account-group",
+        title: "Data Peserta Didik",
+        menuTitle: "Data Peserta Didik",
+        routerName: "dataPesertaDidik",
+      },
       kelas: {
         action: "mdi-home-floor-a",
         title: "Pengaturan Kelas",
@@ -761,18 +910,43 @@ export default {
             routerName: "pengaturanTugasMengajarKelas",
           },
           {
-            title: "Pengaturan Tugas Mengajar Kelas",
-            menuTitle: "KKM",
-            icon: "mdi-circle-medium",
-            routerName: "pengaturanTugasMengajarKelas",
-          },
-          {
-            title: "Pengaturan Tugas Mengajar Kelas",
+            title: "Predikat",
             menuTitle: "Predikat",
             icon: "mdi-circle-medium",
-            routerName: "pengaturanTugasMengajarKelas",
+            routerName: "pengaturanPredikat",
           },
         ],
+      },
+      inputDataNilai: {
+        action: "mdi-home-floor-a",
+        title: "Input Data Nilai",
+        menuTitle: "Input Data Nilai",
+        items: [
+          {
+            title: "Kehadiran Siswa",
+            menuTitle: "Kehadiran Siswa",
+            icon: "mdi-circle-medium",
+            routerName: "inputKehadiranSiswa",
+          },
+          {
+            title: "Nilai Ekstrakurikuler",
+            menuTitle: "Nilai Ekstrakurikuler",
+            icon: "mdi-circle-medium",
+            routerName: "inputEkstrakurikuler",
+          },
+          {
+            title: "Prestasi",
+            menuTitle: "Prestasi",
+            icon: "mdi-circle-medium",
+            routerName: "inputPrestasi",
+          },
+        ],
+      },
+      hasilPengolahanNilai: {
+        action: "mdi-account-group",
+        title: "Hasil Pengolahan Nilai",
+        menuTitle: "Hasil Pengolahan Nilai",
+        routerName: "hasilPengolahanNilai",
       },
       ekstrakurikuler: {
         action: "mdi-settings",
@@ -866,11 +1040,17 @@ export default {
             icon: "mdi-circle-medium",
             routerName: "soalEssay",
           },
-           {
+          {
             title: "Soal Pilihan",
             menuTitle: "Soal Pilihan",
             icon: "mdi-circle-medium",
             routerName: "soalPilihan",
+          },
+          {
+            title: "Jawab Soal Pilihan",
+            menuTitle: "Jawab Soal Pilihan",
+            icon: "mdi-circle-medium",
+            routerName: "jawabSoalPilihan",
           },
         ],
       },
@@ -880,13 +1060,37 @@ export default {
         menuTitle: "Atur Pembelajaran",
         items: [
           {
-            title: "Pengaturan Penilaian",
-            menuTitle: "Atur Bobot & Penilaian",
+            title: "Rencana Pengetahuan",
+            menuTitle: "Rencana Pengetahuan",
             icon: "mdi-circle-medium",
-            routerName: "pengaturanPenilaian",
+            routerName: "rencanaPengetahuan",
+          },
+          {
+            title: "Rencana Keterampilan",
+            menuTitle: "Rencana Keterampilan",
+            icon: "mdi-circle-medium",
+            routerName: "rencanaKeterampilan",
+          },
+          {
+            title: "Rencana Sikap",
+            menuTitle: "Rencana Sikap",
+            icon: "mdi-circle-medium",
+            routerName: "rencanaSikap",
           },
         ],
       },
+      deskripsi: {
+          action: "mdi-calendar",
+          title: "Deskripsi",
+          menuTitle: "Deskripsi",
+          routerName: "deskripsi",
+        },
+        kirimNilai: {
+          action: "mdi-calendar",
+          title: "Kirim Nilai",
+          menuTitle: "Kirim Nilai",
+          routerName: "kirimNilai",
+        },
       penilaian: {
         action: "mdi-ungroup",
         title: "Penilaian",
@@ -1051,6 +1255,13 @@ export default {
           routerName: "dashboard",
           active: true,
         },
+        tanggalRapor: {
+          action: "mdi-view-dashboard",
+          title: "Tanggal Rapor",
+          menuTitle: "Tanggal Rapor",
+          routerName: "tanggalRapor",
+          active: true,
+        },
         kelas: {
           action: "mdi-settings",
           title: "Pengaturan Kelas",
@@ -1088,12 +1299,6 @@ export default {
               routerName: "pengaturanTugasMengajarKelas",
             },
             {
-              title: "KKM",
-              menuTitle: "KKM",
-              icon: "mdi-circle-medium",
-              routerName: "pengaturanKkm",
-            },
-            {
               title: "Predikat",
               menuTitle: "Predikat",
               icon: "mdi-circle-medium",
@@ -1125,7 +1330,6 @@ export default {
           title: "Kalender Pendidikan",
           menuTitle: "Kalender Pendidikan",
           routerName: "dashboard",
-          active: true,
         },
         logout: {
           icon: "mdi-logout",
@@ -1152,12 +1356,36 @@ export default {
           menuTitle: "Atur Pembelajaran",
           items: [
             {
-              title: "Pengaturan Penilaian",
-              menuTitle: "Atur Bobot & Penilaian",
+              title: "Rencana Pengetahuan",
+              menuTitle: "Rencana Pengetahuan",
               icon: "mdi-circle-medium",
-              routerName: "pengaturanPenilaian",
+              routerName: "rencanaPengetahuan",
+            },
+            {
+              title: "Rencana Keterampilan",
+              menuTitle: "Rencana Keterampilan",
+              icon: "mdi-circle-medium",
+              routerName: "rencanaKeterampilan",
+            },
+            {
+              title: "Rencana Sikap",
+              menuTitle: "Rencana Sikap",
+              icon: "mdi-circle-medium",
+              routerName: "rencanaSikap",
             },
           ],
+        },
+        deskripsi: {
+          action: "mdi-calendar",
+          title: "Deskripsi",
+          menuTitle: "Deskripsi",
+          routerName: "deskripsi",
+        },
+        kirimNilai: {
+          action: "mdi-calendar",
+          title: "Kirim Nilai",
+          menuTitle: "Kirim Nilai",
+          routerName: "kirimNilai",
         },
         penilaian: {
           action: "mdi-ungroup",
@@ -1273,6 +1501,43 @@ export default {
           menuTitle: "Verifikasi",
           routerName: "dashboard",
           active: true,
+        },
+        dataPesertaDidik: {
+          action: "mdi-account-group",
+          title: "Data Peserta Didik",
+          menuTitle: "Data Peserta Didik",
+          routerName: "dataPesertaDidik",
+        },
+        inputDataNilai: {
+          action: "mdi-home-floor-a",
+          title: "Input Data Nilai",
+          menuTitle: "Input Data Nilai",
+          items: [
+            {
+              title: "Kehadiran Siswa",
+              menuTitle: "Kehadiran Siswa",
+              icon: "mdi-circle-medium",
+              routerName: "inputKehadiranSiswa",
+            },
+            {
+              title: "Nilai Ekstrakurikuler",
+              menuTitle: "Nilai Ekstrakurikuler",
+              icon: "mdi-circle-medium",
+              routerName: "inputEkstrakurikuler",
+            },
+            {
+              title: "Prestasi",
+              menuTitle: "Prestasi",
+              icon: "mdi-circle-medium",
+              routerName: "inputPrestasi",
+            },
+          ],
+        },
+        hasilPengolahanNilai: {
+          action: "mdi-account-group",
+          title: "Hasil Pengolahan Nilai",
+          menuTitle: "Hasil Pengolahan Nilai",
+          routerName: "hasilPengolahanNilai",
         },
         ekstrakurikuler: {
           action: "mdi-settings",

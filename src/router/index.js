@@ -35,6 +35,19 @@ import KalenderPendidikan from '../views/KalenderPendidikan.vue'
 import PengaturanUjian from '../views/PengaturanUjian.vue' 
 import SoalEssay from '../views/SoalEssay.vue' 
 import SoalPilihan from '../views/SoalPilihan.vue' 
+import JawabSoalPilihan from '../views/JawabSoalPilihan.vue' 
+import Predikat from '../views/Predikat.vue' 
+import TanggalRapor from '../views/TanggalRapor.vue' 
+import DataPesertaDidik from '../views/DataPesertaDidik.vue' 
+import InputEkstrakurikuler from '../views/InputEkstrakurikuler.vue' 
+import InputKehadiranSiswa from '../views/InputKehadiranSiswa.vue' 
+import InputPrestasi from '../views/InputPrestasi.vue' 
+import HasilPengolahanNilai from '../views/HasilPengolahanNilai.vue' 
+import RencanaPengetahuan from '../views/RencanaPengetahuan.vue' 
+import RencanaKeterampilan from '../views/RencanaKeterampilan.vue' 
+import RencanaSikap from '../views/RencanaSikap.vue' 
+import Deskripsi from '../views/Deskripsi.vue' 
+import KirimNilai from '../views/KirimNilai.vue' 
 
 Vue.use(VueRouter)
 
@@ -727,6 +740,292 @@ const routes = [
               text: 'Soal Pilihan',
               disabled: true,
               name: 'soalPilihan',
+            }
+          ]
+        }
+      },
+      {
+        path: '/jawabsoal/pilihan',
+        name: 'jawabSoalPilihan',
+        component: JawabSoalPilihan,
+        meta: {
+          requiresAuth: true,
+          title: 'Soal Pilihan',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Jawab Soal Pilihan',
+              disabled: true,
+              name: 'jawabSoalPilihan',
+            }
+          ]
+        }
+      },
+      {
+        path: '/predikat',
+        name: 'pengaturanPredikat',
+        component: Predikat,
+        meta: {
+          requiresAuth: true,
+          title: 'Predikat',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Predikat',
+              disabled: true,
+              name: 'pengaturanPredikat',
+            }
+          ]
+        }
+      },
+      {
+        path: '/tanggal-rapor',
+        name: 'tanggalRapor',
+        component: TanggalRapor,
+        meta: {
+          requiresAuth: true,
+          title: 'Tanggal Rapor',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Tanggal Rapor',
+              disabled: true,
+              name: 'tanggalRapor',
+            }
+          ]
+        }
+      },
+      {
+        path: '/data/peserta-didik',
+        name: 'dataPesertaDidik',
+        component: DataPesertaDidik,
+        meta: {
+          requiresAuth: true,
+          title: 'Data Peserta Didik',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Data Peserta Didik',
+              disabled: true,
+              name: 'dataPesertaDidik',
+            }
+          ]
+        }
+      },
+      {
+        path: '/input/kehadiran-siswa',
+        name: 'inputKehadiranSiswa',
+        component: InputKehadiranSiswa,
+        meta: {
+          requiresAuth: true,
+          title: 'Kehadiran Siswa',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Kehadiran Siswa',
+              disabled: true,
+              name: 'inputKehadiranSiswa',
+            }
+          ]
+        }
+      },
+      {
+        path: '/input/ekstrakurikuler-siswa',
+        name: 'inputEkstrakurikuler',
+        component: InputEkstrakurikuler,
+        meta: {
+          requiresAuth: true,
+          title: 'Nilai Ekstrakurikuler',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Nilai Ekstrakurikuler',
+              disabled: true,
+              name: 'inputEkstrakurikuler',
+            }
+          ]
+        }
+      },
+      {
+        path: '/input/prestasi',
+        name: 'inputPrestasi',
+        component: InputPrestasi,
+        meta: {
+          requiresAuth: true,
+          title: 'Prestasi',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Prestasi',
+              disabled: true,
+              name: 'inputPrestasi',
+            }
+          ]
+        }
+      },
+      {
+        path: '/hasil/pengolahan-nilai',
+        name: 'hasilPengolahanNilai',
+        component: HasilPengolahanNilai,
+        meta: {
+          requiresAuth: true,
+          title: 'Hasil Pengolahan Nilai',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Hasil Pengolahan Nilai',
+              disabled: true,
+              name: 'hasilPengolahanNilai',
+            }
+          ]
+        }
+      },
+      {
+        path: '/rencana/pengetahuan',
+        name: 'rencanaPengatahuan',
+        component: RencanaPengetahuan,
+        meta: {
+          requiresAuth: true,
+          title: 'Rencana Pengetahuan',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Rencana Pengetahuan',
+              disabled: true,
+              name: 'rencanaPengatahuan',
+            }
+          ]
+        }
+      },
+      {
+        path: '/rencana/keterampilan',
+        name: 'rencanaKeterampilan',
+        component: RencanaKeterampilan,
+        meta: {
+          requiresAuth: true,
+          title: 'Rencana Keterampilan',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Rencana Keterampilan',
+              disabled: true,
+              name: 'rencanaKeterampilan',
+            }
+          ]
+        }
+      },
+      {
+        path: '/rencana/sikap',
+        name: 'rencanaSikap',
+        component: RencanaSikap,
+        meta: {
+          requiresAuth: true,
+          title: 'Rencana Sikap',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Rencana Sikap',
+              disabled: true,
+              name: 'rencanaSikap',
+            }
+          ]
+        }
+      },
+      {
+        path: '/deskripsi',
+        name: 'deskripsi',
+        component: Deskripsi,
+        meta: {
+          requiresAuth: true,
+          title: 'Deskripsi',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Deskripsi',
+              disabled: true,
+              name: 'deskripsi',
+            }
+          ]
+        }
+      },
+      {
+        path: '/kirim-nilai',
+        name: 'kirimNilai',
+        component: KirimNilai,
+        meta: {
+          requiresAuth: true,
+          title: 'Kirim Nilai',
+          breadcrumbs: [
+            {
+              text: 'Home',
+              disabled: false,
+              icon: 'mdi-home',
+              name: 'dashboard',
+            },
+            {
+              text: 'Kirim Nilai',
+              disabled: true,
+              name: 'kirimNilai',
             }
           ]
         }
