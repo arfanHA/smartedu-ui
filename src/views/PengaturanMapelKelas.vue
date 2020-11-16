@@ -264,14 +264,16 @@ export default {
           return i.master_mata_pelajaran_kategori_id;
         } else if (props == 4) {
           return i.master_mata_pelajaran_id;
-        } else {
+        } else if (props == 5) {
+          return i.kkm;
+        } else  {
           return i[props].id;
         }
       });
     },
     fetchMapelKelas() {
       const params = {
-        tahun_ajar: 1,
+        tahun_ajar: this.tahunAjarData.id,
         kelas_tingkatan: this.selectedTingkatanKelas,
       };
       this.$http
@@ -283,11 +285,13 @@ export default {
             this.mapelData = this.mapMapelKelas(this.mapelKelasData, 4);
             this.urutanArray = this.mapMapelKelas(this.mapelKelasData, 1);
             this.checkbox = this.mapMapelKelas(this.mapelKelasData, 2);
-            console.log(this.mapelData);
+            this.kkmArray = this.mapMapelKelas(this.mapelKelasData, 5);
+            console.log(this.kkmArray);
           }else {
             this.kategoriArray = [];
             this.mapelData = [];
             this.urutanArray = [];
+            this.kkmArray = [];
             this.checkbox = [];
             this.fetchMapel();
           }
