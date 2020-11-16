@@ -68,18 +68,6 @@
               <v-row>
                 <v-col cols="12" sm="12">
                   <v-select
-                    v-model="editedItem.master_tahun_ajar_id"
-                    item-value="id"
-                    :items="tahunAjarData"
-                    item-text="sebutan"
-                    filled
-                    :rules="formRules"
-                    label="Tahun Ajar"
-                    required
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" sm="12">
-                  <v-select
                     v-model="editedItem.master_kelas_id"
                     item-value="id"
                     :items="kelasData"
@@ -305,21 +293,6 @@ export default {
           this.$store.commit("progressFunctionOn", false);
         });
     },
-    fetchTahunAjar() {
-      const params = {
-        per_page: 999,
-        page: 0,
-      };
-      this.$http
-        .get("/api/tahun-ajar", { params: params })
-        .then((r) => {
-          this.tahunAjarData = r.data.data.data || [];
-          this.totalPage = r.data.data.last_page;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
     fetchKelas() {
       const params = {
         per_page: 999,
@@ -394,7 +367,7 @@ export default {
         let params = {
           master_tahun_ajar_id: this.editedItem.master_tahun_ajar_id.id,
           master_kelas_id: this.editedItem.master_kelas_id.id,
-          master_pegawai_id: this.editedItem.master_pegawai_id,
+          master_pegawai_id: this.editedItem.master_pegawai_id.id,
           keterangan: this.editedItem.keterangan,
         };
         console.log(params);
@@ -477,7 +450,8 @@ export default {
     this.fetchKelasSemester(1);
     this.fetchKelas();
     this.fetchPegawai();
-    this.fetchTahunAjar();
+     this.tahunAjarData = JSON.parse(localStorage.getItem("tahunAjar"));
+    this.editedItem.master_tahun_ajar_id = this.tahunAjarData.id;
   },
 };
 </script>

@@ -137,7 +137,7 @@
         <template v-slot:body="{ items }">
           <tbody>
             <tr v-for="(item, index) in items" :key="item.id">
-              <td>{{ index + 1 + skip.offset }}</td>
+              <td>{{ index + 1 }}</td>
               <td class="text-xs-right">{{ item.nama }}</td>
               <td class="text-xs-right">
                 <v-tooltip bottom>
@@ -349,7 +349,7 @@ export default {
           keterangan: this.editedItem.keterangan,
         };
         this.$http
-          .put(`/kelas/${this.editedItem.id}`, params)
+          .put(`/api/kelas/${this.editedItem.id}`, params)
           .then((r) => {
             this.snackbar = {
               show: true,
