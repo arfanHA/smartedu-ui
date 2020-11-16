@@ -147,6 +147,18 @@
               <td class="text-xs-right">{{ item.master_pegawai_id.nama }}</td>
               <td class="text-xs-right">{{ item.keterangan }}</td>
               <td class="text-xs-right">
+                <v-btn
+                  depressed
+                  dense
+                  x-small
+                  color="primary"
+                  class="submitBtn black--text"
+                  @click="tambahRombel(item)"
+                >
+                  <v-icon x-small left>mdi-plus</v-icon>Rombel
+                </v-btn>
+              </td>
+              <td class="text-xs-right">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <v-icon
@@ -266,7 +278,12 @@ export default {
           value: "keterangan",
         },
         {
-          text: "Action",
+          text: "Atur Siswa",
+          class: "tableHeader white--text",
+          value: "keterangan",
+        },
+        {
+          text: "Aksi",
           class: "tableHeader white--text",
           value: "keterangan",
         },
@@ -274,6 +291,10 @@ export default {
     };
   },
   methods: {
+    tambahRombel(item){
+      this.$store.commit("setKelasSemesterData", item);
+      this.$router.replace({ name: 'pengaturanKelasSiswa' });
+    },
     fetchKelasSemester(myOffset) {
       this.$store.commit("progressFunctionOn",true);
       const params = {

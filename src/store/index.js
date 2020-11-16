@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     token: "",
     progressStatus: false,
+    kelasSemesterData: {}
   },
   getters:{
     token: state => state.token,
@@ -17,6 +18,10 @@ export default new Vuex.Store({
     },
     token(state,payload){
       state.token = payload;
+    },
+    setKelasSemesterData(state, data){
+      state.kelasSemesterData = data;
+      console.log(state.kelasSemesterData);
     }
   },
   actions: {

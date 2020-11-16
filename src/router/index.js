@@ -363,9 +363,15 @@ const routes = [
               name: 'dashboard',
             },
             {
+              text: 'Pengaturan Kelas Semester',
+              disabled: false,
+              name: 'pengaturanKelasSemester',
+            },
+            {
               text: 'Kelas Siswa',
               disabled: true,
               name: 'pengaturanKelasSiswa',
+              mode: 'history'
             }
           ]
         }

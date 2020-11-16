@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <!-- <v-container fluid>
     <v-snackbar
       v-model="snackbar.show"
       :timeout="2000"
@@ -84,8 +84,9 @@
           </v-btn>
           <v-toolbar-title>Pengaturan Kelas Siswa</v-toolbar-title>
           <v-spacer></v-spacer>
-        </v-toolbar>
-        <v-container>
+        </v-toolbar> -->
+        
+        <v-container fluid>
           <v-row>
             <v-col md="6">
               <v-card>
@@ -196,7 +197,8 @@
             </v-col>
           </v-row>
         </v-container>
-      </v-card>
+      
+      <!-- </v-card>
     </v-dialog>
     <v-card>
       <v-data-table
@@ -222,7 +224,7 @@
         </template>
       </v-data-table>
     </v-card>
-  </v-container>
+  </v-container> -->
 </template>
 
 <script>
@@ -374,7 +376,7 @@ export default {
     },
     fetchKelasSemester() {
       const params = {
-        tahun_ajar: 1,
+        tahun_ajar: this.tahunAjarData.id,
         per_page: 999,
         page: 1,
       };
@@ -515,9 +517,12 @@ export default {
     },
   },
   created() {
-    this.fetchKategoriMapel();
-    this.fetchSiswa(1);
     this.tahunAjarData = JSON.parse(localStorage.getItem("tahunAjar"));
+    let kelasSemester = this.$store.state.kelasSemesterData;
+    this.selectedKelasSemester = kelasSemester.id;
+    this.fetchKategoriMapel();
+    this.fetchKelasSiswa();
+    this.fetchSiswa(1);
     this.fetchKelasSemester();
   },
   computed: {
@@ -525,15 +530,9 @@ export default {
       return this.$store.state.progressStatus;
     },
   },
-  watch: {
-    selectedKelasSemester: function () {
-      this.fetchKelasSiswa();
-      this.fetchSiswa(1);
-    },
-    // selection: function () {
-    //   console.log(this.selection);
-    // },
-  },
+  destroyed() {
+     this.$store.commit("setKelasSemesterData", null);
+  }
 };
 </script>
 

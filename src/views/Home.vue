@@ -884,12 +884,12 @@ export default {
             icon: "mdi-circle-medium",
             routerName: "pengaturanKelasSemester",
           },
-          {
-            title: "Rombongan Belajar",
-            menuTitle: "Rombongan Belajar",
-            icon: "mdi-circle-medium",
-            routerName: "pengaturanKelasSiswa",
-          },
+          // {
+          //   title: "Rombongan Belajar",
+          //   menuTitle: "Rombongan Belajar",
+          //   icon: "mdi-circle-medium",
+          //   routerName: "pengaturanKelasSiswa",
+          // },
         ],
       },
       mataPelajaran: {
@@ -1273,12 +1273,12 @@ export default {
               icon: "mdi-circle-medium",
               routerName: "pengaturanKelasSemester",
             },
-            {
-              title: "Rombongan Belajar",
-              menuTitle: "Rombongan Belajar",
-              icon: "mdi-circle-medium",
-              routerName: "pengaturanKelasSiswa",
-            },
+            // {
+            //   title: "Rombongan Belajar",
+            //   menuTitle: "Rombongan Belajar",
+            //   icon: "mdi-circle-medium",
+            //   routerName: "pengaturanKelasSiswa",
+            // },
           ],
         },
         mataPelajaran: {
