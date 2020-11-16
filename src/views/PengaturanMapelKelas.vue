@@ -365,30 +365,6 @@ export default {
     save() {
         this.processingSave();
     },
-    processingReset() {
-      this.$store.commit("progressFunctionOn", true);
-      const params = {
-        tahun_ajar: this.tahunAjarData.id,
-        kelas_tingkatan: this.selectedTingkatanKelas,
-      };
-      this.$http
-        .delete("/api/pengaturan-mata-pelajaran-kelas", { params: params })
-        .then((r) => {
-          this.snackbar = {
-            show: true,
-            status: r.data.status,
-            text: r.data.msg,
-            color: "success",
-          };
-          this.dialog = false;
-          this.$store.commit("progressFunctionOn", false);
-          this.processingSave();
-        })
-        .catch((err) => {
-          console.log(err);
-          this.$store.commit("progressFunctionOn", false);
-        });
-    },
     processingSave() {
       let joinData = {
         master_tahun_ajar_id: this.tahunAjarData.id,
