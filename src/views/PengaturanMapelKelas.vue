@@ -359,16 +359,12 @@ export default {
       });
     },
     save() {
-      if (this.mapelKelasData) {
-        this.processingReset();
-      }else {
         this.processingSave();
-      }
     },
     processingReset() {
       this.$store.commit("progressFunctionOn", true);
       const params = {
-        tahun_ajar: 1,
+        tahun_ajar: this.tahunAjarData.id,
         kelas_tingkatan: this.selectedTingkatanKelas,
       };
       this.$http
@@ -396,6 +392,7 @@ export default {
         master_mata_pelajaran_kategori_id: [],
         master_mata_pelajaran_id: [],
         urutan: [],
+        kkm: [],
       };
 
       joinData.master_mata_pelajaran_kategori_id = this.mapItems(
@@ -405,6 +402,7 @@ export default {
       joinData.master_mata_pelajaran_id = this.mapItems(this.mapelData);
       joinData.active = this.mapStatus(this.checkbox);
       joinData.urutan = this.urutanArray;
+      joinData.kkm = this.kkmArray;
 
       this.$store.commit("progressFunctionOn", true);
       this.$http
@@ -435,7 +433,7 @@ export default {
   created() {
     this.fetchKategoriMapel();
     this.fetchMapel();
-    this.tahunAjarData = JSON.parse(localStorage.getItem('tahunAJar'));
+    this.tahunAjarData = JSON.parse(localStorage.getItem("tahunAjar"));
     this.fetchTingkatanKelas();
   },
   computed: {
