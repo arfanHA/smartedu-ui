@@ -23,7 +23,7 @@
           class="mb-5 mt-2 submitBtn black--text"
           @click="dialog = !dialog"
         >
-          <v-icon left>mdi-plus</v-icon>Tambah Bahan Ajar
+          <v-icon left>mdi-plus</v-icon>Tambah Artikel
         </v-btn>
       </v-col>
     </v-row>
@@ -40,7 +40,7 @@
           <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Tambah Bahan Ajar</v-toolbar-title>
+          <v-toolbar-title>Tambah Artikel</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
@@ -92,13 +92,13 @@
                     item-text="tingkatan"
                     item-value="id"
                     label="Pilih Tingkatan Kelas"
-                    filled
+                    outlined
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="12">
                   <v-text-field
                     label="Judul"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.judul"
                     required
@@ -118,7 +118,7 @@
                 <v-col cols="12" sm="12">
                   <v-textarea
                     label="Keterangan"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.keterangan"
                     required
@@ -578,6 +578,6 @@ export default {
 <style scoped>
 .v-card.dialogField {
   margin: auto;
-  width: auto;
+   max-width: 950px;
 }
 </style>

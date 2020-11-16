@@ -430,11 +430,6 @@ export default {
 </script>
 
 <style scoped>
-.v-card.dialogField {
-  margin: auto;
-  max-width: 750px;
-}
-
 .showTable {
   height: 50px !important;
 }

@@ -61,7 +61,7 @@
             >
           </v-toolbar-items>
         </v-toolbar>
-        <!-- <v-card class="dialogField mt-5 pb-5"> -->
+        <v-card class="dialogField mt-5 pb-5">
           <v-container>
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-row>
@@ -117,7 +117,7 @@
               </v-row>
             </v-form>
           </v-container>
-        <!-- </v-card> -->
+        </v-card>
       </v-card>
     </v-dialog>
 
@@ -461,6 +461,6 @@ export default {
 <style scoped>
 .v-card.dialogField {
   margin: auto;
-  width: auto;
+  max-width: 750px;
 }
 </style>

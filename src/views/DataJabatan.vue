@@ -69,7 +69,7 @@
                 <v-col cols="12" sm="12">
                   <v-text-field
                     label="Nama Jabatan"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.nama"
                     required
@@ -78,7 +78,7 @@
                 <v-col cols="12" sm="12">
                   <v-textarea
                     label="Keterangan"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.keterangan"
                     required

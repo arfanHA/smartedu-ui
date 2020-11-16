@@ -70,7 +70,7 @@
                     :items="tingkatKelasData"
                     item-text="tingkatan"
                     return-object
-                    filled
+                    outlined
                     :rules="formRules"
                     label="Tingkatan Kelas"
                     required
@@ -79,7 +79,7 @@
                 <v-col cols="12" sm="12">
                   <v-text-field
                     label="Nama Kelas"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.nama"
                     required
@@ -88,7 +88,7 @@
                 <v-col cols="12" sm="12">
                   <v-text-field
                     label="Keterangan"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.keterangan"
                     required

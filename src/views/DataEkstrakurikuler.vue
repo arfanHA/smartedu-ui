@@ -68,7 +68,7 @@
                 <v-col cols="12" sm="12">
                   <v-text-field
                     label="Nama Ekstrakurikuler"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.nama_ekstrakurikuler"
                     required
@@ -77,7 +77,7 @@
                 <v-col cols="12" sm="12">
                   <v-text-field
                     label="Keterangan"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.keterangan_ekstrakurikuler"
                     required
@@ -129,7 +129,9 @@
             <tr v-for="(item, index) in items" :key="item.id">
               <td>{{ index + 1 + skip.offset }}</td>
               <td class="text-xs-right">{{ item.nama_ekstrakurikuler }}</td>
-              <td class="text-xs-right">{{ item.keterangan_ekstrakurikuler }}</td>
+              <td class="text-xs-right">
+                {{ item.keterangan_ekstrakurikuler }}
+              </td>
               <td class="text-xs-right">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
@@ -233,7 +235,11 @@ export default {
           sortable: false,
           value: "name",
         },
-        { text: "Nama Ekstrakurikuler", value: "nama_ekstrakurikuler", class: "tableHeader white--text" },
+        {
+          text: "Nama Ekstrakurikuler",
+          value: "nama_ekstrakurikuler",
+          class: "tableHeader white--text",
+        },
         {
           text: "Keterangan",
           value: "keterangan_ekstrakurikuler",
@@ -259,8 +265,9 @@ export default {
         .then((r) => {
           this.ekstrakData = r.data.data.data || [];
           this.totalPage = r.data.data.last_page;
-          this.skip.offset = (r.data.data.current_page - 1) * r.data.data.per_page;
-         this.$store.commit("progressFunctionOn", false);
+          this.skip.offset =
+            (r.data.data.current_page - 1) * r.data.data.per_page;
+          this.$store.commit("progressFunctionOn", false);
         })
         .catch((err) => {
           console.log(err);
@@ -310,7 +317,8 @@ export default {
       if (this.$refs.form.validate() === true) {
         let params = {
           nama_ekstrakurikuler: this.editedItem.nama_ekstrakurikuler,
-          keterangan_ekstrakurikuler: this.editedItem.keterangan_ekstrakurikuler,
+          keterangan_ekstrakurikuler: this.editedItem
+            .keterangan_ekstrakurikuler,
         };
         this.$http
           .put(`/api/ekstrakurikuler/${this.editedItem.id}`, params)
@@ -395,6 +403,6 @@ export default {
 <style scoped>
 .v-card.dialogField {
   margin: auto;
-  width: auto;
+  max-width: 750px;
 }
 </style>

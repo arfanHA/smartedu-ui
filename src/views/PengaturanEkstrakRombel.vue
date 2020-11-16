@@ -219,7 +219,7 @@
                             <v-col cols="12" sm="12">
                               <v-text-field
                                 label="Nilai Ekstrakurikuler"
-                                filled
+                                outlined
                                 required
                                 :rules="formRules"
                                 v-model="editedRombelItem.nilai_ekstrakurikuler"
@@ -228,7 +228,7 @@
                             <v-col cols="12" sm="12">
                               <v-text-field
                                 label="Deskripsi"
-                                filled
+                                outlined
                                 required
                                 :rules="formRules"
                                 v-model="editedRombelItem.deskripsi"
@@ -740,9 +740,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.v-card.dialogField {
-  margin: auto;
-  width: auto;
-}
-</style>

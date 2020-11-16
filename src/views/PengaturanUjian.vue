@@ -92,7 +92,7 @@
                     item-text="tingkatan"
                     item-value="id"
                     label="Pilih Tingkatan Kelas"
-                    filled
+                    outlined
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="12">
@@ -102,7 +102,7 @@
                     item-text="keterangan"
                     item-value="id"
                     label="Pilih Kategori Ujian"
-                    filled
+                    outlined
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="12">
@@ -112,13 +112,13 @@
                     item-text="nama"
                     item-value="id"
                     label="Pilih Mata Pelajaran"
-                    filled
+                    outlined
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="12">
                   <v-text-field
                     label="Judul"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.judul"
                     required
@@ -127,7 +127,7 @@
                <v-col cols="12" sm="12">
                   <v-text-field
                     label="Waktu Pengerjaan (Menit)"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.waktu_pengerjaan"
                     required
@@ -557,6 +557,6 @@ export default {
 <style scoped>
 .v-card.dialogField {
   margin: auto;
-  width: auto;
+  max-width: 950px;
 }
 </style>

@@ -119,7 +119,7 @@
             <v-col cols="12" sm="12">
               <v-textarea
                 label="Input Soal"
-                filled
+                outlined
                 :rules="formRules"
                 v-model="editedItem.soal"
                 required
@@ -427,10 +427,6 @@ export default {
 </script>
 
 <style scoped>
-.v-card.dialogField {
-  margin: auto;
-  max-width: 750px;
-}
 .v-card__title.topCard {
   background: #00adb5;
 }

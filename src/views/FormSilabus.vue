@@ -23,7 +23,7 @@
           class="mb-5 mt-2 submitBtn black--text"
           @click="dialog = !dialog"
         >
-          <v-icon left>mdi-plus</v-icon>Tambah RPP
+          <v-icon left>mdi-plus</v-icon>Tambah Silabus
         </v-btn>
       </v-col>
     </v-row>
@@ -40,7 +40,7 @@
           <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Tambah RPP</v-toolbar-title>
+          <v-toolbar-title>Tambah Silabus</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
@@ -88,7 +88,7 @@
                 <v-col cols="12" sm="12">
                   <v-text-field
                     label="Judul"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.judul"
                     required
@@ -108,7 +108,7 @@
                 <v-col cols="12" sm="12">
                   <v-textarea
                     label="Keterangan"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.keterangan"
                     required
@@ -560,6 +560,6 @@ export default {
 <style scoped>
 .v-card.dialogField {
   margin: auto;
-  width: auto;
+   max-width: 950px;
 }
 </style>

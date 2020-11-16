@@ -92,13 +92,13 @@
                     item-text="tingkatan"
                     item-value="id"
                     label="Pilih Tingkatan Kelas"
-                    filled
+                    outlined
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="12">
                   <v-text-field
                     label="Judul"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.judul"
                     required
@@ -545,6 +545,6 @@ export default {
 <style scoped>
 .v-card.dialogField {
   margin: auto;
-  width: auto;
+  max-width: 950px;
 }
 </style>

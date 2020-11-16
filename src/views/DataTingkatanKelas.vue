@@ -71,7 +71,7 @@
                     label="Tingkatan Kelas"
                     :rules="formRules"
                     required
-                    filled
+                    outlined
                   ></v-text-field>
                 </v-col>
               </v-row>

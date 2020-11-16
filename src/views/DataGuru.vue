@@ -20,21 +20,19 @@
             <v-btn dark text @click="dialog = false">Simpan</v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <v-card class="dialogField mt-5 pb-5">
           <v-container>
             <v-row>
               <v-col cols="12" sm="12">
-                <v-text-field label="NIP" filled></v-text-field>
+                <v-text-field label="NIP" outlined></v-text-field>
               </v-col>
               <v-col cols="12" sm="12">
-                <v-text-field label="Nama Guru" filled></v-text-field>
+                <v-text-field label="Nama Guru" outlined></v-text-field>
               </v-col>
               <v-col cols="12" sm="12">
-                <v-textarea label="Alamat" filled></v-textarea>
+                <v-textarea label="Alamat" outlined></v-textarea>
               </v-col>
             </v-row>
           </v-container>
-        </v-card>
       </v-card>
     </v-dialog>
 
@@ -161,9 +159,3 @@ export default {
 };
 </script>
 
-<style scoped>
-    .v-card.dialogField {
-        margin: auto;
-        max-width: 750px;
-    }
-</style>

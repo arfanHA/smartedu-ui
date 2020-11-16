@@ -363,9 +363,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.v-card.dialogField {
-  margin: auto;
-  max-width: 100%;
-}
-</style>

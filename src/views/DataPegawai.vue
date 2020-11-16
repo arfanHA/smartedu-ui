@@ -92,7 +92,7 @@
                     item-value="id"
                     :items="jabatanData"
                     item-text="nama"
-                    filled
+                    outlined
                     :rules="formRules"
                     label="Jabatan"
                     required
@@ -101,7 +101,7 @@
                 <v-col cols="12" sm="12">
                   <v-text-field
                     label="Nama"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.nama"
                     required
@@ -110,7 +110,7 @@
                 <v-col md="6" sm="12">
                   <v-text-field
                     label="NIP"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.nip"
                     required
@@ -122,7 +122,7 @@
                     :items="jk"
                     item-text="nama"
                     item-value="value"
-                    filled
+                    outlined
                     :rules="formRules"
                     label="Jenis Kelamin"
                     required
@@ -131,7 +131,7 @@
                 <v-col md="9" sm="12">
                   <v-textarea
                     label="Alamat"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.alamat"
                     required

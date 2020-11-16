@@ -80,7 +80,7 @@
                         }`
                     "
                     label="Pilih Ekstrakurikuler"
-                    filled
+                    outlined
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -89,7 +89,7 @@
                     item-value="id"
                     :items="pegawaiData"
                     item-text="nama"
-                    filled
+                    outlined
                     :rules="formRules"
                     label="Pilih Penanggung Jawab"
                     required
@@ -98,7 +98,7 @@
                 <v-col cols="12" sm="6">
                   <v-text-field
                     label="Nomor SK"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model="editedItem.nomor_sk"
                     required
@@ -118,7 +118,7 @@
                         v-model="editedItem.tanggal_sk"
                         label="Tanggal SK"
                         append-icon="mdi-calendar"
-                        filled
+                        outlined
                         readonly
                         required
                         :rules="formRules"
@@ -135,7 +135,7 @@
                 <v-col cols="12" sm="6">
                   <v-text-field
                     label="Jam Perminggu"
-                    filled
+                    outlined
                     :rules="formRules"
                     v-model.number="editedItem.jam_per_minggu"
                     required
@@ -533,6 +533,6 @@ export default {
 <style scoped>
 .v-card.dialogField {
   margin: auto;
-  width: auto;
+  max-width: 950px;
 }
 </style>

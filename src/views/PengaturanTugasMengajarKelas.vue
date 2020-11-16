@@ -469,10 +469,6 @@ export default {
 </script>
 
 <style scoped>
-.v-card.dialogField {
-  margin: auto;
-  max-width: 750px;
-}
 .v-card__title.topCard {
   background: #00adb5;
 }

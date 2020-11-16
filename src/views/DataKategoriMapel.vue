@@ -402,6 +402,6 @@ export default {
 <style scoped>
 .v-card.dialogField {
   margin: auto;
-  width: auto;
+   max-width: 750px;
 }
 </style>
