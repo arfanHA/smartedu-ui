@@ -30,7 +30,7 @@ import FormRpp from '../views/FormRPP.vue'
 import PengaturanPenilaian from '../views/PengaturanPenilaian.vue' 
 import PenilaianKeterampilan from '../views/PenilaianKeterampilan.vue' 
 import PenilaianSikap from '../views/PenilaianSikap.vue' 
-import PenilaianDeskripsi from '../views/PenilaianDeskripsi.vue' 
+import PenilaianPengetahuan from '../views/PenilaianPengetahuan.vue' 
 import KalenderPendidikan from '../views/KalenderPendidikan.vue' 
 import PengaturanUjian from '../views/PengaturanUjian.vue' 
 import SoalEssay from '../views/SoalEssay.vue' 
@@ -663,12 +663,12 @@ const routes = [
         }
       },
       {
-        path: '/penilaian/deskripsi',
-        name: 'penilaianDeskripsi',
-        component: PenilaianDeskripsi,
+        path: '/penilaian/pengetahuan',
+        name: 'penilaianPengetahuan',
+        component: PenilaianPengetahuan,
         meta: {
           requiresAuth: true,
-          title: 'Penilaian Deskripsi',
+          title: 'Penilaian Pengetahuan',
           breadcrumbs: [
             {
               text: 'Home',
@@ -677,9 +677,9 @@ const routes = [
               name: 'dashboard',
             },
             {
-              text: 'Penilaian Deskripsi',
+              text: 'Penilaian Pengetahuan',
               disabled: true,
-              name: 'penilaianDeskripsi',
+              name: 'penilaianPengetahuan',
             }
           ]
         }
@@ -928,7 +928,7 @@ const routes = [
       },
       {
         path: '/rencana/pengetahuan',
-        name: 'rencanaPengatahuan',
+        name: 'rencanaPengetahuan',
         component: RencanaPengetahuan,
         meta: {
           requiresAuth: true,
@@ -943,7 +943,7 @@ const routes = [
             {
               text: 'Rencana Pengetahuan',
               disabled: true,
-              name: 'rencanaPengatahuan',
+              name: 'rencanaPengetahuan',
             }
           ]
         }

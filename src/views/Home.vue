@@ -1097,6 +1097,12 @@ export default {
         menuTitle: "Penilaian",
         items: [
           {
+            title: "Penilaian Pengetahuan",
+            menuTitle: "Penilaian Pengetahuan",
+            icon: "mdi-circle-medium",
+            routerName: "penilaianPengetahuan",
+          },
+          {
             title: "Penilaian Keterampilan",
             menuTitle: "Penilaian Keterampilan",
             icon: "mdi-circle-medium",
@@ -1107,12 +1113,6 @@ export default {
             menuTitle: "Penilaian Sikap",
             icon: "mdi-circle-medium",
             routerName: "penilaianSikap",
-          },
-          {
-            title: "Penilaian Deskripsi",
-            menuTitle: "Penilaian Deskripsi",
-            icon: "mdi-circle-medium",
-            routerName: "penilaianDeskripsi",
           },
         ],
       },
@@ -1393,6 +1393,12 @@ export default {
           menuTitle: "Penilaian",
           items: [
             {
+              title: "Penilaian Pengetahuan",
+              menuTitle: "Penilaian Pengetahuan",
+              icon: "mdi-circle-medium",
+              routerName: "penilaianPengetahuan",
+            },
+            {
               title: "Penilaian Keterampilan",
               menuTitle: "Penilaian Keterampilan",
               icon: "mdi-circle-medium",
@@ -1403,13 +1409,7 @@ export default {
               menuTitle: "Penilaian Sikap",
               icon: "mdi-circle-medium",
               routerName: "penilaianSikap",
-            },
-            {
-              title: "Penilaian Deskripsi",
-              menuTitle: "Penilaian Deskripsi",
-              icon: "mdi-circle-medium",
-              routerName: "penilaianDeskripsi",
-            },
+            }
           ],
         },
         learningMedia: {
