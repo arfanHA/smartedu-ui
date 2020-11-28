@@ -299,7 +299,7 @@ export default {
       this.$http
         .get("/api/pengaturan-kelas-semester", { params: params })
         .then((r) => {
-          this.jabtanData = r.data.data || [];
+          this.jabtanData = r.data.data.data || [];
           // this.totalPage = r.data.data.last_page;
           // console.log(r);
           // this.skip.offset =
