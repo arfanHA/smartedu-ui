@@ -1468,6 +1468,37 @@ export default {
             },
           ],
         },
+        ujian: {
+        action: "mdi-ungroup",
+        title: "Ujian/Latihan",
+        menuTitle: "Ujian/Latihan",
+        items: [
+          {
+            title: "Pengaturan Ujian",
+            menuTitle: "Pengaturan Ujian",
+            icon: "mdi-circle-medium",
+            routerName: "pengaturanUjian",
+          },
+          {
+            title: "Soal Essay",
+            menuTitle: "Soal Essay",
+            icon: "mdi-circle-medium",
+            routerName: "soalEssay",
+          },
+          {
+            title: "Soal Pilihan",
+            menuTitle: "Soal Pilihan",
+            icon: "mdi-circle-medium",
+            routerName: "soalPilihan",
+          },
+          {
+            title: "Jawab Soal Pilihan",
+            menuTitle: "Jawab Soal Pilihan",
+            icon: "mdi-circle-medium",
+            routerName: "jawabSoalPilihan",
+          },
+        ],
+      },
         switchBtn: {
           icon: "mdi-account-switch",
           menuTitle: "Menu Wali Kelas",
@@ -1632,6 +1663,10 @@ img {
 
 .v-list-item--active {
   background: #00527b;
+}
+
+.v-btn--active {
+  background: yellow;
 }
 
 .v-list-item--active .v-list-item__title {

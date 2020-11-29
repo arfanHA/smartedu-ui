@@ -87,16 +87,6 @@
               <v-row>
                 <v-col cols="12" sm="12">
                   <v-select
-                    v-model="editedItem.kelas_tingkatan_id"
-                    :items="kelasTingkatanData"
-                    item-text="tingkatan"
-                    item-value="id"
-                    label="Pilih Tingkatan Kelas"
-                    outlined
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" sm="12">
-                  <v-select
                     v-model="editedItem.ujian_kategori_id"
                     :items="ujianKategoriData"
                     item-text="keterangan"
@@ -104,6 +94,15 @@
                     label="Pilih Kategori Ujian"
                     outlined
                   ></v-select>
+                </v-col>
+                 <v-col cols="12" sm="12">
+                  <v-text-field
+                    label="Kode Ujian"
+                    outlined
+                    :rules="formRules"
+                    v-model="editedItem.code"
+                    required
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="12">
                   <v-select
@@ -179,7 +178,6 @@
             <tr v-for="(item, index) in items" :key="item.id">
               <td>{{ index + 1 }}</td>
               <td class="text-xs-right">{{ item.mata_pelajaran.nama }}</td>
-              <td class="text-xs-right">{{ item.kelas_tingkatan.tingkatan }}</td>
               <td class="text-xs-right">{{ item.judul }}</td>
               <td class="text-xs-right">{{ item.kategori.nama }}</td>
               <td class="text-xs-right">{{ item.pegawai.nama }}</td>
@@ -307,7 +305,6 @@ export default {
           value: "name",
         },
         { text: "Mapel", value: "kode", class: "tableHeader white--text" },
-        { text: "Kelas", value: "kode", class: "tableHeader white--text" },
         { text: "Judul", value: "kode", class: "tableHeader white--text" },
         {
           text: "Kategori",
@@ -371,7 +368,6 @@ export default {
       this.$http
         .get("/api/learning-media/ujian", { params: params })
         .then((r) => {
-          console.log(r);
           this.ujianData = r.data.data.data || [];
           this.totalPage = r.data.data.meta.pagination.total_pages;
           this.skip.offset =
@@ -393,7 +389,6 @@ export default {
       this.$http
         .get("/api/mata-pelajaran", { params: params })
         .then((r) => {
-          console.log(r);
           this.mapelData = r.data.data.data || [];
           this.$store.commit("progressFunctionOn", false);
         })
@@ -542,14 +537,14 @@ export default {
     },
   },
   created() {
-    this.fetchPengaturanUjian(1);
-    this.fetchKelasTingkatan();
-    this.fetchUjianKategori();
-    this.fetchMapel();
     this.pegawaiData = JSON.parse(localStorage.getItem("user"));
     this.editedItem.pegawai_id = this.pegawaiData.detail_profile.master_pegawai_id;
     this.tahunAjarData = JSON.parse(localStorage.getItem("tahunAjar"));
     this.editedItem.tahun_ajar_id = this.tahunAjarData.id;
+    this.fetchPengaturanUjian(1);
+    this.fetchKelasTingkatan();
+    this.fetchUjianKategori();
+    this.fetchMapel();
   },
 };
 </script>
