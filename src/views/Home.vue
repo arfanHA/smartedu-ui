@@ -9,6 +9,7 @@
       :clipped="clipped"
       width="250"
       :temporary="temporary"
+      v-if="userData.level != 'wali murid'"
     >
       <v-list :flat="flat" :nav="nav" dense>
         <v-list-item

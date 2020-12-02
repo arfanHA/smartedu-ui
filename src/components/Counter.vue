@@ -1,7 +1,7 @@
 <template>
   <div v-if="loaded">
-      <h5 v-if="expired">Waktu Habis</h5>
-      {{displayDays}}:
+      <!-- <h5 v-if="expired">Waktu Habis</h5> -->
+      <!-- {{displayDays}}: -->
       {{displayHours}}:
       {{displayMinutes}}:
       {{displaySecond}}

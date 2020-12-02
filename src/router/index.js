@@ -48,6 +48,7 @@ import RencanaKeterampilan from '../views/RencanaKeterampilan.vue'
 import RencanaSikap from '../views/RencanaSikap.vue' 
 import Deskripsi from '../views/Deskripsi.vue' 
 import KirimNilai from '../views/KirimNilai.vue' 
+import SiswaPortal from '../views/SiswaPortal.vue' 
 
 Vue.use(VueRouter)
 
@@ -751,25 +752,34 @@ const routes = [
         }
       },
       {
+        path: '/portalUjian',
+        name: 'portalUjian',
+        component: SiswaPortal,
+        meta: {
+          requiresAuth: true,
+          title: 'Portal Ujian Siswa',
+        }
+      },
+      {
         path: '/jawabsoal/pilihan',
         name: 'jawabSoalPilihan',
         component: JawabSoalPilihan,
         meta: {
           requiresAuth: true,
           title: 'Soal Pilihan',
-          breadcrumbs: [
-            {
-              text: 'Home',
-              disabled: false,
-              icon: 'mdi-home',
-              name: 'dashboard',
-            },
-            {
-              text: 'Jawab Soal Pilihan',
-              disabled: true,
-              name: 'jawabSoalPilihan',
-            }
-          ]
+          // breadcrumbs: [
+          //   {
+          //     text: 'Home',
+          //     disabled: false,
+          //     icon: 'mdi-home',
+          //     name: 'dashboard',
+          //   },
+          //   {
+          //     text: 'Jawab Soal Pilihan',
+          //     disabled: true,
+          //     name: 'jawabSoalPilihan',
+          //   }
+          // ]
         }
       },
       {
@@ -1060,6 +1070,7 @@ const routes = [
       },
     ],
   },
+  
 ]
 
 const router = new VueRouter({

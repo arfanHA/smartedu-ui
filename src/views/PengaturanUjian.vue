@@ -95,15 +95,6 @@
                     outlined
                   ></v-select>
                 </v-col>
-                 <v-col cols="12" sm="12">
-                  <v-text-field
-                    label="Kode Ujian"
-                    outlined
-                    :rules="formRules"
-                    v-model="editedItem.code"
-                    required
-                  ></v-text-field>
-                </v-col>
                 <v-col cols="12" sm="12">
                   <v-select
                     v-model="editedItem.mata_pelajaran_id"

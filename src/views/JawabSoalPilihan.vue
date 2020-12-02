@@ -16,23 +16,30 @@
       </template>
     </v-snackbar>
     <v-row>
-      <counter
-        :year="2020"
-        :month="10"
-        :date="15"
-        :hour="18"
-        :minute="45"
-        :second="12"
-        :millisecond="10"
-      />
-    </v-row>
-    <v-row>
       <v-col sm="10">
         <v-stepper v-model="e1">
           <v-stepper-header>
-            <v-stepper-step :complete="e1 > 1" step="1">
-              Soal Ke 1 dari 20
-            </v-stepper-step>
+            <v-row>
+              <v-col sm="10">
+                <!-- <v-stepper-step :step="taskIndex + 1"> -->
+                <p class="ma-4 font-weight-black">
+                  Soal Ke {{ taskIndex + 1 }} dari {{ soalData.length }}
+                </p>
+                <!-- </v-stepper-step> -->
+              </v-col>
+              <v-col sm="2">
+                <counter
+                  class="ma-3 font-weight-black"
+                  :year="myTimeout.year"
+                  :month="myTimeout.month"
+                  :date="myTimeout.day"
+                  :hour="myTimeout.hour"
+                  :minute="myTimeout.minutes"
+                  :second="myTimeout.second"
+                  :millisecond="myTimeout.millisecond"
+                />
+              </v-col>
+            </v-row>
           </v-stepper-header>
 
           <v-stepper-items>
@@ -82,7 +89,7 @@
                 Selanjutnya
               </v-btn>
 
-              <v-btn color="orange" @click="doneTask" v-if="noNext">
+              <v-btn color="orange" @click="warnDialog = true" v-if="noNext">
                 Selesai Ujian
               </v-btn>
 
@@ -117,6 +124,41 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-dialog v-model="warnDialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline">Yakin Selesai Ujian?</v-card-title>
+
+        <v-card-text>
+          Pastikan anda telah menjawab keseluruhan soal
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="warnDialog = !warnDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="doneTask"> Yakin </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="expired" max-width="350" persistent>
+      <v-card>
+        <v-card-title class="headline">Waktu Ujian Telah Selesai</v-card-title>
+
+        <!-- <v-card-text>
+          Pastikan anda telah menjawab keseluruhan soal
+        </v-card-text> -->
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="timesUp">
+            OK
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -136,9 +178,12 @@ export default {
     e1: 1,
     noNext: false,
     isActive: false,
+    warnDialog: false,
+    expired: false,
     selectionAnswer: [],
     taskShow: null,
     taskIndex: null,
+    myTimeout: null,
     soalData: [],
     NoDataShowTable: false,
     editedItem: {
@@ -148,15 +193,45 @@ export default {
     },
   }),
   created() {
-    let userData = JSON.parse(localStorage.getItem("user"));
-    if (userData.kelas_semester) {
-      this.editedItem.pengaturan_kelas_siswa_id =
-        userData.kelas_semester.id_kelas_semester;
-    }
+    this.userData = JSON.parse(localStorage.getItem("user"));
+    this.myTimeout = JSON.parse(localStorage.getItem("timeout"));
+    this.setTimeout();
+    this.editedItem.pengaturan_kelas_siswa_id = this.userData.id_pengaturan_kelas_siswa;
     this.fetchSoal();
-    this.showRemaining();
   },
+   mounted(){
+        this.setTimeout();
+    },
   methods: {
+    timesUp(){
+      // this.$store.commit("progressFunctionOn", true);
+      // localStorage.removeItem("soalData");
+      // localStorage.removeItem("timeout");
+      // this.expired = false;
+      // this.$router.replace({ name: "portalUjian" });
+      // this.$store.commit("progressFunctionOn", false);
+      this.doneTask();
+    },
+    setTimeout() {
+      const timer = setInterval(() => {
+        const now = new Date();
+        const end = new Date(
+          this.myTimeout.year,
+          this.myTimeout.month,
+          this.myTimeout.day,
+          this.myTimeout.hour,
+          this.myTimeout.minutes,
+          this.myTimeout.second,
+          this.myTimeout.millisecond
+        );
+        const distance = end.getTime() - now.getTime();
+        if (distance < 0) {
+          clearInterval(timer);
+          this.expired = true;
+          return;
+        }
+      }, 1000);
+    },
     doneTask() {
       this.$store.commit("progressFunctionOn", true);
       const params = {
@@ -173,7 +248,11 @@ export default {
             text: r.data.msg,
             color: "success",
           };
+          this.warnDialog = false;
+          localStorage.removeItem("soalData");
+          localStorage.removeItem("timeout");
           this.$store.commit("progressFunctionOn", false);
+          this.$router.replace({ name: "portalUjian" });
         })
         .catch((err) => {
           this.snackbar = {
@@ -182,36 +261,25 @@ export default {
             text: err.response.data.msg,
             color: "red",
           };
+          this.warnDialog = false;
           this.$store.commit("progressFunctionOn", false);
         });
     },
     fetchSoal() {
       this.$store.commit("progressFunctionOn", true);
-      const params = {
-        per_page: 999,
-        page: 1,
-        ujian_id: 3,
-      };
-      this.$http
-        .get("/api/learning-media/soal-ujian-pilihan", {
-          params: params,
-        })
-        .then((r) => {
-          this.soalData = r.data.data.data || [];
-          for (let x = 1; x <= this.soalData.length; x++) {
-            this.selectionAnswer.push(null);
-          }
-          this.editedItem.ujian_pilihan_id = this.mapSoal(this.soalData);
-          console.log(this.editedItem.ujian_pilihan_id);
-          this.taskShow = this.soalData[0];
-          this.taskIndex = 0;
-          this.selection = 0;
-          this.$store.commit("progressFunctionOn", false);
-        })
-        .catch((err) => {
-          console.log(err);
-          this.$store.commit("progressFunctionOn", false);
-        });
+      try {
+        this.soalData = JSON.parse(localStorage.getItem("soalData"));
+        for (let x = 1; x <= this.soalData.length; x++) {
+          this.selectionAnswer.push(null);
+        }
+        this.editedItem.ujian_pilihan_id = this.mapSoal(this.soalData);
+        this.taskShow = this.soalData[0];
+        this.taskIndex = 0;
+        this.selection = 0;
+        this.$store.commit("progressFunctionOn", false);
+      } catch (error) {
+        this.$store.commit("progressFunctionOn", false);
+      }
     },
     mapSoal(items) {
       return items.map((i) => {
@@ -251,33 +319,6 @@ export default {
     lihat() {
       console.log(this.selectionAnswer);
     },
-     formatNum: num => (num < 10 ? '0' + num : num),
-     showRemaining() {
-                const now = new Date();
-   
-               
-                var time = {
-                  year: now.getFullYear(),
-                  month: now.getMonth()+1,
-                  day: now.getDate(),
-                  hour: now.getHours(),
-                  minutes: now.getMinutes()
-                }
-                console.log(time);
-                var interval = new Date(now.getTime() + 900000);
-
-                var time2 = {
-                  year: interval.getFullYear(),
-                  month: interval.getMonth()+1,
-                  day: interval.getDate(),
-                  hour: interval.getHours(),
-                  minutes: interval.getMinutes(),
-                  second: interval.getSeconds(),
-                  millisecond: interval.getMilliseconds(),
-                }
-
-                console.log(time2);
-        }
   },
 };
 </script>

@@ -177,7 +177,12 @@ export default {
           );
           localStorage.setItem("user", JSON.stringify(vm.credential.user));
           this.$store.commit("progressFunctionOn", false);
-          vm.$router.push("home");
+          if(vm.credential.user.level == 'wali murid'){
+            vm.$router.push("portalUjian");
+          }else {
+            vm.$router.push("home");
+          }
+          
         })
         .catch((err) => {
           console.log(err.response);
